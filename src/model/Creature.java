@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 /****************************
- * Класс, отвечающий за существо
+ * responsible for the creature
  * **************************/
 
 public class Creature {
@@ -16,7 +16,7 @@ public class Creature {
     boolean isBig = false;
     boolean isRunning = false;
     boolean isMimetic = false;
-    boolean isGraziKng = false;
+    boolean isGrazing = false;
     boolean isPoisonous = false;
     boolean isTailLossable = false;
     boolean isHibernatable = false;
@@ -26,15 +26,19 @@ public class Creature {
     boolean isCamouflaged = false;
     boolean isSharp = false;
     boolean isInfected = false;
-    boolean isSqimming = false;
+    boolean isSwimming = false;
 
     ArrayList<Creature> communicationList = new ArrayList<>();
     ArrayList<Creature> cooperationList = new ArrayList<>();
-    ArrayList<Creature> symbiontList = new ArrayList<>(); //crocodile: this creature can not eat if any symbiont is hungry; this creature can not be eaten if this animal is alive
-    ArrayList<Creature> otherAnimalList = new ArrayList<>(); //birds: can not eat if this creature is hungry; can not be eaten if this animal is alive
+
+    //crocodile: this creature can not eat if any symbiont is hungry; this creature can not be eaten if this animal is alive
+    ArrayList<Creature> symbiontList = new ArrayList<>();
+
+    //birds: can not eat if this creature is hungry; can not be eaten if this animal is alive
+    ArrayList<Creature> otherAnimalList = new ArrayList<>();
 
 
-    //Свойства существа -> в порядке их получения
+    //Creature`s traits list (in order of obtaining)
     ArrayList<Trait> traits = new ArrayList<>();
 
     Creature(){
@@ -51,12 +55,13 @@ public class Creature {
 
 
     //Добавить свойство
-    void addTrait(Trait trait){
+    boolean addTrait(Trait trait){
         for(Trait t : traits) {
-            if(t.equals(trait)) return;
+            if(t.equals(trait))
+                return false;
         }
-
         traits.add(trait);
+        return true;
     }
     //Удалить свойство
     void deleteTrait(Trait trait){
