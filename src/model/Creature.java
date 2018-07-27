@@ -11,6 +11,7 @@ public class Creature {
     int totalHunger = 1;
     int fatCapacity = 0;
     int fatSize = 0;
+
     boolean isPredator = false;
     boolean isBig = false;
     boolean isRunning = false;
@@ -26,9 +27,11 @@ public class Creature {
     boolean isSharp = false;
     boolean isInfected = false;
     boolean isSqimming = false;
+
     ArrayList<Creature> communicationList = new ArrayList<>();
     ArrayList<Creature> cooperationList = new ArrayList<>();
-
+    ArrayList<Creature> symbiontList = new ArrayList<>(); //crocodile: this creature can not eat if any symbiont is hungry; this creature can not be eaten if this animal is alive
+    ArrayList<Creature> otherAnimalList = new ArrayList<>(); //birds: can not eat if this creature is hungry; can not be eaten if this animal is alive
 
 
     //Свойства существа -> в порядке их получения
