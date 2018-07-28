@@ -31,7 +31,7 @@ public class Creature {
     ArrayList<Creature> communicationList = new ArrayList<>();
     ArrayList<Creature> cooperationList = new ArrayList<>();
 
-    //crocodile: this creature can not eat if any symbiont is hungry; this creature can not be eaten if this animal is alive
+    //crocodile: this creature can not eat if any symbiont is hungry; this creature can not be eaten if any symbiont is alive
     ArrayList<Creature> symbiontList = new ArrayList<>();
 
     //birds: can not eat if this creature is hungry; can not be eaten if this animal is alive
@@ -49,19 +49,64 @@ public class Creature {
     //Или здесь или в trait или можно создать под каждое свойство свой класс
 
 
-
-
-
-
-
-    //Добавить свойство
+    /**Adds new trait if possible; do some checks; changes constants
+     * @returns false if trait has not added
+     * @returns true if trait is added
+     */
     boolean addTrait(Trait trait){
+        if (trait == trait.PREDATOR){
+            ++fatCapacity;
+            traits.add(trait);
+            return true;
+        }
+
+        /*according to rules you can not put two equal cards (except fat tissue) to the same creature*/
         for(Trait t : traits) {
             if(t.equals(trait))
                 return false;
         }
+
+        /*according to rules a predator can not be a scavenger so
+        if smb puts a predator card to scavenger or scavenger card to predator
+        the last card should be removed from the animal*/
+        if (((trait == trait.PREDATOR) && (isScavenger)) || ((trait == trait.SCAVENGER) && (isPredator)))
+            return true; //actually has not added any traits
+
         traits.add(trait);
-        return true;
+        totalHunger += trait.getHunger();
+        switch (trait){
+            case PREDATOR: isPredator = true;
+                break;
+            case HIGH_BODY: isBig = true;
+                break;
+            case RUNNING: isRunning = true;
+                break;
+            case MIMICRY: isMimetic = true;
+                break;
+            case GRAZING: isGrazing = true;
+                break;
+            case POISONOUS: isPoisonous = true;
+                break;
+            case TAIL_LOSS: isTailLossable = true;
+                break;
+            case HIBERNATION: isHibernatable = true;
+                break;
+            case SCAVENGER: isScavenger = true;
+                break;
+            case PIRACY: isPirate = true;
+                break;
+            case BURROWING: isBurrowing = true;
+                break;
+            case CAMOUFLAGE: isCamouflaged = true;
+                break;
+            case SHARP_VISION: isSharp = true;
+                break;
+            case PARASITE: isInfected = true;
+                break;
+            case SWIMMING: isSwimming = true;
+                break;
+        }
+        return true; 
     }
     //Удалить свойство
     void deleteTrait(Trait trait){
