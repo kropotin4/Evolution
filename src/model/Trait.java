@@ -132,6 +132,12 @@ public enum Trait {
         }
     },
     FAT_TISSUE{
+        boolean fat = false;
+        boolean isFatPlaced(){return fat;}
+        void setFat(boolean fat){
+            this.fat = fat;
+        }
+
         @Override
         public String toString() {
             return "Жировой запас";

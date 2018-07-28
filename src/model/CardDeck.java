@@ -13,15 +13,15 @@ public class CardDeck {
     void oneQuarter(){
         ArrayList<Card> quarter = new ArrayList<>(21);
 
-        quarter.add(new Card(Trait.CAMOUFLAGE));
-        quarter.add(new Card(Trait.BURROWING));
-        quarter.add(new Card(Trait.SHARP_VISION));
+        quarter.add(new Card(Trait.CAMOUFLAGE, Trait.FAT_TISSUE));
+        quarter.add(new Card(Trait.BURROWING, Trait.FAT_TISSUE));
+        quarter.add(new Card(Trait.SHARP_VISION, Trait.FAT_TISSUE));
         quarter.add(new Card(Trait.SYMBIOSYS));
         quarter.add(new Card(Trait.PIRACY));
-        quarter.add(new Card(Trait.GRAZING));
+        quarter.add(new Card(Trait.GRAZING, Trait.FAT_TISSUE));
         quarter.add(new Card(Trait.TAIL_LOSS));
-        quarter.add(new Card(Trait.HIBERNATION));
-        quarter.add(new Card(Trait.POISONOUS));
+        quarter.add(new Card(Trait.HIBERNATION, Trait.PREDATOR));
+        quarter.add(new Card(Trait.POISONOUS, Trait.PREDATOR));
         quarter.add(new Card(Trait.COMMUNICATION, Trait.PREDATOR));
         quarter.add(new Card(Trait.SCAVENGER));
         quarter.add(new Card(Trait.RUNNING));
