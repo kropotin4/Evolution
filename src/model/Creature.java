@@ -133,11 +133,12 @@ public class Creature {
         return true;
     }
 
-    boolean addPairTrait(Creature creature){
-
+    boolean addPairTrait(Trait trait, Creature creature){
+        /*if (trait == Trait.COMMUNICATION)
+        pairTraits*/
     }
-    boolean removePairTrait(Creature creature){
-        
+    boolean removePairTrait(Trait trait, Creature creature){
+
     }
 
     boolean isFed(){
