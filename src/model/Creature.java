@@ -48,7 +48,6 @@ public class Creature {
 
     //Creature`s traits list (in order of obtaining)
     ArrayList<Trait> traits = new ArrayList<>();
-    ArrayList<Trait> pairTraits = new ArrayList<>();
 
     Creature(Player player){
         this.player = player;
@@ -134,8 +133,28 @@ public class Creature {
     }
 
     boolean addPairTrait(Trait trait, Creature creature){
-        /*if (trait == Trait.COMMUNICATION)
-        pairTraits*/
+        switch (trait) {
+            case COOPERATION:
+                if (cooperationList.contains(creature)) return false;
+                cooperationList.add(creature);
+                //creature.cooperationList.add(this);
+                return true;
+            case COMMUNICATION:
+                if (communicationList.contains(creature)) return false;
+                communicationList.add(creature);
+                //creature.communicationList.add(this);
+                return true;
+            case SYMBIOSYS:
+                if (/**/) {
+                    if (symbiontList.contains(creature)) return false;
+                    symbiontList.add(creature);
+                    //creature.symbiontList.add(this);
+                } else {
+                    if (otherAnimalList.contains(creature)) return false;
+                    otherAnimalList.add(creature);
+                    //creature.otherAnimalList.add(this);
+            }
+        }
     }
     boolean removePairTrait(Trait trait, Creature creature){
 
