@@ -48,6 +48,7 @@ public class Creature {
 
     //Creature`s traits list (in order of obtaining)
     ArrayList<Trait> traits = new ArrayList<>();
+    ArrayList<Trait> pairTraits = new ArrayList<>();
 
     Creature(Player player){
         this.player = player;
@@ -132,6 +133,13 @@ public class Creature {
         return true;
     }
 
+    boolean addPairTrait(Creature creature){
+
+    }
+    boolean removePairTrait(Creature creature){
+        
+    }
+
     boolean isFed(){
         if (totalSatiety == totalSatiety) return true;
         return false;
@@ -142,17 +150,18 @@ public class Creature {
         return false;
     }
 
-    boolean attack (Creature otherCreature){
-        if ((otherCreature.isCamouflaged && !this.isSharp)
-        || (otherCreature.isBurrowing && otherCreature.isFed())
-        || (!otherCreature.symbiontList.isEmpty())
-        || (this.isSwimming != otherCreature.isSwimming)
-        || (otherCreature.isBig && !this.isBig))
+    boolean attack (Creature creature){
+        if ((creature.isCamouflaged && !this.isSharp)
+        || (creature.isBurrowing && creature.isFed())
+        || (!creature.symbiontList.isEmpty())
+        || (this.isSwimming != creature.isSwimming)
+        || (creature.isBig && !this.isBig))
             return false;
         //Todo: tail loss
         //Todo: mimicry
-        if (otherCreature.isPoisonous) isPoisoned = true;
+        if (creature.isPoisonous) isPoisoned = true;
 
+        creature.player.kill(creature);
         for (int i = 0; i < 2; ++i){
             if (!isFed()) ++totalSatiety;
             else if (!isSatisfied()) ++fatQuantity;
@@ -168,10 +177,10 @@ public class Creature {
         return true;
     }
 
-    boolean stealFood(Creature otherCreature){
+    boolean stealFood(Creature creature){
         if (this.isSatisfied()) return false;
-        if (otherCreature.isFed() || otherCreature.totalSatiety == 0) return false;
-        --otherCreature.totalSatiety;
+        if (creature.isFed() || creature.totalSatiety == 0) return false;
+        --creature.totalSatiety;
         ++this.totalSatiety;
         return true;
     }
