@@ -130,6 +130,12 @@ public enum Trait {
         public String toString() {
             return "Водоплавающее";
         }
+    },
+    FAT_TISSUE{
+        @Override
+        public String toString() {
+            return "Жировой запас";
+        }
     };
 
     public int getHunger(){
