@@ -1,16 +1,31 @@
-package model;
+package model.decks;
+
+import model.Card;
+import model.Trait;
 
 import java.util.ArrayList;
 
-public class CardDeck {
+public class CommonCardDeck {
+    private ArrayList<Card> deck = new ArrayList<>(21);
 
-    CardDeck(int quarter){
+    public CommonCardDeck(int quarter){
         if(quarter <= 0);
 
-
+        for(int i = 0; i < quarter; ++i)
+            deck.addAll(oneQuarter());
     }
 
-    void oneQuarter(){
+    public Card getCard(){
+        Card ret = deck.get(deck.size() - 1);
+        deck.remove(deck.size() - 1);
+        return ret;
+    }
+
+    public int getCardCount(){
+        return deck.size();
+    }
+
+    private ArrayList<Card> oneQuarter(){
         ArrayList<Card> quarter = new ArrayList<>(21);
 
         quarter.add(new Card(Trait.CAMOUFLAGE, Trait.FAT_TISSUE));
@@ -29,6 +44,12 @@ public class CardDeck {
         quarter.add(new Card(Trait.SWIMMING));
         quarter.add(new Card(Trait.SWIMMING));
         quarter.add(new Card(Trait.PARASITE, Trait.PREDATOR));
+        quarter.add(new Card(Trait.PARASITE, Trait.FAT_TISSUE));
+        quarter.add(new Card(Trait.COOPERATION, Trait.PREDATOR));
+        quarter.add(new Card(Trait.COOPERATION, Trait.FAT_TISSUE));
+        quarter.add(new Card(Trait.HIGH_BODY, Trait.PREDATOR));
+        quarter.add(new Card(Trait.HIGH_BODY, Trait.FAT_TISSUE));
 
+        return quarter;
     }
 }

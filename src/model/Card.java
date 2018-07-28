@@ -5,16 +5,16 @@ public class Card {
     private Trait up;
     private Trait down;
 
-    Card(Trait trait){
+    public Card(Trait trait){
         up = trait;
         down = trait;
     }
-    Card(Trait upTrait, Trait downTrait){
+    public Card(Trait upTrait, Trait downTrait){
         up = upTrait;
         down = downTrait;
     }
 
-    Trait getTrait(boolean isUp){
+    public Trait getTrait(boolean isUp){
         if(isUp) return up;
         return down;
     }
