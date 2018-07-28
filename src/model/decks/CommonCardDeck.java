@@ -9,7 +9,7 @@ public class CommonCardDeck {
     private ArrayList<Card> deck = new ArrayList<>(21);
 
     public CommonCardDeck(int quarter){
-        if(quarter <= 0);
+        if(quarter <= 0) throw new RuntimeException("CommonCardDeck: quarter <= 0");
 
         for(int i = 0; i < quarter; ++i)
             deck.addAll(oneQuarter());

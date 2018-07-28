@@ -7,9 +7,9 @@ import java.util.ArrayList;
 public class DropCardDeck {
     private ArrayList<Card> deck = new ArrayList<>(12);
 
-    DropCardDeck(){}
+    public DropCardDeck(){}
 
-    ArrayList<Card> getCardDeck(){
+    public ArrayList<Card> getCardDeck(){
         return deck;
     }
 
