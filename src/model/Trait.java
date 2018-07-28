@@ -133,9 +133,12 @@ public enum Trait {
     },
     FAT_TISSUE{
         boolean fat = false;
+        @Override
         boolean isFatPlaced(){return fat;}
-        void setFat(boolean fat){
+        @Override
+        boolean setFat(boolean fat){
             this.fat = fat;
+            return true;
         }
 
         @Override
@@ -144,7 +147,8 @@ public enum Trait {
         }
     };
 
-    public int getHunger(){
-        return 0;
-    }
+    int getHunger(){return 0;}
+    boolean isFatPlaced(){return false;}
+    boolean setFat(boolean fat){return false;}
+
 }
