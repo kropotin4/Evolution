@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class Creature {
 
+    Player player;
+
     int totalHunger = 1;
     int totalSatiety = 0;
     int fatCapacity = 0;
@@ -47,7 +49,9 @@ public class Creature {
     //Creature`s traits list (in order of obtaining)
     ArrayList<Trait> traits = new ArrayList<>();
 
-    Creature(){}
+    Creature(Player player){
+        this.player = player;
+    }
 
     /**Adds new trait if possible; do some checks; changes constants
      * @returns false if trait has not added
