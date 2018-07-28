@@ -11,7 +11,7 @@ public enum Trait {
     PREDATOR{
         @Override
         public int getHunger() {
-            return 0;
+            return 1;
         }
 
         @Override
@@ -32,21 +32,11 @@ public enum Trait {
     },
     RUNNING {
         @Override
-        public int getHunger() {
-            return 0;
-        }
-
-        @Override
         public String toString() {
             return "Быстрый";
         }
     },
     MIMICRY {
-        @Override
-        public int getHunger() {
-            return 0;
-        }
-
         @Override
         public String toString() {
             return "Мимикрия";
@@ -54,21 +44,11 @@ public enum Trait {
     },
     GRAZING {
         @Override
-        public int getHunger() {
-            return 0;
-        }
-
-        @Override
         public String toString() {
             return "Топотун";
         }
     },
     POISONOUS {
-        @Override
-        public int getHunger() {
-            return 0;
-        }
-
         @Override
         public String toString() {
             return "Ядовитый";
@@ -76,21 +56,11 @@ public enum Trait {
     },
     TAIL_LOSS {
         @Override
-        public int getHunger() {
-            return 0;
-        }
-
-        @Override
         public String toString() {
             return "Отбрасование хвоста";
         }
     },
     COMMUNICATION {
-        @Override
-        public int getHunger() {
-            return 0;
-        }
-
         @Override
         public String toString() {
             return "Взаимодействие";
@@ -98,21 +68,11 @@ public enum Trait {
     },
     HIBERNATION {
         @Override
-        public int getHunger() {
-            return 0;
-        }
-
-        @Override
         public String toString() {
             return "Спячка";
         }
     },
     SCAVENGER {
-        @Override
-        public int getHunger() {
-            return 0;
-        }
-
         @Override
         public String toString() {
             return "Падальщик";
@@ -120,21 +80,11 @@ public enum Trait {
     },
     SYMBIOSYS {
         @Override
-        public int getHunger() {
-            return 0;
-        }
-
-        @Override
         public String toString() {
             return "Симбиоз";
         }
     },
     PIRACY {
-        @Override
-        public int getHunger() {
-            return 0;
-        }
-
         @Override
         public String toString() {
             return "Пиратство";
@@ -142,21 +92,11 @@ public enum Trait {
     },
     COOPERATION {
         @Override
-        public int getHunger() {
-            return 0;
-        }
-
-        @Override
         public String toString() {
             return "Сотрудничество";
         }
     },
     BURROWING {
-        @Override
-        public int getHunger() {
-            return 0;
-        }
-
         @Override
         public String toString() {
             return "Норное";
@@ -164,21 +104,11 @@ public enum Trait {
     },
     CAMOUFLAGE {
         @Override
-        public int getHunger() {
-            return 0;
-        }
-
-        @Override
         public String toString() {
             return "Камуфляж";
         }
     },
     SHARP_VISION {
-        @Override
-        public int getHunger() {
-            return 0;
-        }
-
         @Override
         public String toString() {
             return "Острое зрение";
@@ -197,15 +127,12 @@ public enum Trait {
     },
     SWIMMING {
         @Override
-        public int getHunger() {
-            return 0;
-        }
-
-        @Override
         public String toString() {
             return "Водоплавающее";
         }
     };
 
-    public abstract int getHunger();
+    public int getHunger(){
+        return 0;
+    }
 }
