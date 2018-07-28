@@ -9,8 +9,12 @@ import java.util.ArrayList;
 public class Creature {
 
     int totalHunger = 1;
+    int totalSatiety = 0;
     int fatCapacity = 0;
-    int fatSize = 0;
+    int fatQuantity = 0;
+
+    boolean isHibernating = false;
+    boolean wasHibernating = false;
 
     boolean isPredator = false;
     boolean isBig = false;
@@ -68,42 +72,58 @@ public class Creature {
 
         traits.add(trait);
         totalHunger += trait.getHunger();
+        return switchTrait(trait, true);
+    }
+    boolean removeTrait(Trait trait) {
+        traits.remove(trait);
+        return cancelTrait(trait); //TODO: index deletion for fat tissue
+    }
+    boolean cancelTrait(Trait trait){
+        if (trait == trait.FAT_TISSUE){
+            --fatCapacity;
+            if (trait.FAT_TISSUE.isFatPlaced()){
+                --fatQuantity;
+            }
+            return true;
+        }
+
+        totalHunger -= trait.getHunger();
+        return switchTrait(trait, false);
+    }
+    boolean switchTrait(Trait trait, boolean turnOn){
         switch (trait){
-            case PREDATOR: isPredator = true;
+            case PREDATOR: isPredator = turnOn;
                 break;
-            case HIGH_BODY: isBig = true;
+            case HIGH_BODY: isBig = turnOn;
                 break;
-            case RUNNING: isRunning = true;
+            case RUNNING: isRunning = turnOn;
                 break;
-            case MIMICRY: isMimetic = true;
+            case MIMICRY: isMimetic = turnOn;
                 break;
-            case GRAZING: isGrazing = true;
+            case GRAZING: isGrazing = turnOn;
                 break;
-            case POISONOUS: isPoisonous = true;
+            case POISONOUS: isPoisonous = turnOn;
                 break;
-            case TAIL_LOSS: isTailLossable = true;
+            case TAIL_LOSS: isTailLossable = turnOn;
                 break;
-            case HIBERNATION: isHibernatable = true;
+            case HIBERNATION: isHibernatable = turnOn;
                 break;
-            case SCAVENGER: isScavenger = true;
+            case SCAVENGER: isScavenger = turnOn;
                 break;
-            case PIRACY: isPirate = true;
+            case PIRACY: isPirate = turnOn;
                 break;
-            case BURROWING: isBurrowing = true;
+            case BURROWING: isBurrowing = turnOn;
                 break;
-            case CAMOUFLAGE: isCamouflaged = true;
+            case CAMOUFLAGE: isCamouflaged = turnOn;
                 break;
-            case SHARP_VISION: isSharp = true;
+            case SHARP_VISION: isSharp = turnOn;
                 break;
-            case PARASITE: isInfected = true;
+            case PARASITE: isInfected = turnOn;
                 break;
-            case SWIMMING: isSwimming = true;
+            case SWIMMING: isSwimming = turnOn;
                 break;
         }
-        return true; 
+        return true;
     }
-    //Удалить свойство
-    void deleteTrait(Trait trait){
-        traits.remove(trait);
-    }
+
 }
