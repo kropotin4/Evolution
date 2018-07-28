@@ -41,13 +41,7 @@ public class Creature {
     //Creature`s traits list (in order of obtaining)
     ArrayList<Trait> traits = new ArrayList<>();
 
-    Creature(){
-
-    }
-
-    //Должен быть набор действий к каждому Trait
-    //Или здесь или в trait или можно создать под каждое свойство свой класс
-
+    Creature(){}
 
     /**Adds new trait if possible; do some checks; changes constants
      * @returns false if trait has not added
@@ -62,7 +56,7 @@ public class Creature {
 
         /*according to rules you can not put two equal cards (except fat tissue) to the same creature*/
         for(Trait t : traits) {
-            if(t.equals(trait))
+            if(t == trait)
                 return false;
         }
 
