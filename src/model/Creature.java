@@ -15,6 +15,8 @@ public class Creature {
 
     boolean isHibernating = false;
     boolean wasHibernating = false;
+    boolean isAttacked = false;
+    boolean isPoisoned = false;
 
     boolean isPredator = false;
     boolean isBig = false;
@@ -126,4 +128,47 @@ public class Creature {
         return true;
     }
 
+    boolean isFed(){
+        if (totalSatiety == totalSatiety) return true;
+        return false;
+    }
+
+    boolean isSatisfied(){
+        if (isFed() && (fatCapacity == fatQuantity)) return true;
+        return false;
+    }
+
+    boolean attack (Creature otherCreature){
+        if ((otherCreature.isCamouflaged && !this.isSharp)
+        || (otherCreature.isBurrowing && otherCreature.isFed())
+        || (!otherCreature.symbiontList.isEmpty())
+        || (this.isSwimming != otherCreature.isSwimming)
+        || (otherCreature.isBig && !this.isBig))
+            return false;
+        //Todo: tail loss
+        //Todo: mimicry
+        if (otherCreature.isPoisonous) isPoisoned = true;
+
+        for (int i = 0; i < 2; ++i){
+            if (!isFed()) ++totalSatiety;
+            else if (!isSatisfied()) ++fatQuantity;
+        }
+        isAttacked = true;
+        return true;
+    }
+
+    boolean getFood (){
+        if (Table.isEmpty()) return false;
+        else if (this.isSatisfied()) return false;
+        if (!isFed()) ++totalSatiety; else ++fatQuantity;
+        return true;
+    }
+
+    boolean stealFood(Creature otherCreature){
+        if (this.isSatisfied()) return false;
+        if (otherCreature.isFed() || otherCreature.totalSatiety == 0) return false;
+        --otherCreature.totalSatiety;
+        ++this.totalSatiety;
+        return true;
+    }
 }
