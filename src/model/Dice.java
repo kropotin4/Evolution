@@ -6,6 +6,7 @@ public class Dice {
 
     int diceCount;
     int addition;
+    int faces = 6;
 
     public Dice(int diceCount, int addition){
         this.diceCount = diceCount;
@@ -17,7 +18,7 @@ public class Dice {
         Random r = new Random();
 
         for(int i = 0; i < diceCount; ++i)
-            res += r.nextInt();
+            res += r.nextInt() % faces;
 
         return res + addition;
     }
