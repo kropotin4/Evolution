@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class EatingMessage extends Message{
 
+    int type;
+
     Creature  eating;
 
     Trait trait;
@@ -20,26 +22,30 @@ public class EatingMessage extends Message{
     ArrayList<Trait> traits;
 
     //Питание:
-    EatingMessage(Phase phase, Creature eating){ //Взятие еды из К.Б. (Существо)
+    public EatingMessage(Phase phase, Creature eating){ //Взятие еды из К.Б. (Существо)
         super(Phase.EATING);
+        type = 0;
 
         this.eating = eating;
     }
-    EatingMessage(Phase phase, Creature eating, Trait trait){ //Взятие еды из К.Б. + Топотун
+    public EatingMessage(Phase phase, Creature eating, Trait trait){ //Взятие еды из К.Б. + Топотун
         super(Phase.EATING);
+        type = 1;
 
         this.eating = eating;
         this.trait = trait;
     }
-    EatingMessage(Phase phase, Creature attacker, int playerDefending, Creature defending){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
+    public EatingMessage(Phase phase, Creature attacker, int playerDefending, Creature defending){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
         super(Phase.EATING);
+        type = 2;
 
         this.attacker = attacker;
         this.defending = defending;
         this.playerDegending = playerDefending; // Атакует тот, кто ходит.
     }
-    EatingMessage(Phase phase, Creature defending, ArrayList<Trait> traits){ //Защита от атаки (Существо + Свойства)
+    public EatingMessage(Phase phase, Creature defending, ArrayList<Trait> traits){ //Защита от атаки (Существо + Свойства)
         super(Phase.EATING);
+        type = 3;
 
         this.defending = defending;
         this.traits = traits;

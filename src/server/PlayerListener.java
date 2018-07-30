@@ -93,13 +93,15 @@ public class PlayerListener extends Thread {
                 if(message instanceof SpecialMessage){
                     //TODO: обработка действия игрока вне хода (Пиратство и т.д.)
                 }
+                else {
 
-                try {
-                    os.writeObject(new Message()); // Не твоя очередь
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        os.writeObject(new ErrorMessage(1)); // Не твоя очередь
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                 }
-
             }
         }
 

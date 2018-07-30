@@ -38,8 +38,10 @@ public class Message {
      ************************/
 
 
-    Message(Phase phase){
+    public Message(Phase phase){
         this.phase = phase;
     }
+
+    public Message(){}
 
 }

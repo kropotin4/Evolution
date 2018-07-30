@@ -6,7 +6,7 @@ public class StartMessage {
 
     String login;
 
-    StartMessage(String login){
+    public StartMessage(String login){
         this.login = login;
     }
 

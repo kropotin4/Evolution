@@ -11,7 +11,7 @@ public class GrowthMessage extends Message{
     boolean isUp;
 
     //Развитие
-    GrowthMessage(Phase phase, Creature creature, Card card, boolean isUp){
+    public GrowthMessage(Phase phase, Creature creature, Card card, boolean isUp){
         super(Phase.GROWTH);
 
         this.creature = creature;
