@@ -11,6 +11,8 @@ import java.net.Socket;
 
 public class PlayerListener extends Thread {
 
+    Thread server;
+
     Socket socket;
     Table table;
     Player player;
@@ -19,6 +21,7 @@ public class PlayerListener extends Thread {
     ObjectOutputStream os;
 
     PlayerListener(Thread server, Socket socket, Table table) throws IOException {
+        this.server = server;
         this.socket = socket;
 
         os = new ObjectOutputStream(socket.getOutputStream());
@@ -67,7 +70,7 @@ public class PlayerListener extends Thread {
                         case GROWTH:
                             if(!(message instanceof GrowthMessage)) continue; // Надо еще что-то сделать!
 
-                            //TODO: обработка действия игрока (GROWTH)
+                            //TODO: обработка действия игрока (GROWTH) + notify
 
                             break;
                         case CALC_FODDER_BASE:
