@@ -39,7 +39,7 @@ public class Creature {
     ArrayList<Creature> communicationList = new ArrayList<>();
     ArrayList<Creature> cooperationList = new ArrayList<>();
 
-    //crocodile: this creature can not eat if any symbiont is hungry; this creature can not be eaten if any symbiont is alive
+    //crocodiles: this creature can not eat if any symbiont is hungry; this creature can not be eaten if any symbiont is alive
     ArrayList<Creature> symbiontList = new ArrayList<>();
 
     //birds: can not eat if this creature is hungry; can not be eaten if this animal is alive
@@ -145,29 +145,60 @@ public class Creature {
                 //creature.communicationList.add(this);
                 return true;
             case SYMBIOSYS:
-                if (/**/) {
+                if (true) {
                     if (symbiontList.contains(creature)) return false;
                     symbiontList.add(creature);
                     //creature.symbiontList.add(this);
+                    return true;
                 } else {
                     if (otherAnimalList.contains(creature)) return false;
                     otherAnimalList.add(creature);
                     //creature.otherAnimalList.add(this);
+                    return true;
             }
         }
+        return false;
     }
     boolean removePairTrait(Trait trait, Creature creature){
-
+        switch (trait) {
+            case COOPERATION:
+                if (cooperationList.contains(creature)) {
+                    cooperationList.remove(creature);
+                    //creature.cooperationList.remove(this);
+                    return true;
+                }
+                break;
+            case COMMUNICATION:
+                if (communicationList.contains(creature)) {
+                    communicationList.remove(creature);
+                    //creature.communicationList.remove(this);
+                    return true;
+                }
+                break;
+            case SYMBIOSYS:
+                if (true) {
+                    if (symbiontList.contains(creature)) {
+                        symbiontList.remove(creature);
+                        //creature.symbiontList.remove(this);
+                        return true;
+                    }
+                } else {
+                    if (otherAnimalList.contains(creature)) {
+                        otherAnimalList.remove(creature);
+                        //creature.otherAnimalList.remove(this);
+                        return true;
+                    }
+                } break;
+        }
+        return false;
     }
 
     boolean isFed(){
-        if (totalSatiety == totalSatiety) return true;
-        return false;
+        return (totalSatiety == totalHunger);
     }
 
     boolean isSatisfied(){
-        if (isFed() && (fatCapacity == fatQuantity)) return true;
-        return false;
+        return (isFed() && (fatCapacity == fatQuantity));
     }
 
     boolean attack (Creature creature){
