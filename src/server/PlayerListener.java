@@ -18,7 +18,7 @@ public class PlayerListener extends Thread {
     ObjectInputStream is;
     ObjectOutputStream os;
 
-    PlayerListener(Socket socket, Table table) throws IOException {
+    PlayerListener(Thread server, Socket socket, Table table) throws IOException {
         this.socket = socket;
 
         os = new ObjectOutputStream(socket.getOutputStream());

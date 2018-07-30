@@ -1,5 +1,6 @@
 package server;
 
+import model.Player;
 import model.Table;
 
 import java.io.FileInputStream;
@@ -34,13 +35,43 @@ public class Server {
             try {
                 Socket newPlayer = serverSocket.accept();
 
-                new PlayerListener(newPlayer, table);
+                new PlayerListener(Thread.currentThread(), newPlayer, table).start();
 
             } catch (IOException e) {
                 System.out.println("Connect with player fall");
             }
 
         }
+    }
+
+    public boolean middlePlay(){ // Забавное название ?
+
+        while (true){
+
+            for(int i = 0; i < 4; ++i){ // Фазы
+
+                for(Player player : table.getPlayers()){ // Игроки
+
+                    //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+
+                    try {
+                        wait(); // Ждем пока не получим ответ
+                    } catch (InterruptedException e) {
+                        System.out.println("Server: problems with wait");
+                    }
+
+                    // Массовая рассылка результата
+                }
+
+            }
+
+
+        }
+
+        return false;
+    }
+
+    public void endPlay(){
 
     }
 
