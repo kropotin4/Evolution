@@ -1,3 +1,5 @@
+package server;
+
 import model.Table;
 
 import java.io.FileInputStream;

@@ -1,3 +1,5 @@
+package server.message;
+
 import model.Card;
 import model.Creature;
 import model.Phase;
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 public class Message {
 
     //TODO: Через этот класс будут передоваться действия игроков + сообщения сервера => сделать это
-    //Можно сделать несколько Message разных типов под разные действия
+    //Можно сделать несколько server.message.Message разных типов под разные действия
 
     Phase phase;
 
@@ -35,28 +37,9 @@ public class Message {
      *
      ************************/
 
-    //Развитие
-    Message(Phase phase, Creature creature, Card card, boolean isUp){
 
-    }
-
-    //Определение К.Б.
     Message(Phase phase){
-
-    }
-
-    //Питание:
-    Message(Phase phase, Creature creature){ //Взятие еды из К.Б. (Существо)
-
-    }
-    Message(Phase phase, int type, Creature creature, Trait trait){ //Взятие еды из К.Б. + Топотун + пец действие вне хода (Существо + Свойство)
-
-    }
-    Message(Phase phase, Creature attacker, Creature defending){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
-
-    }
-    Message(Phase phase, Creature defending, ArrayList<Trait> traits){ //Защита от атаки (Существо + Свойства)
-
+        this.phase = phase;
     }
 
 }

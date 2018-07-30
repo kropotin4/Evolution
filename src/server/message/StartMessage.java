@@ -1,3 +1,5 @@
+package server.message;
+
 public class StartMessage {
 
     //Стартовое сообщение, его передает игрок, когда подключается к серверу.

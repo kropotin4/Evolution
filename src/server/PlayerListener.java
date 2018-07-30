@@ -1,5 +1,9 @@
+package server;
+
 import model.Player;
 import model.Table;
+import server.message.Message;
+import server.message.StartMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
