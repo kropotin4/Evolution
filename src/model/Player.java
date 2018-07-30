@@ -8,12 +8,18 @@ import java.util.ArrayList;
 
 public class Player {
 
+    Table table;
+
+    String login;
+
     PlayerCardDeck playerDeck = new PlayerCardDeck();
     DropCardDeck dropDeck = new DropCardDeck();
 
     ArrayList<Creature> creatures = new ArrayList<>();
 
-    Player(){}
+    public Player(String login){
+        this.login = login;
+    }
 
     boolean killCreature(Creature creature){
         if(creatures.remove(creature)){
@@ -60,5 +66,9 @@ public class Player {
 
     void getCard(){
         playerDeck.addCard(Table.getCard());
+    }
+
+    public String getLogin(){
+        return login;
     }
 }

@@ -181,7 +181,7 @@ public class Creature {
         //Todo: mimicry
         if (creature.isPoisonous) isPoisoned = true;
 
-        creature.player.kill(creature);
+        creature.player.killCreature(creature);
         for (int i = 0; i < 2; ++i){
             if (!isFed()) ++totalSatiety;
             else if (!isSatisfied()) ++fatQuantity;
@@ -191,7 +191,7 @@ public class Creature {
     }
 
     boolean getFood (){
-        if (Table.isEmpty()) return false;
+        if (Table.isFodderBaseEmpty()) return false;
         else if (this.isSatisfied()) return false;
         if (!isFed()) ++totalSatiety; else ++fatQuantity;
         return true;

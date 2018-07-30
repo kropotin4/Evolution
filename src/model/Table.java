@@ -6,9 +6,12 @@ import java.util.ArrayList;
 
 public class Table {
 
+    Phase curPhase;
+    int step = 0;
+    int playerTurn = 0;
+
     static int fodder = 0;
     int initialCardCount = 6;
-
 
     static CommonCardDeck commonDeck;
     Dice dice;
@@ -43,7 +46,19 @@ public class Table {
         else dice = new Dice((playerCount + 1) / 2, 0);
     }
 
-    public static boolean isEmpty(){
+    public ArrayList<Player> getPlayers(){
+        return players;
+    }
+
+    public int getPlayerCount(){
+        return players.size();
+    }
+
+    public int getPlayerTurn(){
+        return playerTurn;
+    }
+
+    public static boolean isFodderBaseEmpty(){
         if (fodder == 0)
             return true;
         return false;
