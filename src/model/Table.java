@@ -46,6 +46,10 @@ public class Table {
         else dice = new Dice((playerCount + 1) / 2, 0);
     }
 
+    public Phase getCurrentPhase(){
+        return curPhase;
+    }
+
     public ArrayList<Player> getPlayers(){
         return players;
     }

@@ -2,8 +2,7 @@ package server;
 
 import model.Player;
 import model.Table;
-import server.message.Message;
-import server.message.StartMessage;
+import server.message.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -51,17 +50,43 @@ public class PlayerListener extends Thread {
 
 
 
-        Object message;
+        Object message = null;
         while(true){
 
             try {
                 message = is.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println(player.getLogin() + "message is strange");
+                continue;
             }
 
             if(player == table.getPlayers().get(table.getPlayerTurn())){
-                //TODO: обработка действия игрока
+
+                if(message instanceof Message){
+                    switch (table.getCurrentPhase()){
+                        case GROWTH:
+                            if(!(message instanceof GrowthMessage)) continue; // Надо еще что-то сделать!
+
+                            //TODO: обработка действия игрока (GROWTH)
+
+                            break;
+                        case CALC_FODDER_BASE:
+                            if(!(message instanceof CFBMessage)) continue; // Надо еще что-то сделать!
+
+                            //TODO: обработка действия игрока (CALC_FODDER_BASE)
+
+                            break;
+                        case EATING:
+                            if(!(message instanceof EatingMessage)) continue; // Надо еще что-то сделать!
+
+                            //TODO: обработка действия игрока (EATING)
+
+                            break;
+                        default:
+                            System.out.print("Its strange");
+                            break;
+                    }
+                }
             }
             else{
 
