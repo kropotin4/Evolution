@@ -23,20 +23,20 @@ public class EatingMessage extends Message{
 
     //Питание:
     public EatingMessage(Phase phase, Creature eating){ //Взятие еды из К.Б. (Существо)
-        super(Phase.EATING);
+        super(Phase.EATING, MessageType.EATING);
         type = 0;
 
         this.eating = eating;
     }
     public EatingMessage(Phase phase, Creature eating, Trait trait){ //Взятие еды из К.Б. + Топотун
-        super(Phase.EATING);
+        super(Phase.EATING, MessageType.EATING);
         type = 1;
 
         this.eating = eating;
         this.trait = trait;
     }
     public EatingMessage(Phase phase, Creature attacker, int playerDefending, Creature defending){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
-        super(Phase.EATING);
+        super(Phase.EATING, MessageType.EATING);
         type = 2;
 
         this.attacker = attacker;
@@ -44,7 +44,7 @@ public class EatingMessage extends Message{
         this.playerDegending = playerDefending; // Атакует тот, кто ходит.
     }
     public EatingMessage(Phase phase, Creature defending, ArrayList<Trait> traits){ //Защита от атаки (Существо + Свойства)
-        super(Phase.EATING);
+        super(Phase.EATING, MessageType.EATING);
         type = 3;
 
         this.defending = defending;

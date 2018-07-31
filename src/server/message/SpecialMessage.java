@@ -5,7 +5,7 @@ import model.Phase;
 public class SpecialMessage extends  Message {
 
     public SpecialMessage(Phase phase){
-        super(phase);
+        super(phase, MessageType.SPECIAL);
     }
 
 }

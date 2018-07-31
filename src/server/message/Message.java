@@ -7,12 +7,14 @@ import model.Trait;
 
 import java.util.ArrayList;
 
-public class Message {
+public abstract class Message {
 
     //TODO: Через этот класс будут передоваться действия игроков + сообщения сервера => сделать это
     //Можно сделать несколько server.message.Message разных типов под разные действия
 
     Phase phase;
+
+    MessageType messageType;
 
     /*******************
      * 4  фазы:
@@ -38,10 +40,17 @@ public class Message {
      ************************/
 
 
-    public Message(Phase phase){
+    public Message(Phase phase, MessageType messageType){
         this.phase = phase;
+        this.messageType = messageType;
     }
 
-    public Message(){}
+    public Message(MessageType messageType){
+        this.messageType = messageType;
+    }
+
+    public MessageType getMessageType(){
+        return messageType;
+    }
 
 }
