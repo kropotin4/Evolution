@@ -6,6 +6,24 @@ import model.decks.PlayerCardDeck;
 
 import java.util.ArrayList;
 
+/*********************
+ * Что может игрок:
+ *
+ *      Фаза роста:
+ *          *Положить карту на существо (addTrait в разных варациях)
+ *      Фаза определения К.Б.
+ *          *Бросить кубик (все больше хочется, чтобы это делал сервер)
+ *      Фаза питания:
+ *          *Атаковать (a)
+ *          *Спец умения (это в ответ на соответсвующее сообщение сервера)
+ *          *Защита (в ответ на атаку -> у самого существа)
+ *          *Взять еду из К.Б.
+ *
+ *
+ *
+ *********************/
+
+
 public class Player {
 
     Table table;
@@ -21,12 +39,15 @@ public class Player {
         this.login = login;
     }
 
+    void setFodder(){
+        table.setFodder();
+    }
+
     boolean attackCreature(Creature attacker, Creature defending){
         if(attacker.attack(defending)) return true;
 
         return true;
     }
-
     boolean killCreature(Creature creature){
         if(creatures.remove(creature)){
             for(Creature creature1 : creature.communicationList){
@@ -68,6 +89,12 @@ public class Player {
             return true;
         }
         return false;
+    }
+
+    boolean getFoodFromFodder(Creature creature, Trait trait){
+
+
+        return true;
     }
 
     void getCard(){
