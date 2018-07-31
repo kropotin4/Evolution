@@ -21,6 +21,12 @@ public class Player {
         this.login = login;
     }
 
+    boolean attackCreature(Creature attacker, Creature defending){
+        if(attacker.attack(defending)) return true;
+
+        return true;
+    }
+
     boolean killCreature(Creature creature){
         if(creatures.remove(creature)){
             for(Creature creature1 : creature.communicationList){
