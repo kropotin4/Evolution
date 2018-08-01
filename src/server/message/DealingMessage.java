@@ -11,7 +11,7 @@ public class DealingMessage extends Message{
 
     //Развитие
     public DealingMessage(Phase phase, Player player){
-        super(Phase.DEALING);
+        super(Phase.DEALING, MessageType.DEALING);
 
         this.player = player;
 

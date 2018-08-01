@@ -4,6 +4,7 @@ public class Card {
 
     private Trait up;
     private Trait down;
+    private boolean isUp;
 
     public Card(Trait trait){
         up = trait;
@@ -14,8 +15,11 @@ public class Card {
         down = downTrait;
     }
 
-    public Trait getTrait(boolean isUp){
-        if(isUp) return up;
-        return down;
+    public Trait getTrait(){
+        return isUp ? up : down;
+    }
+
+    public void turnCard(){
+        isUp = !isUp;
     }
 }

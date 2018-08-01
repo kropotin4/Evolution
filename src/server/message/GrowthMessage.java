@@ -8,16 +8,13 @@ public class GrowthMessage extends Message{
 
     Creature creature;
     Card card;
-    boolean isUp;
 
     //Развитие
-    public GrowthMessage(Phase phase, Creature creature, Card card, boolean isUp){
+    public GrowthMessage(Creature creature, Card card){
         super(Phase.GROWTH, MessageType.GROWTH);
 
         this.creature = creature;
         this.card = card;
-        this.isUp = isUp;
 
     }
-
 }
