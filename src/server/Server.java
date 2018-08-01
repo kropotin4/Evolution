@@ -46,9 +46,9 @@ public class Server {
 
     public boolean middlePlay(){ // Забавное название ?
 
-        while (true){
+        while (table.getFodder() != 0){
 
-            for(int i = 0; i < 4; ++i){ // Фазы
+            for(int i = 0; i < 5; ++i){ // Фазы
 
                 for(Player player : table.getPlayers()){ // Игроки
 
@@ -57,7 +57,7 @@ public class Server {
                     try {
                         wait(); // Ждем пока не получим ответ
                     } catch (InterruptedException e) {
-                        System.out.println("Server: problems with wait");
+                        System.out.println("Server: wait() has interrupted");
                     }
 
                     // Массовая рассылка результата

@@ -18,18 +18,23 @@ public class Table {
 
     ArrayList<Player> players;
 
+    public static int getFodder() {
+        return fodder;
+    }
+
     public Table(int quarterCardCount, int playerCount){
         commonDeck = new CommonCardDeck(quarterCardCount);
         setDice(playerCount);
 
-
+        //TODO: передавать в стол готовую колоду, чтобы можно было выбирать карты поштучно
         players = new ArrayList<>(playerCount);
 
-        for(int i = 0; i < initialCardCount; ++i){
+        /*for(int i = 0; i < initialCardCount; ++i){
             for(Player player : players){
 
             }
-        }
+        }*/
+        //игра начинается с фазы раздачи карт. В этот момент игроки и получат свои карты
 
     }
 
@@ -63,8 +68,6 @@ public class Table {
     }
 
     public static boolean isFodderBaseEmpty(){
-        if (fodder == 0)
-            return true;
-        return false;
+        return fodder == 0;
     }
 }

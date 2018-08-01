@@ -18,5 +18,4 @@ public class Card {
         if(isUp) return up;
         return down;
     }
-
 }

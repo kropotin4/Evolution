@@ -37,7 +37,7 @@ public class PlayerListener extends Thread {
         try {
             start = is.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("New player start message not received");
+            System.out.println("New player start message has not received");
             return;
         }
 
@@ -47,7 +47,7 @@ public class PlayerListener extends Thread {
             player = new Player(startMessage.getLogin());
         }
         else{
-            System.out.println("New player start message not received");
+            System.out.println("New player start message has not received");
             return;
         }
 
