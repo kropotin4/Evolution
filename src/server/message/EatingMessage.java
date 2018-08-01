@@ -48,7 +48,7 @@ public class EatingMessage extends Message{
 
         this.attacker = attacker;
         this.defending = defending;
-        this.playerDegending = playerDefending; // Атакует тот, кто ходит.
+        this.playerDefending = playerDefending; // Атакует тот, кто ходит.
     }
     public EatingMessage(Phase phase, Creature defending, ArrayList<Trait> traits){ //Защита от атаки (Существо + Свойства)
         super(Phase.EATING, MessageType.EATING);
