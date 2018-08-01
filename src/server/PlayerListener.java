@@ -37,7 +37,7 @@ public class PlayerListener extends Thread {
         try {
             start = is.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("New player start message has not received");
+            System.out.println("New player start StartMessage not received");
             return;
         }
 
@@ -47,42 +47,45 @@ public class PlayerListener extends Thread {
             player = new Player(startMessage.getLogin());
         }
         else{
-            System.out.println("New player start message has not received");
+            System.out.println("New player start StartMessage not received");
             return;
         }
 
 
 
-        Object message = null;
+        Object mesObject = null;
         while(true){
 
             try {
-                message = is.readObject();
+                mesObject = is.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println(player.getLogin() + "message is strange");
+                System.out.println(player.getLogin() + "mesObject is strange");
                 continue;
             }
 
-            if(player == table.getPlayers().get(table.getPlayerTurn())){
+            if(mesObject instanceof Message){
 
-                if(message instanceof Message){
+                Message message = (Message) mesObject;
+
+                if(player == table.getPlayers().get(table.getPlayerTurn())){
+
                     switch (table.getCurrentPhase()){
                         case GROWTH:
-                            if(!(message instanceof GrowthMessage)) continue; // Надо еще что-то сделать!
+                            if(message.getMessageType() != MessageType.GROWTH) continue; // Надо еще что-то сделать!
 
                             //TODO: обработка действия игрока (GROWTH) + notify
 
                             break;
                         case CALC_FODDER_BASE:
-                            if(!(message instanceof CFBMessage)) continue; // Надо еще что-то сделать!
+                            if(message.getMessageType() != MessageType.CFB) continue; // Надо еще что-то сделать!
 
-                            //TODO: обработка действия игрока (CALC_FODDER_BASE)
+                            //TODO: обработка действия игрока (CALC_FODDER_BASE) + notify
 
                             break;
                         case EATING:
-                            if(!(message instanceof EatingMessage)) continue; // Надо еще что-то сделать!
+                            if(message.getMessageType() != MessageType.EATING) continue; // Надо еще что-то сделать!
 
-                            //TODO: обработка действия игрока (EATING)
+                            //TODO: обработка действия игрока (EATING) + notify
 
                             break;
                         default:
@@ -90,22 +93,24 @@ public class PlayerListener extends Thread {
                             break;
                     }
                 }
-            }
-            else{
+                else{
 
-                if(message instanceof SpecialMessage){
-                    //TODO: обработка действия игрока вне хода (Пиратство и т.д.)
-                }
-                else {
-
-                    try {
-                        os.writeObject(new ErrorMessage(1)); // Не твоя очередь
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if(message.getMessageType() != MessageType.SPECIAL){
+                        //TODO: обработка действия игрока вне хода (Пиратство и т.д.)
                     }
+                    else {
 
-                }
+                        try {
+                            os.writeObject(new ErrorMessage(1)); // Не твоя очередь
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
             }
+
+            }
+
         }
 
     }

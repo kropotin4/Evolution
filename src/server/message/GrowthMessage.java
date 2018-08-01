@@ -12,7 +12,7 @@ public class GrowthMessage extends Message{
 
     //Развитие
     public GrowthMessage(Phase phase, Creature creature, Card card, boolean isUp){
-        super(Phase.GROWTH);
+        super(Phase.GROWTH, MessageType.GROWTH);
 
         this.creature = creature;
         this.card = card;

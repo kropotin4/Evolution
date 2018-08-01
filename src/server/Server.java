@@ -38,7 +38,7 @@ public class Server {
                 new PlayerListener(Thread.currentThread(), newPlayer, table).start();
 
             } catch (IOException e) {
-                System.out.println("Connect with player fall");
+                System.out.println("Connect with player has failed");
             }
 
         }
@@ -46,13 +46,56 @@ public class Server {
 
     public boolean middlePlay(){ // Забавное название ?
 
+        boolean end = false;
         while (table.getFodder() != 0){
 
-            for(int i = 0; i < 5; ++i){ // Фазы
+            for(int phase = 0; phase < 5; ++phase){ // Фазы
 
-                for(Player player : table.getPlayers()){ // Игроки
+                switch (phase) {
+                    case 0:
 
-                    //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+                        ///region GROWTH
+                        for (Player player : table.getPlayers()) { // Игроки
+
+                            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+
+                            try {
+                                wait(); // Ждем пока не получим ответ
+                            } catch (InterruptedException e) {
+                                System.out.println("Server: Problems with wait");
+                            }
+
+                            // Массовая рассылка результата
+                        }
+
+                        break;
+                        ///endregion
+
+                    case 1:
+
+                        ///region CALC_FODDER_BASE
+                        for (Player player : table.getPlayers()) { // Игроки
+
+                            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+
+                            try {
+                                wait(); // Ждем пока не получим ответ
+                            } catch (InterruptedException e) {
+                                System.out.println("Server: Problems with wait");
+                            }
+
+                            // Массовая рассылка результата
+                        }
+
+                        break;
+                        ///endregion
+
+                    case 2:
+
+                        ///region EATING
+                        for (Player player : table.getPlayers()) { // Игроки
+
+                            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
                     try {
                         wait(); // Ждем пока не получим ответ
@@ -60,12 +103,38 @@ public class Server {
                         System.out.println("Server: wait() has interrupted");
                     }
 
-                    // Массовая рассылка результата
+                            // Массовая рассылка результата
+                        }
+
+                        break;
+                        ///endregion
+
+                    case 3:
+
+                        ///region EXTINCTION
+                        for (Player player : table.getPlayers()) { // Игроки
+
+                            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+
+                            try {
+                                wait(); // Ждем пока не получим ответ
+                            } catch (InterruptedException e) {
+                                System.out.println("Server: Problems with wait");
+                            }
+
+                            // Массовая рассылка результата
+                        }
+
+                        break;
+                        ///endregion
+
+                        // Здесь же будет и раздача карт
                 }
 
+                //Вероятно, рассылка результата бедет здесь
             }
 
-
+            if(end) return true;
         }
 
         return false;

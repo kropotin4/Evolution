@@ -12,7 +12,7 @@ public class ErrorMessage extends Message{
      ******************/
 
     public ErrorMessage(int errorType){
-
+        super(MessageType.ERROR);
     }
 
 }

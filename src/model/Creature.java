@@ -8,33 +8,35 @@ import java.util.ArrayList;
 
 public class Creature {
 
-    Player player;
+    ///region fields
 
-    int totalHunger = 1;
-    int totalSatiety = 0;
-    int fatCapacity = 0;
-    int fatQuantity = 0;
+    private Player player;
 
-    boolean isHibernating = false;
-    boolean wasHibernating = false;
-    boolean isAttacked = false;
-    boolean isPoisoned = false;
+    private int totalHunger = 1;
+    private int totalSatiety = 0;
+    private int fatCapacity = 0;
+    private int fatQuantity = 0;
 
-    boolean isPredator = false;
-    boolean isBig = false;
-    boolean isRunning = false;
-    boolean isMimetic = false;
-    boolean isGrazing = false;
-    boolean isPoisonous = false;
-    boolean isTailLossable = false;
-    boolean isHibernatable = false;
-    boolean isScavenger = false;
-    boolean isPirate = false;
-    boolean isBurrowing = false;
-    boolean isCamouflaged = false;
-    boolean isSharp = false;
-    boolean isInfected = false;
-    boolean isSwimming = false;
+    private boolean isHibernating = false;
+    private boolean wasHibernating = false;
+    private boolean isAttacked = false;
+    private boolean isPoisoned = false;
+
+    private boolean isPredator = false;
+    private boolean isBig = false;
+    private boolean isRunning = false;
+    private boolean isMimetic = false;
+    private boolean isGrazing = false;
+    private boolean isPoisonous = false;
+    private boolean isTailLossable = false;
+    private boolean isHibernatable = false;
+    private boolean isScavenger = false;
+    private boolean isPirate = false;
+    private boolean isBurrowing = false;
+    private boolean isCamouflaged = false;
+    private boolean isSharp = false;
+    private boolean isInfected = false;
+    private boolean isSwimming = false;
 
     ArrayList<Creature> communicationList = new ArrayList<>();
     ArrayList<Creature> cooperationList = new ArrayList<>();
@@ -48,6 +50,8 @@ public class Creature {
 
     //Creature`s traits list (in order of obtaining)
     ArrayList<Trait> traits = new ArrayList<>();
+
+    ///endregion
 
     Creature(Player player){
         this.player = player;
