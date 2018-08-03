@@ -5,6 +5,7 @@ import model.decks.DropCardDeck;
 import model.decks.PlayerCardDeck;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /*********************
  * Что может игрок:
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 
 public class Player {
 
+    public final UUID id = UUID.randomUUID();
+
     Table table;
 
     String login;
@@ -43,12 +46,12 @@ public class Player {
         table.setFodder();
     }
 
-    boolean attackCreature(Creature attacker, Creature defending){
+    public boolean attackCreature(Creature attacker, Creature defending){
         if(attacker.attack(defending)) return true;
 
         return true;
     }
-    boolean killCreature(Creature creature){
+    public boolean killCreature(Creature creature){
         if(creatures.remove(creature)){
             for(Creature creature1 : creature.communicationList){
                 creature.removePairTrait(Trait.COMMUNICATION, creature1);
@@ -67,7 +70,7 @@ public class Player {
         }
         return false;
     }
-    boolean addCreature(Card card){
+    public boolean addCreature(Card card){
         if(playerDeck.removeCard(card)){
             creatures.add(new Creature(this));
             return true;
@@ -75,14 +78,14 @@ public class Player {
         return false;
     }
 
-    boolean addTraitToCreature(Creature creature, Card card, boolean isUp){
+    public boolean addTraitToCreature(Creature creature, Card card, boolean isUp){
         if(playerDeck.removeCard(card)){
             creature.addTrait(card.getTrait(isUp));
             return true;
         }
         return false;
     }
-    boolean addPairTraitToCreature(Creature creature1, Creature creature2, Card card, boolean isUp){
+    public boolean addPairTraitToCreature(Creature creature1, Creature creature2, Card card, boolean isUp){
         if(playerDeck.removeCard(card)){
             creature1.addPairTrait(card.getTrait(isUp), creature2);
             creature2.addPairTrait(card.getTrait(isUp), creature1);
@@ -91,17 +94,29 @@ public class Player {
         return false;
     }
 
-    boolean getFoodFromFodder(Creature creature, Trait trait){
-
+    public boolean getFoodFromFodder(Creature creature, Trait trait){
+        //TODO: Проработать механику взятия еда на всех уровнях
 
         return true;
     }
 
-    void getCard(){
+    public void getCard(){
         playerDeck.addCard(Table.getCard());
     }
 
     public String getLogin(){
         return login;
+    }
+
+    public Creature findCreature(UUID id){
+        for(Creature creature : creatures){
+            if(creature.getId() == id) return creature;
+        }
+
+        return null;
+    }
+
+    public UUID getId(){
+        return id;
     }
 }

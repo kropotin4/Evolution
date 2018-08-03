@@ -2,59 +2,94 @@ package server.message;
 
 import model.Creature;
 import model.Phase;
+import model.Player;
 import model.Trait;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class EatingMessage extends Message{
 
-    int type;
+    private final int type;
 
-    Creature  eating;
+    private UUID eating;
 
-    Trait trait;
+    private Trait trait = null;
+    private int grazingCount = 0;
 
-    Creature attacker;
-    Creature defending;
+    private UUID attacker;
+    private UUID defending;
 
-    int playerDefending;
+    private int playerDefending;
 
-    ArrayList<Trait> traits;
+    private ArrayList<Trait> traits;
 
     //Питание:
-    public EatingMessage(Phase phase, Creature eating){ //Взятие еды из К.Б. (Существо)
+    public EatingMessage(UUID eatingCreature){ //Взятие еды из К.Б. (Существо)
         super(Phase.EATING, MessageType.EATING);
         type = 0;
 
-        this.eating = eating;
+        this.eating = eatingCreature;
     }
-    public EatingMessage(Phase phase, Trait trait, Creature pirate, Creature victim){ //Взятие еды из К.Б. + пиратство
+    public EatingMessage(UUID pirateCreature, UUID victimCreature){ //Взятие еды из К.Б. + пиратство
         super(Phase.EATING, MessageType.EATING);
-        type = 0;
-        this.trait = trait;
-        this.attacker = pirate;
-        this.defending = victim;
+        type = 4;
+
+        this.attacker = pirateCreature;
+        this.defending = victimCreature;
     }
-    public EatingMessage(Phase phase, Creature eating, Trait trait, int number){ //Взятие еды из К.Б. + Топотун
+    public EatingMessage(UUID eatingCreature, Trait trait, int number){ //Взятие еды из К.Б. + Топотун
         super(Phase.EATING, MessageType.EATING);
         type = 1;
 
-        this.eating = eating;
+        this.eating = eatingCreature;
         this.trait = trait;
+        this.grazingCount = number;
     }
-    public EatingMessage(Phase phase, Creature attacker, int playerDefending, Creature defending){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
+    public EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
         super(Phase.EATING, MessageType.EATING);
         type = 2;
 
-        this.attacker = attacker;
-        this.defending = defending;
+        this.attacker = attackerCreature;
+        this.defending = defendingCreature;
         this.playerDefending = playerDefending; // Атакует тот, кто ходит.
     }
-    public EatingMessage(Phase phase, Creature defending, ArrayList<Trait> traits){ //Защита от атаки (Существо + Свойства)
+    public EatingMessage(UUID defendingCreature, ArrayList<Trait> traits){ //Защита от атаки (Существо + Свойства)
         super(Phase.EATING, MessageType.EATING);
         type = 3;
 
-        this.defending = defending;
+        this.defending = defendingCreature;
         this.traits = traits;
+    }
+
+    public UUID getEatingCreautureId(){
+        if(type == 0 || type == 1) return eating;
+        return attacker;
+    }
+
+    public UUID getAttackerCreatureId(){
+        return attacker;
+    }
+    public UUID getDefendingCreatureId(){
+        return defending;
+    }
+
+    public int getDefendingPlayerNumber(){
+        return playerDefending;
+    }
+
+    public Trait getTrait(){
+        return trait;
+    }
+    public int getGrazingCount(){
+        return grazingCount;
+    }
+
+    public ArrayList<Trait> getDefendingTraits(){
+        return traits;
+    }
+
+    public int getType(){
+        return type;
     }
 }

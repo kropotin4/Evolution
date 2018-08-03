@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /****************************
  * responsible for the creature
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 public class Creature {
 
     ///region fields
+    private final UUID id = UUID.randomUUID();
 
     private Player player;
 
@@ -238,5 +240,9 @@ public class Creature {
         --creature.totalSatiety;
         ++this.totalSatiety;
         return true;
+    }
+
+    public UUID getId(){
+        return id;
     }
 }

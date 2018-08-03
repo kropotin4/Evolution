@@ -3,6 +3,7 @@ package model;
 import model.decks.CommonCardDeck;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Table {
 
@@ -71,7 +72,25 @@ public class Table {
         return playerTurn;
     }
 
+    public int getFood(int count){
+        if(fodder >= count){
+            fodder -= count;
+        }
+        else{
+            count = fodder;
+            fodder = 0;
+        }
+        return count;
+    }
     public static boolean isFodderBaseEmpty(){
         return fodder == 0;
+    }
+
+    public Player findPlayer(UUID id){
+        for(Player player : players){
+            if(player.getId() == id) return player;
+        }
+
+        return null;
     }
 }

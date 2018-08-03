@@ -2,6 +2,7 @@ package server;
 
 import model.Player;
 import model.Table;
+import model.Trait;
 import server.message.*;
 
 import java.io.IOException;
@@ -71,9 +72,42 @@ public class PlayerListener extends Thread {
 
                     switch (table.getCurrentPhase()){
                         case GROWTH:
+
+                            ///region GROWTH
                             if(message.getMessageType() != MessageType.GROWTH) continue; // Надо еще что-то сделать!
 
-                            //TODO: обработка действия игрока (GROWTH) + notify
+                            GrowthMessage growthMessage = (GrowthMessage) message;
+
+                            switch (growthMessage.getType()){
+                                case 0:
+
+                                    player.addTraitToCreature(
+                                            player.findCreature(growthMessage.getFirstCreatureId()),
+                                            growthMessage.getCard(),
+                                            growthMessage.isUp()
+                                    );
+
+                                    break;
+
+                                case 1:
+
+                                    if(growthMessage.getCard().getTrait(growthMessage.isUp()) == Trait.SYMBIOSYS){
+                                        //TODO: Работа с симбионтом
+                                    }
+                                    else{
+                                        player.addPairTraitToCreature(
+                                                player.findCreature(growthMessage.getFirstCreatureId()),
+                                                player.findCreature(growthMessage.getSecondCreatureId()),
+                                                growthMessage.getCard(),
+                                                growthMessage.isUp()
+                                        );
+                                    }
+
+                                    break;
+                            }
+
+                            server.notify();
+                            ///endregion
 
                             break;
                         case CALC_FODDER_BASE:
@@ -84,8 +118,49 @@ public class PlayerListener extends Thread {
                             break;
                         case EATING:
                             if(message.getMessageType() != MessageType.EATING) continue; // Надо еще что-то сделать!
+                            EatingMessage eatingMessage = (EatingMessage) message;
 
                             //TODO: обработка действия игрока (EATING) + notify
+
+                            switch (eatingMessage.getType()){
+                                case 0:
+
+                                    player.getFoodFromFodder(
+                                            player.findCreature(eatingMessage.getEatingCreautureId()),
+                                            null
+                                    );
+
+                                    break;
+                                case 1:
+
+                                    player.getFoodFromFodder(
+                                            player.findCreature(eatingMessage.getEatingCreautureId()),
+                                            null
+                                    );
+
+                                    if(eatingMessage.getTrait() == Trait.GRAZING){
+                                        table.getFood(eatingMessage.getGrazingCount());
+                                    }
+
+                                    break;
+
+                                case 2:
+
+                                    player.attackCreature(
+                                            player.findCreature(eatingMessage.getAttackerCreatureId()),
+                                            player.findCreature(eatingMessage.getDefendingCreatureId())
+                                    );
+
+                                    break;
+
+                                case 3:
+
+                                    break;
+
+                                case(4):
+
+                                    break;
+                            }
 
                             break;
                         default:
