@@ -2,20 +2,27 @@ package server;
 
 import model.Player;
 import model.Table;
+import server.message.EatingMessage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Properties;
 
-public class Server {
+public class Server extends Thread{
 
     Table table;
 
     ServerSocket serverSocket;
 
+    ArrayList<PlayerListener> playerListeners = new ArrayList<>();
+
     Properties properties;
+
+
+    EatingMessage eatingMessage;
 
     Server(Table table) throws IOException {
 
@@ -28,6 +35,15 @@ public class Server {
     }
 
 
+    @Override
+    public void run() {
+        beginPlay();
+
+        middlePlay();
+
+        endPlay();
+    }
+
     public void beginPlay(){
 
         for(int i = 0; i < table.getPlayerCount(); ++i) {
@@ -35,7 +51,8 @@ public class Server {
             try {
                 Socket newPlayer = serverSocket.accept();
 
-                new PlayerListener(Thread.currentThread(), newPlayer, table).start();
+                playerListeners.add(new PlayerListener(this, newPlayer, table));
+                playerListeners.get(playerListeners.size() - 1).start();
 
             } catch (IOException e) {
                 System.out.println("Connect with player has failed");
@@ -97,11 +114,27 @@ public class Server {
 
                             //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
-                    try {
-                        wait(); // Ждем пока не получим ответ
-                    } catch (InterruptedException e) {
-                        System.out.println("Server: wait() has interrupted");
-                    }
+                            try {
+                                wait(); // Ждем пока не получим ответ
+                            } catch (InterruptedException e) {
+                                System.out.println("Server: wait() has interrupted");
+                            }
+
+                            if(eatingMessage.getType() == 2){
+
+                                PlayerListener playerListener = findPlayerListener(
+                                        table.getPlayers().get(eatingMessage.getDefendingPlayerNumber()));
+
+                                try {
+                                    playerListener.os.writeObject(eatingMessage);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+
+
+                            }
+
 
                             // Массовая рассылка результата
                         }
@@ -142,6 +175,12 @@ public class Server {
 
     public void endPlay(){
 
+    }
+
+    PlayerListener findPlayerListener(Player player){
+        for(PlayerListener playerListener : playerListeners){
+            if(playerListener.player == player) return playerListener;
+        }
     }
 
 }
