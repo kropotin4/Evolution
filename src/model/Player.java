@@ -38,6 +38,10 @@ public class Player {
 
     ArrayList<Creature> creatures = new ArrayList<>();
 
+    public ArrayList<Creature> getCreatures() {
+        return creatures;
+    }
+
     public Player(String login){
         this.login = login;
     }
@@ -101,7 +105,7 @@ public class Player {
     }
 
     public void getCard(){
-        playerDeck.addCard(Table.getCard());
+        playerDeck.addCard(table.getCard());
     }
 
     public String getLogin(){

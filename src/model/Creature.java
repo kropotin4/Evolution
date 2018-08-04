@@ -86,6 +86,9 @@ public class Creature {
         totalHunger += trait.getHunger();
         return switchTrait(trait, true);
     }
+    public Player getPlayer(){
+        return player;
+    }
     boolean removeTrait(Trait trait) {
         traits.remove(trait);
         return cancelTrait(trait); //TODO: index deletion for fat tissue
@@ -228,7 +231,7 @@ public class Creature {
     }
 
     boolean getFood (){
-        if (Table.isFodderBaseEmpty()) return false;
+        if (player.table.isFodderBaseEmpty()) return false;
         else if (this.isSatisfied()) return false;
         if (!isFed()) ++totalSatiety; else ++fatQuantity;
         return true;
@@ -244,5 +247,48 @@ public class Creature {
 
     public UUID getId(){
         return id;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("Creature " + id + ":\nTraits:\n");
+        for (Trait trait : traits){
+            System.out.print(">" + trait + "\n");
+        }
+        str.append("Satisfaction: " + totalSatiety + "\\" + totalHunger + "\n");
+        str.append("Fatness: " + fatQuantity + "\\" + fatCapacity + "\n");
+        if (!cooperationList.isEmpty()) {
+            str.append("Cooperated with: ");
+            for (Creature creature : cooperationList) {
+                str.append(creature.id + " ");
+            }
+            str.append("\n");
+        }
+
+        if (!communicationList.isEmpty()) {
+            str.append("Communicated with: ");
+            for (Creature creature : communicationList) {
+                str.append(creature.id + " ");
+            }
+            str.append("\n");
+        }
+
+        if (!symbiontList.isEmpty()) {
+            str.append("Symbionts: ");
+            for (Creature creature : symbiontList) {
+                str.append(creature.id + " ");
+            }
+            str.append("\n");
+        }
+
+        if (!otherAnimalList.isEmpty()) {
+            str.append("Is symbiont for: ");
+            for (Creature creature : otherAnimalList) {
+                str.append(creature.id + " ");
+            }
+            str.append("\n");
+        }
+        return str.toString();
     }
 }

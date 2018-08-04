@@ -14,12 +14,17 @@ public class Table {
     static int fodder = 0;
     int initialCardCount = 6;
 
-    static CommonCardDeck commonDeck;
+    CommonCardDeck commonDeck;
+
+    public CommonCardDeck getCommonDeck() {
+        return commonDeck;
+    }
+
     Dice dice;
 
     ArrayList<Player> players;
 
-    public static int getFodder() {
+    public int getFodder() {
         return fodder;
     }
 
@@ -39,7 +44,7 @@ public class Table {
 
     }
 
-    public static Card getCard(){
+    public Card getCard(){
         return commonDeck.getCard();
     }
 
@@ -47,9 +52,7 @@ public class Table {
         return dice.roll();
     }
     private void setDice(int playerCount){
-        if(playerCount % 2 == 0)
-             dice = new Dice((playerCount + 1) / 2, 2);
-        else dice = new Dice((playerCount + 1) / 2, 0);
+        dice = new Dice((playerCount + 1) / 2, playerCount % 2 == 0 ? 2 : 0);
     }
 
     public void setFodder(){
@@ -82,7 +85,7 @@ public class Table {
         }
         return count;
     }
-    public static boolean isFodderBaseEmpty(){
+    public boolean isFodderBaseEmpty(){
         return fodder == 0;
     }
 

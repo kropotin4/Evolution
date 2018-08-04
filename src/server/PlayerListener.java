@@ -168,12 +168,11 @@ public class PlayerListener extends Thread {
                             break;
                     }
                 }
-                else{
+                else {
 
-                    if(message.getMessageType() != MessageType.SPECIAL){
+                    if (message.getMessageType() != MessageType.SPECIAL) {
                         //TODO: обработка действия игрока вне хода (Пиратство и т.д.)
-                    }
-                    else {
+                    } else {
 
                         try {
                             os.writeObject(new ErrorMessage(1)); // Не твоя очередь
@@ -182,7 +181,7 @@ public class PlayerListener extends Thread {
                         }
 
                     }
-            }
+                }
 
             }
 

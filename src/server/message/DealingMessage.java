@@ -9,8 +9,8 @@ public class DealingMessage extends Message{
 
     Player player;
 
-    //Развитие
-    public DealingMessage(Phase phase, Player player){
+    //Сдача карт
+    public DealingMessage(Player player){
         super(Phase.DEALING, MessageType.DEALING);
 
         this.player = player;
