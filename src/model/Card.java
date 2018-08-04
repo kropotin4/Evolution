@@ -2,16 +2,21 @@ package model;
 
 public class Card {
 
+    private static int idCounter = 0;
+    private int id = idCounter;
+
     private Trait up;
     private Trait down;
     private boolean isUp;
 
     public Card(Trait trait){
+        idCounter++;
         up = trait;
         down = trait;
     }
 
     public Card(Trait upTrait, Trait downTrait){
+        idCounter++;
         up = upTrait;
         down = downTrait;
     }
@@ -25,6 +30,10 @@ public class Card {
 
     public void turnCard(){
         isUp = !isUp;
+    }
+
+    public int getId(){
+        return id;
     }
 
     @Override

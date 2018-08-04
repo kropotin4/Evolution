@@ -51,6 +51,12 @@ public class Player {
 
         return true;
     }
+
+    public boolean defendCreature(Creature defending, Trait trait){
+        //TODO:
+        return true;
+    }
+
     public boolean killCreature(Creature creature){
         if(creatures.remove(creature)){
             for(Creature creature1 : creature.communicationList){

@@ -21,8 +21,7 @@ public class EatingMessage extends Message{
     private UUID defending;
 
     private int playerDefending;
-
-    private ArrayList<Trait> traits;
+    private int playerAttacker;
 
     //Питание:
     public EatingMessage(UUID eatingCreature){ //Взятие еды из К.Б. (Существо)
@@ -54,12 +53,13 @@ public class EatingMessage extends Message{
         this.defending = defendingCreature;
         this.playerDefending = playerDefending; // Атакует тот, кто ходит.
     }
-    public EatingMessage(UUID defendingCreature, ArrayList<Trait> traits){ //Защита от атаки (Существо + Свойства)
+    public EatingMessage(int playerAttacker, UUID defendingCreature, Trait trait){ //Защита от атаки (Существо + Свойства)
         super(Phase.EATING, MessageType.EATING);
         type = 3;
 
+        this.playerAttacker = playerAttacker;
         this.defending = defendingCreature;
-        this.traits = traits;
+        this.trait = trait;
     }
 
     public UUID getEatingCreautureId(){
@@ -77,16 +77,15 @@ public class EatingMessage extends Message{
     public int getDefendingPlayerNumber(){
         return playerDefending;
     }
+    public int getAttackerPlayerNumber(){
+        return playerAttacker;
+    }
 
     public Trait getTrait(){
         return trait;
     }
     public int getGrazingCount(){
         return grazingCount;
-    }
-
-    public ArrayList<Trait> getDefendingTraits(){
-        return traits;
     }
 
     public int getType(){

@@ -23,6 +23,7 @@ public class Creature {
     private boolean wasHibernating = false;
     private boolean isAttacked = false;
     private boolean isPoisoned = false;
+    private boolean isPirated = false;
 
     private boolean isPredator = false;
     private boolean isBig = false;
@@ -51,7 +52,7 @@ public class Creature {
 
 
     //Creature`s traits list (in order of obtaining)
-    ArrayList<Trait> traits = new ArrayList<>();
+    ArrayList<Card> cards = new ArrayList<>();
 
     ///endregion
 
@@ -63,32 +64,32 @@ public class Creature {
      * @returns false if trait has not added
      * @returns true if trait is added
      */
-    boolean addTrait(Trait trait){
-        if (trait == trait.PREDATOR){
+    boolean addTrait(Card card){
+        if (card.getTrait() == Trait.FAT_TISSUE){
             ++fatCapacity;
-            traits.add(trait);
+            cards.add(card);
             return true;
         }
 
         /*according to rules you can not put two equal cards (except fat tissue) to the same creature*/
-        for(Trait t : traits) {
-            if(t == trait)
+        for(Card c : cards) {
+            if(c == card)
                 return false;
         }
 
         /*according to rules a predator can not be a scavenger so
         if smb puts a predator card to scavenger or scavenger card to predator
         the last card should be removed from the animal*/
-        if (((trait == trait.PREDATOR) && (isScavenger)) || ((trait == trait.SCAVENGER) && (isPredator)))
+        if (((card.getTrait() == Trait.PREDATOR) && (isScavenger)) || ((card.getTrait() == Trait.SCAVENGER) && (isPredator)))
             return true; //actually has not added any traits
 
-        traits.add(trait);
-        totalHunger += trait.getHunger();
-        return switchTrait(trait, true);
+        cards.add(card);
+        totalHunger += card.getTrait().getHunger();
+        return switchTrait(card.getTrait(), true);
     }
-    boolean removeTrait(Trait trait) {
-        traits.remove(trait);
-        return cancelTrait(trait); //TODO: index deletion for fat tissue
+    boolean removeTrait(Card card) {
+        cards.remove(card);
+        return cancelTrait(card.getTrait()); //TODO: index deletion for fat tissue
     }
     boolean cancelTrait(Trait trait){
         if (trait == trait.FAT_TISSUE){
@@ -208,14 +209,10 @@ public class Creature {
     }
 
     boolean attack (Creature creature){
-        if ((creature.isCamouflaged && !this.isSharp)
-        || (creature.isBurrowing && creature.isFed())
-        || (!creature.symbiontList.isEmpty())
-        || (this.isSwimming != creature.isSwimming)
-        || (creature.isBig && !this.isBig))
-            return false;
+        if(!isAttackPossible(creature)) return false;
         //Todo: tail loss
         //Todo: mimicry
+        //Todo: Где-то здесь запускается метод защиты атакуемого существа.
         if (creature.isPoisonous) isPoisoned = true;
 
         creature.player.killCreature(creature);
@@ -224,6 +221,29 @@ public class Creature {
             else if (!isSatisfied()) ++fatQuantity;
         }
         isAttacked = true;
+        return true;
+    }
+
+    boolean isAttackPossible(Creature creature){
+        if ((creature.isCamouflaged && !this.isSharp)
+        || (creature.isBurrowing && creature.isFed())
+        || (!creature.symbiontList.isEmpty())
+        || (this.isSwimming != creature.isSwimming)
+        || (creature.isBig && !this.isBig))
+            return false;
+
+        return true;
+    }
+
+    boolean defend(Trait trait, Card card){
+        //TODO: И так понятно
+
+        if(trait == Trait.RUNNING){
+            if(Dice.rollOneDice() <= 3){
+                return false;
+            }
+        }
+
         return true;
     }
 

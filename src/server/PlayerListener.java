@@ -1,5 +1,6 @@
 package server;
 
+import model.Dice;
 import model.Player;
 import model.Table;
 import model.Trait;
@@ -12,7 +13,7 @@ import java.net.Socket;
 
 public class PlayerListener extends Thread {
 
-    Thread server;
+    Server server;
 
     Socket socket;
     Table table;
@@ -22,7 +23,7 @@ public class PlayerListener extends Thread {
     ObjectOutputStream os;
 
     PlayerListener(Thread server, Socket socket, Table table) throws IOException {
-        this.server = server;
+        this.server = (Server) server;
         this.socket = socket;
 
         os = new ObjectOutputStream(socket.getOutputStream());
@@ -119,6 +120,7 @@ public class PlayerListener extends Thread {
                         case EATING:
                             if(message.getMessageType() != MessageType.EATING) continue; // Надо еще что-то сделать!
                             EatingMessage eatingMessage = (EatingMessage) message;
+                            server.eatingMessage = eatingMessage;
 
                             //TODO: обработка действия игрока (EATING) + notify
 
@@ -146,14 +148,26 @@ public class PlayerListener extends Thread {
 
                                 case 2:
 
-                                    player.attackCreature(
-                                            player.findCreature(eatingMessage.getAttackerCreatureId()),
-                                            player.findCreature(eatingMessage.getDefendingCreatureId())
-                                    );
+                                    server.notify();
 
                                     break;
 
                                 case 3:
+
+                                    if(eatingMessage.getTrait() == Trait.RUNNING){
+                                        if(Dice.rollOneDice() > 3){
+                                            //TODO: Неудачная атака
+                                        }
+                                        else{
+                                            Player attackerPlayer = table.getPlayers().get(eatingMessage.getAttackerPlayerNumber());
+                                            attackerPlayer.attackCreature(
+                                                    attackerPlayer.findCreature(eatingMessage.getAttackerCreatureId()),
+                                                    player.findCreature(eatingMessage.getDefendingCreatureId())
+                                            );
+                                        }
+                                    }
+
+                                    player.defendCreature()
 
                                     break;
 
