@@ -239,6 +239,21 @@ public class Creature {
         return true;
     }
 
+    // Проверка необходима, чтобы выявить те случаи, когда защищающийся ничего не может сделать
+    // ==>> Не нужно присылать ему сообщения
+    public boolean isAbsoluteAttackPossible(Creature creature){
+        if(!isAttackPossible(creature))
+            return false;
+
+        if(creature.isTailLossable
+        || creature.isMimetic)
+            return false;
+
+        //TODO: Дописать все свойства
+
+        return true;
+    }
+
     boolean defend(Trait trait, Card card){
         //TODO: И так понятно
 

@@ -1,9 +1,6 @@
 package server;
 
-import model.Dice;
-import model.Player;
-import model.Table;
-import model.Trait;
+import model.*;
 import server.message.*;
 
 import java.io.IOException;
@@ -116,6 +113,7 @@ public class PlayerListener extends Thread {
 
                             //TODO: обработка действия игрока (CALC_FODDER_BASE) + notify
 
+
                             break;
                         case EATING:
                             if(message.getMessageType() != MessageType.EATING) continue; // Надо еще что-то сделать!
@@ -124,57 +122,7 @@ public class PlayerListener extends Thread {
 
                             //TODO: обработка действия игрока (EATING) + notify
 
-                            switch (eatingMessage.getType()){
-                                case 0:
-
-                                    player.getFoodFromFodder(
-                                            player.findCreature(eatingMessage.getEatingCreautureId()),
-                                            null
-                                    );
-
-                                    break;
-                                case 1:
-
-                                    player.getFoodFromFodder(
-                                            player.findCreature(eatingMessage.getEatingCreautureId()),
-                                            null
-                                    );
-
-                                    if(eatingMessage.getTrait() == Trait.GRAZING){
-                                        table.getFood(eatingMessage.getGrazingCount());
-                                    }
-
-                                    break;
-
-                                case 2:
-
-                                    server.notify();
-
-                                    break;
-
-                                case 3:
-
-                                    if(eatingMessage.getTrait() == Trait.RUNNING){
-                                        if(Dice.rollOneDice() > 3){
-                                            //TODO: Неудачная атака
-                                        }
-                                        else{
-                                            Player attackerPlayer = table.getPlayers().get(eatingMessage.getAttackerPlayerNumber());
-                                            attackerPlayer.attackCreature(
-                                                    attackerPlayer.findCreature(eatingMessage.getAttackerCreatureId()),
-                                                    player.findCreature(eatingMessage.getDefendingCreatureId())
-                                            );
-                                        }
-                                    }
-
-                                    player.defendCreature()
-
-                                    break;
-
-                                case(4):
-
-                                    break;
-                            }
+                            eatingMessageHandle(eatingMessage); // Здесь будет обработка, дабы не нагромождать
 
                             break;
                         default:
@@ -201,5 +149,77 @@ public class PlayerListener extends Thread {
 
         }
 
+    }
+
+    private void eatingMessageHandle(EatingMessage eatingMessage){
+        switch (eatingMessage.getType()){
+
+            case 0: //Взятие еды из К.Б. (Существо)
+
+                player.getFoodFromFodder(
+                        player.findCreature(eatingMessage.getEatingCreautureId()),
+                        null
+                );
+
+                break;
+            case 1: //Взятие еды из К.Б. + Топотун
+
+                player.getFoodFromFodder(
+                        player.findCreature(eatingMessage.getEatingCreautureId()),
+                        null
+                );
+
+                if(eatingMessage.getTrait() == Trait.GRAZING){
+                    table.getFood(eatingMessage.getGrazingCount());
+                }
+
+                break;
+
+            case 2: //Атака существа (Существо + Свойства, Существо) Пока без свойств
+
+                    //EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature)
+
+                Player playerDefending = table.getPlayers().get(eatingMessage.getDefendingPlayerNumber());
+
+                Creature attacker = player.findCreature(eatingMessage.getAttackerCreatureId());
+                Creature defending = playerDefending.findCreature(eatingMessage.getDefendingCreatureId());
+
+                if(attacker.isAbsoluteAttackPossible(defending)){
+                    player.attackCreature(
+                            attacker,
+                            defending
+                    );
+                }
+                else{
+                    //TODO: Даем знать серверу, что нужно пересылать защищаемуся сообщение об атаке.
+                }
+
+                break;
+
+            case 3: //Защита от атаки (Существо + Свойства)
+
+                if(eatingMessage.getTrait() == Trait.RUNNING){
+                    if(Dice.rollOneDice() > 3){
+                        //TODO: Неудачная атака
+                    }
+                    else{
+                        Player attackerPlayer = table.getPlayers().get(eatingMessage.getAttackerPlayerNumber());
+                        attackerPlayer.attackCreature(
+                                attackerPlayer.findCreature(eatingMessage.getAttackerCreatureId()),
+                                player.findCreature(eatingMessage.getDefendingCreatureId())
+                        );
+                    }
+                }
+
+                //player.defendCreature()
+
+                break;
+
+            case 4: //Взятие еды из К.Б. + пиратство
+
+                break;
+        }
+
+        server.notify();
     }
 }

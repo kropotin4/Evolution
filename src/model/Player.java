@@ -90,7 +90,8 @@ public class Player {
 
     public boolean addTraitToCreature(Creature creature, Card card, boolean isUp){
         if(playerDeck.removeCard(card)){
-            creature.addTrait(card.getTrait(isUp));
+            if(!isUp) card.turnCard();
+            creature.addTrait(card);
             return true;
         }
         return false;
