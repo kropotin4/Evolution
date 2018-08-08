@@ -11,11 +11,11 @@ import java.util.UUID;
 public class EatingMessage extends Message{
 
     private final int type;
+    private boolean haveAction = false;
 
     private UUID eating;
 
     private Trait trait = null;
-    private int grazingCount = 0;
 
     private UUID attacker;
     private UUID defending;
@@ -24,38 +24,25 @@ public class EatingMessage extends Message{
     private int playerAttacker;
 
     //Питание:
-    public EatingMessage(UUID eatingCreature){ //Взятие еды из К.Б. (Существо)
+    public EatingMessage(UUID eatingCreature, boolean haveAction){ //Взятие еды из К.Б. (Существо)
         super(Phase.EATING, MessageType.EATING);
         type = 0;
 
+        this.haveAction = haveAction;
         this.eating = eatingCreature;
     }
-    public EatingMessage(UUID pirateCreature, UUID victimCreature){ //Взятие еды из К.Б. + пиратство
-        super(Phase.EATING, MessageType.EATING);
-        type = 4;
-
-        this.attacker = pirateCreature;
-        this.defending = victimCreature;
-    }
-    public EatingMessage(UUID eatingCreature, Trait trait, int number){ //Взятие еды из К.Б. + Топотун
+    public EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature, boolean haveAction){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
         super(Phase.EATING, MessageType.EATING);
         type = 1;
 
-        this.eating = eatingCreature;
-        this.trait = trait;
-        this.grazingCount = number;
-    }
-    public EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
-        super(Phase.EATING, MessageType.EATING);
-        type = 2;
-
+        this.haveAction = haveAction;
         this.attacker = attackerCreature;
         this.defending = defendingCreature;
         this.playerDefending = playerDefending; // Атакует тот, кто ходит.
     }
     public EatingMessage(int playerAttacker, UUID defendingCreature, Trait trait){ //Защита от атаки (Существо + Свойства)
         super(Phase.EATING, MessageType.EATING);
-        type = 3;
+        type = 2;
 
         this.playerAttacker = playerAttacker;
         this.defending = defendingCreature;
@@ -84,11 +71,11 @@ public class EatingMessage extends Message{
     public Trait getTrait(){
         return trait;
     }
-    public int getGrazingCount(){
-        return grazingCount;
-    }
 
     public int getType(){
         return type;
+    }
+    public boolean isHaveAction(){
+        return haveAction;
     }
 }

@@ -2,6 +2,9 @@ package server;
 
 import model.*;
 import server.message.*;
+import server.message.action.ActionMessage;
+import server.message.action.GrazingAction;
+import server.message.action.PirateAction;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -76,33 +79,7 @@ public class PlayerListener extends Thread {
 
                             GrowthMessage growthMessage = (GrowthMessage) message;
 
-                            switch (growthMessage.getType()){
-                                case 0:
-
-                                    player.addTraitToCreature(
-                                            player.findCreature(growthMessage.getFirstCreatureId()),
-                                            growthMessage.getCard(),
-                                            growthMessage.isUp()
-                                    );
-
-                                    break;
-
-                                case 1:
-
-                                    if(growthMessage.getCard().getTrait(growthMessage.isUp()) == Trait.SYMBIOSYS){
-                                        //TODO: Работа с симбионтом
-                                    }
-                                    else{
-                                        player.addPairTraitToCreature(
-                                                player.findCreature(growthMessage.getFirstCreatureId()),
-                                                player.findCreature(growthMessage.getSecondCreatureId()),
-                                                growthMessage.getCard(),
-                                                growthMessage.isUp()
-                                        );
-                                    }
-
-                                    break;
-                            }
+                            growthMessageHandler(growthMessage);
 
                             server.notify();
                             ///endregion
@@ -122,7 +99,9 @@ public class PlayerListener extends Thread {
 
                             //TODO: обработка действия игрока (EATING) + notify
 
-                            eatingMessageHandle(eatingMessage); // Здесь будет обработка, дабы не нагромождать
+                            eatingMessageHandler(eatingMessage); // Здесь будет обработка, дабы не нагромождать
+
+                            server.notify();
 
                             break;
                         default:
@@ -151,7 +130,37 @@ public class PlayerListener extends Thread {
 
     }
 
-    private void eatingMessageHandle(EatingMessage eatingMessage){
+    private void growthMessageHandler(GrowthMessage growthMessage){
+        switch (growthMessage.getType()){
+            case 0:
+
+                player.addTraitToCreature(
+                        player.findCreature(growthMessage.getFirstCreatureId()),
+                        growthMessage.getCard(),
+                        growthMessage.isUp()
+                );
+
+                break;
+
+            case 1:
+
+                if(growthMessage.getCard().getTrait(growthMessage.isUp()) == Trait.SYMBIOSYS){
+                    //TODO: Работа с симбионтом
+                }
+                else{
+                    player.addPairTraitToCreature(
+                            player.findCreature(growthMessage.getFirstCreatureId()),
+                            player.findCreature(growthMessage.getSecondCreatureId()),
+                            growthMessage.getCard(),
+                            growthMessage.isUp()
+                    );
+                }
+
+                break;
+        }
+    }
+
+    private void eatingMessageHandler(EatingMessage eatingMessage){
         switch (eatingMessage.getType()){
 
             case 0: //Взятие еды из К.Б. (Существо)
@@ -161,23 +170,41 @@ public class PlayerListener extends Thread {
                         null
                 );
 
-                break;
-            case 1: //Взятие еды из К.Б. + Топотун
+                if(eatingMessage.isHaveAction()){
+                    Object mesObject = null;
+                    try {
+                        mesObject = is.readObject();
+                    } catch (IOException | ClassNotFoundException e) {
+                        System.out.println(player.getLogin() + "mesObject is strange");
+                    }
 
-                player.getFoodFromFodder(
-                        player.findCreature(eatingMessage.getEatingCreautureId()),
-                        null
-                );
+                    if(!(mesObject instanceof ActionMessage)){
+                        //TODO: Придумай что-нибудь
+                    }
 
-                if(eatingMessage.getTrait() == Trait.GRAZING){
-                    table.getFood(eatingMessage.getGrazingCount());
+                    switch (((ActionMessage) mesObject).getTrait()){
+                        case GRAZING:
+
+                            GrazingAction grazingAction = (GrazingAction) mesObject;
+
+                            //TODO: Обработка
+
+                            break;
+
+                        case PIRACY:
+
+                            PirateAction pirateAction = (PirateAction) mesObject;
+
+                            //TODO: Обработка
+
+                            break;
+                    }
                 }
 
                 break;
+            case 1: //Атака существа (Существо + Свойства, Существо) Пока без свойств
 
-            case 2: //Атака существа (Существо + Свойства, Существо) Пока без свойств
-
-                    //EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature)
+                //EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature)
 
                 Player playerDefending = table.getPlayers().get(eatingMessage.getDefendingPlayerNumber());
 
@@ -194,9 +221,7 @@ public class PlayerListener extends Thread {
                     //TODO: Даем знать серверу, что нужно пересылать защищаемуся сообщение об атаке.
                 }
 
-                break;
-
-            case 3: //Защита от атаки (Существо + Свойства)
+            case 2: //Защита от атаки (Существо + Свойства)
 
                 if(eatingMessage.getTrait() == Trait.RUNNING){
                     if(Dice.rollOneDice() > 3){
@@ -215,11 +240,7 @@ public class PlayerListener extends Thread {
 
                 break;
 
-            case 4: //Взятие еды из К.Б. + пиратство
 
-                break;
         }
-
-        server.notify();
     }
 }
