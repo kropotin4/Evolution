@@ -6,6 +6,14 @@ import model.Phase;
 
 import java.util.UUID;
 
+/***************************************
+ * Сообщения о действиях в фазе роста
+ *
+ *      type = 0 : Положить свойство на существо
+ *      type = 1 : Положить парное свойство на 2 существ
+ *
+ **************************************/
+
 public class GrowthMessage extends Message{
 
     private final UUID creature1;

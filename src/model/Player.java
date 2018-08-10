@@ -114,6 +114,9 @@ public class Player {
     public void getCard(){
         playerDeck.addCard(table.getCard());
     }
+    public int getPlayerCardsNumber(){
+        return playerDeck.getCardsNumber();
+    }
 
     public String getLogin(){
         return login;

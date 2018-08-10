@@ -8,6 +8,11 @@ import model.Trait;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/***************************************
+ * Сообщения о действиях в фазе питания
+ **************************************/
+
+
 public class EatingMessage extends Message{
 
     private final int type;

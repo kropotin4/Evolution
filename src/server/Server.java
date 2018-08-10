@@ -3,6 +3,8 @@ package server;
 import model.Player;
 import model.Table;
 import server.message.EatingMessage;
+import server.message.MessageType;
+import server.message.RequestMessage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -107,10 +109,25 @@ public class Server extends Thread{
 
     }
 
+
     private void growthPhaseHandler(){
+
+        //Игроки должны получить сообщения типа "положи карту, если можешь, или скажи пас"
+
         for (Player player : table.getPlayers()) { // Игроки
 
-            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+            if(player.getPlayerCardsNumber() <= 0){
+                //TODO: Он пас
+            }
+            else{
+                //TODO: Отправляем запрос
+                try {
+                    findPlayerListener(player).os.writeObject(new RequestMessage(MessageType.GROWTH));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
 
             try {
                 wait(); // Ждем пока не получим ответ
@@ -118,29 +135,25 @@ public class Server extends Thread{
                 System.out.println("Server: Problems with wait");
             }
 
-            // Массовая рассылка результата
+            sendingAllResults();// Массовая рассылка результата
         }
     }
 
     private void cfbPhaseHandler(){
+        table.setFodder();
+        sendingAllResults();
+    }
+
+    private void eatingPhaseHandler() {
         for (Player player : table.getPlayers()) { // Игроки
 
             //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
             try {
-                wait(); // Ждем пока не получим ответ
-            } catch (InterruptedException e) {
-                System.out.println("Server: Problems with wait");
+                findPlayerListener(player).os.writeObject(new RequestMessage(MessageType.EATING));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            // Массовая рассылка результата
-        }
-    }
-
-    private void eatingPhaseHandler(){
-        for (Player player : table.getPlayers()) { // Игроки
-
-            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
             try {
                 wait(); // Ждем пока не получим ответ
@@ -164,7 +177,7 @@ public class Server extends Thread{
             }
 
 
-            // Массовая рассылка результата
+            sendingAllResults();// Массовая рассылка результата
         }
     }
 
@@ -191,4 +204,16 @@ public class Server extends Thread{
         return null;
     }
 
+
+    private void sendingAllResults(){
+        for (PlayerListener playerListener : playerListeners) { // Игроки
+
+            try {
+                playerListener.os.writeObject(table);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 }

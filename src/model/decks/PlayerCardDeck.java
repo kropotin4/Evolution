@@ -20,4 +20,8 @@ public class PlayerCardDeck {
     public boolean removeCard(Card card){
         return deck.remove(card);
     }
+
+    public int getCardsNumber(){
+        return deck.size();
+    }
 }
