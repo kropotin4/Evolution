@@ -22,8 +22,8 @@ public class PlayerListener extends Thread {
     ObjectInputStream is;
     ObjectOutputStream os;
 
-    PlayerListener(Thread server, Socket socket, Table table) throws IOException {
-        this.server = (Server) server;
+    PlayerListener(Server server, Socket socket, Table table) throws IOException {
+        this.server = server;
         this.socket = socket;
 
         os = new ObjectOutputStream(socket.getOutputStream());
@@ -77,29 +77,18 @@ public class PlayerListener extends Thread {
                             ///region GROWTH
                             if(message.getMessageType() != MessageType.GROWTH) continue; // Надо еще что-то сделать!
 
-                            GrowthMessage growthMessage = (GrowthMessage) message;
-
-                            growthMessageHandler(growthMessage);
+                            growthMessageHandler((GrowthMessage) message);
 
                             server.notify();
                             ///endregion
 
                             break;
-                        case CALC_FODDER_BASE:
-                            if(message.getMessageType() != MessageType.CFB) continue; // Надо еще что-то сделать!
-
-                            //TODO: обработка действия игрока (CALC_FODDER_BASE) + notify
-
-
-                            break;
                         case EATING:
                             if(message.getMessageType() != MessageType.EATING) continue; // Надо еще что-то сделать!
-                            EatingMessage eatingMessage = (EatingMessage) message;
-                            server.eatingMessage = eatingMessage;
 
-                            //TODO: обработка действия игрока (EATING) + notify
+                            server.eatingMessage = (EatingMessage) message;
 
-                            eatingMessageHandler(eatingMessage); // Здесь будет обработка, дабы не нагромождать
+                            eatingMessageHandler((EatingMessage) message); // Здесь будет обработка, дабы не нагромождать
 
                             server.notify();
 
@@ -132,7 +121,7 @@ public class PlayerListener extends Thread {
 
     private void growthMessageHandler(GrowthMessage growthMessage){
         switch (growthMessage.getType()){
-            case 0:
+            case 0: //GrowthMessage(UUID creature, Card card, boolean isUp)
 
                 player.addTraitToCreature(
                         player.findCreature(growthMessage.getFirstCreatureId()),
@@ -142,7 +131,7 @@ public class PlayerListener extends Thread {
 
                 break;
 
-            case 1:
+            case 1: //GrowthMessage(UUID creature1,UUID creature2, Card card, boolean isUp)
 
                 if(growthMessage.getCard().getTrait(growthMessage.isUp()) == Trait.SYMBIOSYS){
                     //TODO: Работа с симбионтом

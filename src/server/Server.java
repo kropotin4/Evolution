@@ -66,106 +66,36 @@ public class Server extends Thread{
         boolean end = false;
         while (table.getFodder() != 0){
 
-            for(int phase = 0; phase < 5; ++phase){ // Фазы
+            switch (table.getCurrentPhase()) {
+                case GROWTH:
 
-                switch (phase) {
-                    case 0:
+                    growthPhaseHandler();
 
-                        ///region GROWTH
-                        for (Player player : table.getPlayers()) { // Игроки
+                    break;
 
-                            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+                case CALC_FODDER_BASE:
 
-                            try {
-                                wait(); // Ждем пока не получим ответ
-                            } catch (InterruptedException e) {
-                                System.out.println("Server: Problems with wait");
-                            }
+                    cfbPhaseHandler();
 
-                            // Массовая рассылка результата
-                        }
+                    break;
 
-                        break;
-                        ///endregion
+                case EATING:
 
-                    case 1:
+                    eatingPhaseHandler();
 
-                        ///region CALC_FODDER_BASE
-                        for (Player player : table.getPlayers()) { // Игроки
+                    break;
 
-                            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+                case EXTINCTION:
 
-                            try {
-                                wait(); // Ждем пока не получим ответ
-                            } catch (InterruptedException e) {
-                                System.out.println("Server: Problems with wait");
-                            }
+                    extinctionPhaseHandler();
 
-                            // Массовая рассылка результата
-                        }
+                    break;
 
-                        break;
-                        ///endregion
-
-                    case 2:
-
-                        ///region EATING
-                        for (Player player : table.getPlayers()) { // Игроки
-
-                            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
-
-                            try {
-                                wait(); // Ждем пока не получим ответ
-                            } catch (InterruptedException e) {
-                                System.out.println("Server: wait() has interrupted");
-                            }
-
-                            if(eatingMessage.getType() == 2){
-
-                                PlayerListener playerListener = findPlayerListener(
-                                        table.getPlayers().get(eatingMessage.getDefendingPlayerNumber()));
-
-                                try {
-                                    playerListener.os.writeObject(eatingMessage);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-
-
-                            }
-
-
-                            // Массовая рассылка результата
-                        }
-
-                        break;
-                        ///endregion
-
-                    case 3:
-
-                        ///region EXTINCTION
-                        for (Player player : table.getPlayers()) { // Игроки
-
-                            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
-
-                            try {
-                                wait(); // Ждем пока не получим ответ
-                            } catch (InterruptedException e) {
-                                System.out.println("Server: Problems with wait");
-                            }
-
-                            // Массовая рассылка результата
-                        }
-
-                        break;
-                        ///endregion
-
-                        // Здесь же будет и раздача карт
-                }
-
-                //Вероятно, рассылка результата бедет здесь
+                    // Здесь же будет и раздача карт
             }
+
+            //Вероятно, рассылка результата бедет здесь
+
 
             if(end) return true;
         }
@@ -177,10 +107,88 @@ public class Server extends Thread{
 
     }
 
+    private void growthPhaseHandler(){
+        for (Player player : table.getPlayers()) { // Игроки
+
+            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+
+            try {
+                wait(); // Ждем пока не получим ответ
+            } catch (InterruptedException e) {
+                System.out.println("Server: Problems with wait");
+            }
+
+            // Массовая рассылка результата
+        }
+    }
+
+    private void cfbPhaseHandler(){
+        for (Player player : table.getPlayers()) { // Игроки
+
+            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+
+            try {
+                wait(); // Ждем пока не получим ответ
+            } catch (InterruptedException e) {
+                System.out.println("Server: Problems with wait");
+            }
+
+            // Массовая рассылка результата
+        }
+    }
+
+    private void eatingPhaseHandler(){
+        for (Player player : table.getPlayers()) { // Игроки
+
+            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+
+            try {
+                wait(); // Ждем пока не получим ответ
+            } catch (InterruptedException e) {
+                System.out.println("Server: wait() has interrupted");
+            }
+
+            if(eatingMessage.getType() == 2){
+
+                PlayerListener playerListener = findPlayerListener(
+                        table.getPlayers().get(eatingMessage.getDefendingPlayerNumber()));
+
+                try {
+                    playerListener.os.writeObject(eatingMessage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+
+
+            // Массовая рассылка результата
+        }
+    }
+
+    private void extinctionPhaseHandler(){
+        for (Player player : table.getPlayers()) { // Игроки
+
+            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
+
+            try {
+                wait(); // Ждем пока не получим ответ
+            } catch (InterruptedException e) {
+                System.out.println("Server: Problems with wait");
+            }
+
+            // Массовая рассылка результата
+        }
+    }
+
     PlayerListener findPlayerListener(Player player){
         for(PlayerListener playerListener : playerListeners){
             if(playerListener.player == player) return playerListener;
         }
+
+        return null;
     }
 
 }

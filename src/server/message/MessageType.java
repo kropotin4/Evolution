@@ -4,7 +4,6 @@ public enum MessageType {
     DEALING,
     EATING,
     GROWTH,
-    CFB,
     SPECIAL,
     ERROR,
 }
