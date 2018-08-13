@@ -1,6 +1,7 @@
 package client;
 
 import server.message.Message;
+import server.message.RequestMessage;
 import server.message.StartMessage;
 
 import java.io.IOException;
@@ -47,7 +48,24 @@ public class ServerListener extends Thread {
 
                 Message message = (Message) mesObject;
 
+                if(message instanceof RequestMessage){
 
+                    RequestMessage requestMessage = (RequestMessage) message;
+
+                    switch (requestMessage.getMessageType()){
+                        case GROWTH:
+
+                            //TODO: Выбор игроком что делать. Передача управления интерфейсу.
+
+                            break;
+                        case EATING:
+
+                            //TODO: Выбор игроком что делать. Передача управления интерфейсу.
+
+                            break;
+                    }
+
+                }
 
             }
         }

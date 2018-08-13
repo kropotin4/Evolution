@@ -13,7 +13,7 @@ public class Client extends Thread{
     ServerListener serverListener;
 
     Client(String login) throws IOException {
-
+        this.login = login;
         Socket server = new Socket(ip, port);
 
         serverListener = new ServerListener(server, this);
@@ -22,6 +22,18 @@ public class Client extends Thread{
 
     @Override
     public void run() {
+
+        while (true){
+
+            //TODO: Получение команды -> отправка сообщения серверу
+
+
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 }
