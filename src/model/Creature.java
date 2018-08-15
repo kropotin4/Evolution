@@ -289,8 +289,8 @@ public class Creature {
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append("Creature " + id + ":\nTraits:\n");
-        for (Trait trait : traits){
-            System.out.print(">" + trait + "\n");
+        for (Card card : cards){
+            System.out.print(">" + card.getTrait() + "\n");
         }
         str.append("Satisfaction: " + totalSatiety + "\\" + totalHunger + "\n");
         str.append("Fatness: " + fatQuantity + "\\" + fatCapacity + "\n");
