@@ -5,7 +5,7 @@ import model.Table;
 
 import java.util.Scanner;
 
-public class MainFrameConsole {
+public class MainFrameConsole{
     Table table = null;
 
     MainFrameConsole(){

@@ -13,6 +13,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         MainPane mainPane = new MainPane();
         Scene scene = new Scene(mainPane, Color.TRANSPARENT);
+
+        primaryStage.setMinWidth(mainPane.getMinWidth() + 5);
+        primaryStage.setMinHeight(mainPane.getMinHeight() + 5);
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
