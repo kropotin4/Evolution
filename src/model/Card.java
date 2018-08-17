@@ -44,7 +44,9 @@ public class Card {
 
         Card card = (Card) obj;
 
-        if((card.up != up && card.down != down) || (card.up != down && card.down != up)) return false;
+        if((card.up != up && card.down != down)
+                || (card.up != down && card.down != up))
+            return false;
 
         return true;
     }

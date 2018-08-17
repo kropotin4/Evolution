@@ -1,5 +1,6 @@
 package server;
 
+import control.Controler;
 import model.*;
 import server.message.*;
 import server.message.action.ActionMessage;
@@ -16,20 +17,22 @@ public class PlayerListener extends Thread {
     Server server;
 
     Socket socket;
-    Table table;
-    Player player;
+    Controler controler;
+    int playerNumber;
 
     ObjectInputStream is;
     ObjectOutputStream os;
 
-    PlayerListener(Server server, Socket socket, Table table) throws IOException {
+    Message message;
+
+    PlayerListener(Server server, Socket socket, Controler controler) throws IOException {
         this.server = server;
         this.socket = socket;
 
         os = new ObjectOutputStream(socket.getOutputStream());
         is = new ObjectInputStream(socket.getInputStream());
 
-        this.table = table;
+        this.controler = controler;
     }
 
     @Override
@@ -67,20 +70,18 @@ public class PlayerListener extends Thread {
 
             if(mesObject instanceof Message){
 
-                Message message = (Message) mesObject;
+                message = (Message) mesObject;
 
-                if(player == table.getPlayers().get(table.getPlayerTurn())){
 
-                    switch (table.getCurrentPhase()){
+                if(player == controler.getPlayPlayer()){
+
+                    switch (controler.getCurrentPhase()){
                         case GROWTH:
-
-                            ///region GROWTH
                             if(message.getMessageType() != MessageType.GROWTH) continue; // Надо еще что-то сделать!
 
                             growthMessageHandler((GrowthMessage) message);
 
                             server.notify();
-                            ///endregion
 
                             break;
                         case EATING:
@@ -100,9 +101,7 @@ public class PlayerListener extends Thread {
                 }
                 else {
 
-                    if (message.getMessageType() != MessageType.SPECIAL) {
-                        //TODO: обработка действия игрока вне хода (Пиратство и т.д.)
-                    } else {
+                    if (message.getMessageType() == MessageType.SPECIAL) {
 
                         try {
                             os.writeObject(new ErrorMessage(1)); // Не твоя очередь
@@ -110,6 +109,8 @@ public class PlayerListener extends Thread {
                             e.printStackTrace();
                         }
 
+                    } else {
+                        //TODO: обработка действия игрока вне хода (Пиратство и т.д.)
                     }
                 }
 
@@ -192,32 +193,19 @@ public class PlayerListener extends Thread {
 
                 break;
             case 1: //Атака существа (Существо + Свойства, Существо) Пока без свойств
+                    //EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature)
 
-                //EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature)
-
-                Player playerDefending = table.getPlayers().get(eatingMessage.getDefendingPlayerNumber());
-
-                Creature attacker = player.findCreature(eatingMessage.getAttackerCreatureId());
-                Creature defending = playerDefending.findCreature(eatingMessage.getDefendingCreatureId());
-
-                if(attacker.isAbsoluteAttackPossible(defending)){
-                    player.attackCreature(
-                            attacker,
-                            defending
-                    );
-                }
-                else{
-                    //TODO: Даем знать серверу, что нужно пересылать защищаемуся сообщение об атаке.
-                }
+               if(controler.attackCreature())
 
             case 2: //Защита от атаки (Существо + Свойства)
+                    //EatingMessage(int playerAttacker, UUID defendingCreature, Trait trait)
 
                 if(eatingMessage.getTrait() == Trait.RUNNING){
                     if(Dice.rollOneDice() > 3){
                         //TODO: Неудачная атака
                     }
                     else{
-                        Player attackerPlayer = table.getPlayers().get(eatingMessage.getAttackerPlayerNumber());
+                        Player attackerPlayer = controler.findPlayer(eatingMessage.getAttackerPlayerNumber());
                         attackerPlayer.attackCreature(
                                 attackerPlayer.findCreature(eatingMessage.getAttackerCreatureId()),
                                 player.findCreature(eatingMessage.getDefendingCreatureId())

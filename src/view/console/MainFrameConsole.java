@@ -24,7 +24,7 @@ public class MainFrameConsole{
     void printTable(){
         System.out.println("Cards in deck:" + table.getCommonDeck().getCardCount());
         System.out.println("Food in fodder:" + table.getFodder());
-        for (int i = 0; i < table.getPlayerCount(); ++i){
+        for (int i = 0; i < table.getPlayerNumber(); ++i){
             printPlayer(i);
         }
     }
@@ -40,8 +40,8 @@ public class MainFrameConsole{
     }
 
     void printPlayers(){
-        System.out.println("There is " + table.getPlayerCount() + "players. Who do you wat to print?");
-        System.out.println("Print [1.." + table.getPlayerCount() + "] to print player");
+        System.out.println("There is " + table.getPlayerNumber() + "players. Who do you wat to print?");
+        System.out.println("Print [1.." + table.getPlayerNumber() + "] to print player");
 
         Scanner s = new Scanner(System.in);
         char c;
@@ -49,7 +49,7 @@ public class MainFrameConsole{
             c = s.next().charAt(0);
             if ('0' <= c && c <= '9'){
                 int i = c - '0';
-                if (i < 0 || i > table.getPlayerCount()){
+                if (i < 0 || i > table.getPlayerNumber()){
                     System.out.print("Incorrect number. Try again");
                 } else {
                     printPlayer(i - 1);

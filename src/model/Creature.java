@@ -84,7 +84,7 @@ public class Creature {
         /*according to rules a predator can not be a scavenger so
         if smb puts a predator card to scavenger or scavenger card to predator
         the last card should be removed from the animal*/
-        if (((card.getTrait() == Trait.PREDATOR) && (isScavenger)) || ((card.getTrait() == Trait.SCAVENGER) && (isPredator)))
+        if ((isScavenger && (card.getTrait() == Trait.PREDATOR)) || (isPredator && (card.getTrait() == Trait.SCAVENGER)))
             return true; //actually has not added any traits
 
         cards.add(card);
@@ -205,11 +205,11 @@ public class Creature {
     }
 
     boolean isFed(){
-        return (totalSatiety == totalHunger);
+        return totalSatiety == totalHunger;
     }
 
     boolean isSatisfied(){
-        return (isFed() && (fatCapacity == fatQuantity));
+        return (fatCapacity == fatQuantity) && isFed();
     }
 
     boolean attack (Creature creature){

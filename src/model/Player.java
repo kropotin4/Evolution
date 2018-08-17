@@ -38,14 +38,14 @@ public class Player {
 
     ArrayList<Creature> creatures = new ArrayList<>();
 
-    public ArrayList<Creature> getCreatures() {
-        return creatures;
-    }
 
     public Player(String login){
         this.login = login;
     }
 
+    public ArrayList<Creature> getCreatures() {
+        return creatures;
+    }
     void setFodder(){
         table.setFodder();
     }

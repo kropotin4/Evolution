@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class PlayerCardDeck {
     private ArrayList<Card> deck = new ArrayList<>(12);
 
-    public PlayerCardDeck(){}
 
     public ArrayList<Card> getCardDeck(){
         return deck;

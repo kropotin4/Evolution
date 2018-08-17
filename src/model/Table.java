@@ -12,21 +12,13 @@ public class Table {
     int playerTurn = 0;
 
     static int fodder = 0;
-    int initialCardCount = 6;
 
     CommonCardDeck commonDeck;
-
-    public CommonCardDeck getCommonDeck() {
-        return commonDeck;
-    }
 
     Dice dice;
 
     ArrayList<Player> players;
 
-    public int getFodder() {
-        return fodder;
-    }
 
     public Table(int quarterCardCount, int playerCount){
         commonDeck = new CommonCardDeck(quarterCardCount);
@@ -44,6 +36,12 @@ public class Table {
 
     }
 
+    public int getFodder() {
+        return fodder;
+    }
+    public CommonCardDeck getCommonDeck() {
+        return commonDeck;
+    }
     public Card getCard(){
         return commonDeck.getCard();
     }
@@ -67,7 +65,7 @@ public class Table {
         return players;
     }
 
-    public int getPlayerCount(){
+    public int getPlayerNumber(){
         return players.size();
     }
 

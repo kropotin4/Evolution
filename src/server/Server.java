@@ -1,8 +1,9 @@
 package server;
 
+import control.Controler;
 import model.Player;
-import model.Table;
 import server.message.EatingMessage;
+import server.message.Message;
 import server.message.MessageType;
 import server.message.RequestMessage;
 
@@ -15,7 +16,8 @@ import java.util.Properties;
 
 public class Server extends Thread{
 
-    Table table;
+
+    Controler controler;
 
     ServerSocket serverSocket;
 
@@ -23,17 +25,15 @@ public class Server extends Thread{
 
     Properties properties;
 
-
     EatingMessage eatingMessage;
 
-    Server(Table table) throws IOException {
+    Server(Controler controler) throws IOException {
+        this.controler = controler;
 
         properties = new Properties();
         properties.load(new FileInputStream("server_properties"));
 
         serverSocket = new ServerSocket(Integer.parseInt(properties.getProperty("SERVER_PORT")));
-
-        this.table = table;
     }
 
 
@@ -48,12 +48,12 @@ public class Server extends Thread{
 
     public void beginPlay(){
 
-        for(int i = 0; i < table.getPlayerCount(); ++i) {
+        for(int i = 0; i < controler.getPlayersNumber(); ++i) {
 
             try {
                 Socket newPlayer = serverSocket.accept();
 
-                playerListeners.add(new PlayerListener(this, newPlayer, table));
+                playerListeners.add(new PlayerListener(this, newPlayer, controler));
                 playerListeners.get(playerListeners.size() - 1).start();
 
             } catch (IOException e) {
@@ -66,9 +66,9 @@ public class Server extends Thread{
     public boolean middlePlay(){ // Забавное название ?
 
         boolean end = false;
-        while (table.getFodder() != 0){
+        while (!end){
 
-            switch (table.getCurrentPhase()) {
+            switch (controler.getCurrentPhase()) {
                 case GROWTH:
 
                     growthPhaseHandler();
@@ -97,9 +97,6 @@ public class Server extends Thread{
             }
 
             //Вероятно, рассылка результата бедет здесь
-
-
-            if(end) return true;
         }
 
         return false;
@@ -114,7 +111,7 @@ public class Server extends Thread{
 
         //Игроки должны получить сообщения типа "положи карту, если можешь, или скажи пас"
 
-        for (Player player : table.getPlayers()) { // Игроки
+        for (Player player : controler.getPlayers()) { // Игроки
 
             if(player.getPlayerCardsNumber() <= 0){
                 //TODO: Он пас
@@ -140,12 +137,12 @@ public class Server extends Thread{
     }
 
     private void cfbPhaseHandler(){
-        table.setFodder();
+        controler.setFodder();
         sendingAllResults();
     }
 
     private void eatingPhaseHandler() {
-        for (Player player : table.getPlayers()) { // Игроки
+        for (Player player : controler.getPlayers()) { // Игроки
 
             //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
@@ -164,7 +161,7 @@ public class Server extends Thread{
             if(eatingMessage.getType() == 2){
 
                 PlayerListener playerListener = findPlayerListener(
-                        table.getPlayers().get(eatingMessage.getDefendingPlayerNumber()));
+                        controler.findPlayer(eatingMessage.getDefendingPlayerNumber()));
 
                 try {
                     playerListener.os.writeObject(eatingMessage);
@@ -182,7 +179,7 @@ public class Server extends Thread{
     }
 
     private void extinctionPhaseHandler(){
-        for (Player player : table.getPlayers()) { // Игроки
+        for (Player player : controler.getPlayers()) { // Игроки
 
             //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
