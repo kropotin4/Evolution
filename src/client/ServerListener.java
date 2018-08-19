@@ -1,5 +1,7 @@
 package client;
 
+import control.Controler;
+import model.Table;
 import server.message.Message;
 import server.message.RequestMessage;
 import server.message.StartMessage;
@@ -13,12 +15,17 @@ public class ServerListener extends Thread {
 
     Socket server;
     Client client;
+    Controler controler;
 
     ObjectOutputStream os;
     ObjectInputStream is;
 
-    ServerListener(Socket server, Client client) throws IOException {
+    Object mesObject = null;
+
+    ServerListener(Socket server, Client client, Controler controler) throws IOException {
         this.server = server;
+        this.client = client;
+        this.controler = controler;
 
         os = new ObjectOutputStream(server.getOutputStream());
         is = new ObjectInputStream(server.getInputStream());
@@ -33,8 +40,17 @@ public class ServerListener extends Thread {
             e.printStackTrace();
         }
 
+        try {
+            mesObject = is.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            //TODO: что-то сделать
+        }
 
-        Object mesObject = null;
+        if(!(mesObject instanceof Table))
+            throw new RuntimeException("...");
+
+        controler.initialize((Table) mesObject);
+
         while(true){
 
             try {

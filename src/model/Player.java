@@ -122,7 +122,7 @@ public class Player {
         return login;
     }
 
-    public Creature findCreature(UUID id){
+    public Creature findCreature(int id){
         for(Creature creature : creatures){
             if(creature.getId() == id) return creature;
         }

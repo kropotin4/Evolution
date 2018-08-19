@@ -18,25 +18,25 @@ public class EatingMessage extends Message{
     private final int type;
     private boolean haveAction = false;
 
-    private UUID eating;
+    private int eating;
 
     private Trait trait = null;
 
-    private UUID attacker;
-    private UUID defending;
+    private int attacker;
+    private int defending;
 
     private int playerDefending;
     private int playerAttacker;
 
     //Питание:
-    public EatingMessage(UUID eatingCreature, boolean haveAction){ //Взятие еды из К.Б. (Существо)
+    public EatingMessage(int eatingCreature, boolean haveAction){ //Взятие еды из К.Б. (Существо)
         super(Phase.EATING, MessageType.EATING);
         type = 0;
 
         this.haveAction = haveAction;
         this.eating = eatingCreature;
     }
-    public EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature, boolean haveAction){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
+    public EatingMessage(int attackerCreature, int playerDefending, int defendingCreature, boolean haveAction){ //Атака существа (Существо + Свойства, Существо) Пока без свойств
         super(Phase.EATING, MessageType.EATING);
         type = 1;
 
@@ -45,7 +45,7 @@ public class EatingMessage extends Message{
         this.defending = defendingCreature;
         this.playerDefending = playerDefending; // Атакует тот, кто ходит.
     }
-    public EatingMessage(int playerAttacker, UUID defendingCreature, Trait trait){ //Защита от атаки (Существо + Свойства)
+    public EatingMessage(int playerAttacker, int defendingCreature, Trait trait){ //Защита от атаки (Существо + Свойства)
         super(Phase.EATING, MessageType.EATING);
         type = 2;
 
@@ -54,15 +54,15 @@ public class EatingMessage extends Message{
         this.trait = trait;
     }
 
-    public UUID getEatingCreautureId(){
+    public int getEatingCreautureId(){
         if(type == 0 || type == 1) return eating;
         return attacker;
     }
 
-    public UUID getAttackerCreatureId(){
+    public int getAttackerCreatureId(){
         return attacker;
     }
-    public UUID getDefendingCreatureId(){
+    public int getDefendingCreatureId(){
         return defending;
     }
 

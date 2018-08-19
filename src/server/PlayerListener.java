@@ -18,6 +18,8 @@ public class PlayerListener extends Thread {
 
     Socket socket;
     Controler controler;
+
+    String login;
     int playerNumber;
 
     ObjectInputStream is;
@@ -48,8 +50,8 @@ public class PlayerListener extends Thread {
 
         if(start instanceof StartMessage){
             StartMessage startMessage = (StartMessage) start;
-
-            player = new Player(startMessage.getLogin());
+            login = startMessage.getLogin();
+            playerNumber = controler.addPlayer(login);
         }
         else{
             System.out.println("New player start StartMessage not received");
@@ -64,7 +66,7 @@ public class PlayerListener extends Thread {
             try {
                 mesObject = is.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println(player.getLogin() + "mesObject is strange");
+                System.out.println(login + "mesObject is strange");
                 continue;
             }
 
@@ -73,7 +75,7 @@ public class PlayerListener extends Thread {
                 message = (Message) mesObject;
 
 
-                if(player == controler.getPlayPlayer()){
+                if(controler.isPlayersTurn(playerNumber)){
 
                     switch (controler.getCurrentPhase()){
                         case GROWTH:
@@ -124,8 +126,8 @@ public class PlayerListener extends Thread {
         switch (growthMessage.getType()){
             case 0: //GrowthMessage(UUID creature, Card card, boolean isUp)
 
-                player.addTraitToCreature(
-                        player.findCreature(growthMessage.getFirstCreatureId()),
+                controler.addTraitToCreature(playerNumber,
+                        growthMessage.getFirstCreatureId(),
                         growthMessage.getCard(),
                         growthMessage.isUp()
                 );
@@ -138,9 +140,10 @@ public class PlayerListener extends Thread {
                     //TODO: Работа с симбионтом
                 }
                 else{
-                    player.addPairTraitToCreature(
-                            player.findCreature(growthMessage.getFirstCreatureId()),
-                            player.findCreature(growthMessage.getSecondCreatureId()),
+                    controler.addPairTraitToCreature(
+                            playerNumber,
+                            growthMessage.getFirstCreatureId(),
+                            growthMessage.getSecondCreatureId(),
                             growthMessage.getCard(),
                             growthMessage.isUp()
                     );
@@ -148,24 +151,25 @@ public class PlayerListener extends Thread {
 
                 break;
         }
+
+        server.recievedMessage = growthMessage;
     }
 
     private void eatingMessageHandler(EatingMessage eatingMessage){
         switch (eatingMessage.getType()){
 
             case 0: //Взятие еды из К.Б. (Существо)
+                    //EatingMessage(int eatingCreature, boolean haveAction)
 
-                player.getFoodFromFodder(
-                        player.findCreature(eatingMessage.getEatingCreautureId()),
-                        null
-                );
+                controler.getFoodFromFodder(eatingMessage.getEatingCreautureId());
 
+                ///region haveAction handle
                 if(eatingMessage.isHaveAction()){
                     Object mesObject = null;
                     try {
                         mesObject = is.readObject();
                     } catch (IOException | ClassNotFoundException e) {
-                        System.out.println(player.getLogin() + "mesObject is strange");
+                        System.out.println(login + "mesObject is strange");
                     }
 
                     if(!(mesObject instanceof ActionMessage)){
@@ -190,12 +194,18 @@ public class PlayerListener extends Thread {
                             break;
                     }
                 }
+                ///endregion
 
                 break;
             case 1: //Атака существа (Существо + Свойства, Существо) Пока без свойств
                     //EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature)
 
-               if(controler.attackCreature())
+               controler.attackCreature(
+                       playerNumber,
+                       eatingMessage.getDefendingPlayerNumber(),
+                       eatingMessage.getAttackerCreatureId(),
+                       eatingMessage.getDefendingCreatureId()
+               );
 
             case 2: //Защита от атаки (Существо + Свойства)
                     //EatingMessage(int playerAttacker, UUID defendingCreature, Trait trait)
@@ -205,10 +215,11 @@ public class PlayerListener extends Thread {
                         //TODO: Неудачная атака
                     }
                     else{
-                        Player attackerPlayer = controler.findPlayer(eatingMessage.getAttackerPlayerNumber());
-                        attackerPlayer.attackCreature(
-                                attackerPlayer.findCreature(eatingMessage.getAttackerCreatureId()),
-                                player.findCreature(eatingMessage.getDefendingCreatureId())
+                        controler.attackCreature(
+                                eatingMessage.getAttackerPlayerNumber(),
+                                playerNumber,
+                                eatingMessage.getAttackerCreatureId(),
+                                eatingMessage.getDefendingCreatureId()
                         );
                     }
                 }
@@ -219,5 +230,11 @@ public class PlayerListener extends Thread {
 
 
         }
+
+        server.recievedMessage = eatingMessage;
+    }
+
+    OS getOS(){
+        return new OS(os, playerNumber);
     }
 }

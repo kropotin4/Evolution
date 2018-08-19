@@ -9,6 +9,7 @@ import server.message.RequestMessage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -21,10 +22,11 @@ public class Server extends Thread{
 
     ServerSocket serverSocket;
 
-    ArrayList<PlayerListener> playerListeners = new ArrayList<>();
+    ArrayList<OS> playersStream = new ArrayList<>();
 
     Properties properties;
 
+    Message recievedMessage;
     EatingMessage eatingMessage;
 
     Server(Controler controler) throws IOException {
@@ -52,9 +54,9 @@ public class Server extends Thread{
 
             try {
                 Socket newPlayer = serverSocket.accept();
-
-                playerListeners.add(new PlayerListener(this, newPlayer, controler));
-                playerListeners.get(playerListeners.size() - 1).start();
+                PlayerListener playerListener = new PlayerListener(this, newPlayer, controler);
+                playersStream.add(playerListener.getOS());
+                playerListener.start();
 
             } catch (IOException e) {
                 System.out.println("Connect with player has failed");
@@ -111,15 +113,15 @@ public class Server extends Thread{
 
         //Игроки должны получить сообщения типа "положи карту, если можешь, или скажи пас"
 
-        for (Player player : controler.getPlayers()) { // Игроки
+        for (int playerNumber = 0; playerNumber < controler.getPlayersNumber(); ++playerNumber) { // Игроки
 
-            if(player.getPlayerCardsNumber() <= 0){
+            if(controler.getPlayerCardsNumber(playerNumber) <= 0){
                 //TODO: Он пас
             }
             else{
                 //TODO: Отправляем запрос
                 try {
-                    findPlayerListener(player).os.writeObject(new RequestMessage(MessageType.GROWTH));
+                    findPlayerStream(playerNumber).writeObject(new RequestMessage(MessageType.GROWTH));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -142,12 +144,12 @@ public class Server extends Thread{
     }
 
     private void eatingPhaseHandler() {
-        for (Player player : controler.getPlayers()) { // Игроки
+        for (int playerNumber = 0; playerNumber < controler.getPlayersNumber(); ++playerNumber) { // Игроки
 
             //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
             try {
-                findPlayerListener(player).os.writeObject(new RequestMessage(MessageType.EATING));
+                findPlayerStream(playerNumber).writeObject(new RequestMessage(MessageType.EATING));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -160,11 +162,8 @@ public class Server extends Thread{
 
             if(eatingMessage.getType() == 2){
 
-                PlayerListener playerListener = findPlayerListener(
-                        controler.findPlayer(eatingMessage.getDefendingPlayerNumber()));
-
                 try {
-                    playerListener.os.writeObject(eatingMessage);
+                    findPlayerStream(eatingMessage.getDefendingPlayerNumber()).writeObject(eatingMessage);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -179,7 +178,7 @@ public class Server extends Thread{
     }
 
     private void extinctionPhaseHandler(){
-        for (Player player : controler.getPlayers()) { // Игроки
+        for (int playerNumber = 0; playerNumber < controler.getPlayersNumber(); ++playerNumber) { // Игроки
 
             //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
@@ -193,9 +192,9 @@ public class Server extends Thread{
         }
     }
 
-    PlayerListener findPlayerListener(Player player){
-        for(PlayerListener playerListener : playerListeners){
-            if(playerListener.player == player) return playerListener;
+    ObjectOutputStream findPlayerStream(int playerNumber){
+        for(OS playerStream : playersStream){
+            if(playerStream.playerNumber == playerNumber) return playerStream.os;
         }
 
         return null;
@@ -203,10 +202,10 @@ public class Server extends Thread{
 
 
     private void sendingAllResults(){
-        for (PlayerListener playerListener : playerListeners) { // Игроки
+        for (OS playerStream : playersStream) { // Игроки
 
             try {
-                playerListener.os.writeObject(table);
+                playerStream.os.writeObject(recievedMessage);
             } catch (IOException e) {
                 e.printStackTrace();
             }

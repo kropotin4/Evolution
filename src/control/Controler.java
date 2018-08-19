@@ -8,15 +8,35 @@ import java.util.UUID;
 public class Controler {
 
     private Table table;
+    private boolean haveInit = false;
 
     public void initialize(int quarterCardCount, int playerCount){
+        if(haveInit) throw new RuntimeException("Retry Contoler init");
+        haveInit = true;
+
         table = new Table(quarterCardCount, playerCount);
+    }
+    public void initialize(Table table){
+        if(haveInit) throw new RuntimeException("Retry Contoler init");
+        haveInit = true;
+
+        this.table = table;
     }
 
     // +? проверку на return
-    public void addTraitToCreature(Player player, UUID creature, Card card, boolean isUp){
+    public void addTraitToCreature(int playerNumber, int creatureID, Card card, boolean isUp){
+        Player player = findPlayer(playerNumber);
         player.addTraitToCreature(
-                player.findCreature(creature),
+                player.findCreature(creatureID),
+                card,
+                isUp
+        );
+    }
+    public void addPairTraitToCreature(int playerNumber, int creature1ID, int creature2ID, Card card, boolean isUp){
+        Player player = findPlayer(playerNumber);
+        player.addPairTraitToCreature(
+                player.findCreature(creature1ID),
+                player.findCreature(creature2ID),
                 card,
                 isUp
         );
@@ -25,12 +45,26 @@ public class Controler {
     public void setFodder(){
         table.setFodder();
     }
+    public void getFoodFromFodder(int creatureID){
+
+    }
+
     public Phase getCurrentPhase(){
         return table.getCurrentPhase();
     }
 
     public int addPlayer(String login){
 
+        //TODO: Нужна очередность ходов -> венуть номер в массиве.
+
+        return 1;
+    }
+    public int getPlayerCardsNumber(int playerNumber){
+        Player player = findPlayer(playerNumber);
+        return player.getPlayerCardsNumber();
+    }
+    public boolean isPlayersTurn(int playerNumber){
+        return playerNumber == table.getPlayerTurn();
     }
     public Player getPlayPlayer(){
         return table.getPlayers().get(table.getPlayerTurn());
@@ -49,7 +83,7 @@ public class Controler {
         return table.getPlayerNumber();
     }
 
-    public boolean attackCreature(int attackerPlayer, int defenderPlayer, UUID attackerCreature, UUID defenderCreature){
+    public boolean attackCreature(int attackerPlayer, int defenderPlayer, int attackerCreature, int defenderCreature){
         Player aPlayer = findPlayer(attackerPlayer);
         Player dPlayer = findPlayer(defenderPlayer);
 

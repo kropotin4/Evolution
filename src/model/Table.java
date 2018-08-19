@@ -36,9 +36,7 @@ public class Table {
 
     }
 
-    public int getFodder() {
-        return fodder;
-    }
+
     public CommonCardDeck getCommonDeck() {
         return commonDeck;
     }
@@ -53,26 +51,13 @@ public class Table {
         dice = new Dice((playerCount + 1) / 2, playerCount % 2 == 0 ? 2 : 0);
     }
 
-    public void setFodder(){
-        fodder = rollDice();
-    }
-
     public Phase getCurrentPhase(){
         return curPhase;
     }
 
-    public ArrayList<Player> getPlayers(){
-        return players;
+    public void setFodder(){
+        fodder = rollDice();
     }
-
-    public int getPlayerNumber(){
-        return players.size();
-    }
-
-    public int getPlayerTurn(){
-        return playerTurn;
-    }
-
     public int getFood(int count){
         if(fodder >= count){
             fodder -= count;
@@ -86,7 +71,20 @@ public class Table {
     public boolean isFodderBaseEmpty(){
         return fodder == 0;
     }
+    public int getFodder() {
+        return fodder;
+    }
 
+
+    public ArrayList<Player> getPlayers(){
+        return players;
+    }
+    public int getPlayerNumber(){
+        return players.size();
+    }
+    public int getPlayerTurn(){
+        return playerTurn;
+    }
     public Player findPlayer(UUID id){
         for(Player player : players){
             if(player.getId() == id) return player;

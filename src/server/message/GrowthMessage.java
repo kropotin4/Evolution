@@ -16,15 +16,15 @@ import java.util.UUID;
 
 public class GrowthMessage extends Message{
 
-    private final UUID creature1;
-    private final UUID creature2;
+    private final int creature1;
+    private final int creature2;
     private final Card card;
     private final boolean isUp;
 
     private final int type;
 
     //Развитие
-    public GrowthMessage(UUID creature, Card card, boolean isUp){
+    public GrowthMessage(int creature, Card card, boolean isUp){
         super(Phase.GROWTH, MessageType.GROWTH);
 
         this.creature1 = creature;
@@ -35,7 +35,7 @@ public class GrowthMessage extends Message{
         type = 0;
     }
 
-    public GrowthMessage(UUID creature1,UUID creature2, Card card, boolean isUp){
+    public GrowthMessage(int creature1,int creature2, Card card, boolean isUp){
         super(Phase.GROWTH, MessageType.GROWTH);
 
         this.creature1 = creature1;
@@ -46,10 +46,10 @@ public class GrowthMessage extends Message{
         type = 1;
     }
 
-    public UUID getFirstCreatureId(){
+    public int getFirstCreatureId(){
         return  creature1;
     }
-    public UUID getSecondCreatureId(){
+    public int getSecondCreatureId(){
         return  creature2;
     }
 

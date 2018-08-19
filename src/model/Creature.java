@@ -10,7 +10,8 @@ import java.util.UUID;
 public class Creature {
 
     ///region fields
-    private final UUID id = UUID.randomUUID();
+    private static int commonID = 0;
+    private final int id;
 
     private Player player;
 
@@ -58,6 +59,7 @@ public class Creature {
 
     Creature(Player player){
         this.player = player;
+        id = commonID++;
     }
 
     public Player getPlayer(){
@@ -281,7 +283,7 @@ public class Creature {
         return true;
     }
 
-    public UUID getId(){
+    public int getId(){
         return id;
     }
 

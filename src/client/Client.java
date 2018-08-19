@@ -1,5 +1,7 @@
 package client;
 
+import control.Controler;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -12,11 +14,11 @@ public class Client extends Thread{
 
     ServerListener serverListener;
 
-    Client(String login) throws IOException {
+    Client(Controler controler, String login) throws IOException {
         this.login = login;
         Socket server = new Socket(ip, port);
 
-        serverListener = new ServerListener(server, this);
+        serverListener = new ServerListener(server, this, controler);
         serverListener.start();
     }
 
