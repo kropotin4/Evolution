@@ -67,8 +67,7 @@ public class Creature {
     }
 
     /**Adds new trait if possible; do some checks; changes constants
-     * @returns false if trait has not added
-     * @returns true if trait is added
+     * @return false if trait has not added
      */
     boolean addTrait(Card card){
         if (card.getTrait() == Trait.FAT_TISSUE){
@@ -93,8 +92,11 @@ public class Creature {
         totalHunger += card.getTrait().getHunger();
         return switchTrait(card.getTrait(), true);
     }
+
+
     boolean removeTrait(Card card) {
         cards.remove(card);
+
         return cancelTrait(card.getTrait()); //TODO: index deletion for fat tissue
     }
     boolean cancelTrait(Trait trait){
@@ -205,6 +207,14 @@ public class Creature {
         }
         return false;
     }
+    static boolean isPairTrait(Trait trait){
+        if(trait == Trait.COMMUNICATION
+        || trait == Trait.COOPERATION
+        || trait == Trait.SYMBIOSYS)
+            return true;
+
+        return false;
+    }
 
     boolean isFed(){
         return totalSatiety == totalHunger;
@@ -214,20 +224,18 @@ public class Creature {
         return (fatCapacity == fatQuantity) && isFed();
     }
 
-    boolean attack (Creature creature){
-        if(!isAttackPossible(creature)) return false;
-        //Todo: tail loss
-        //Todo: mimicry
-        //Todo: Где-то здесь запускается метод защиты атакуемого существа.
+    void attack (Creature creature){
+
         if (creature.isPoisonous) isPoisoned = true;
 
         creature.player.killCreature(creature);
+
         for (int i = 0; i < 2; ++i){
             if (!isFed()) ++totalSatiety;
             else if (!isSatisfied()) ++fatQuantity;
         }
+
         isAttacked = true;
-        return true;
     }
 
     boolean isAttackPossible(Creature creature){

@@ -58,7 +58,7 @@ public class PlayerListener extends Thread {
             return;
         }
 
-
+        server.addPlayerOS(new OS(os, playerNumber));
 
         Object mesObject = null;
         while(true){
@@ -210,19 +210,14 @@ public class PlayerListener extends Thread {
             case 2: //Защита от атаки (Существо + Свойства)
                     //EatingMessage(int playerAttacker, UUID defendingCreature, Trait trait)
 
-                if(eatingMessage.getTrait() == Trait.RUNNING){
-                    if(Dice.rollOneDice() > 3){
-                        //TODO: Неудачная атака
-                    }
-                    else{
-                        controler.attackCreature(
-                                eatingMessage.getAttackerPlayerNumber(),
-                                playerNumber,
-                                eatingMessage.getAttackerCreatureId(),
-                                eatingMessage.getDefendingCreatureId()
-                        );
-                    }
-                }
+
+                controler.attackCreature(
+                        eatingMessage.getAttackerPlayerNumber(),
+                        playerNumber,
+                        eatingMessage.getAttackerCreatureId(),
+                        eatingMessage.getDefendingCreatureId()
+                );
+
 
                 //player.defendCreature()
 
@@ -232,9 +227,5 @@ public class PlayerListener extends Thread {
         }
 
         server.recievedMessage = eatingMessage;
-    }
-
-    OS getOS(){
-        return new OS(os, playerNumber);
     }
 }

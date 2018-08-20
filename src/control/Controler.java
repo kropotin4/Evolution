@@ -91,10 +91,23 @@ public class Controler {
         Creature defender = dPlayer.findCreature(defenderCreature);
 
         if(attacker.isAbsoluteAttackPossible(defender)){
-            aPlayer.attackCreature(attacker, defender);
+            aPlayer.attackCreature(attacker, defender, null);
             return true;
         }
 
         return false;
+    }
+    public void defendCreature(int attackerPlayer, int defenderPlayer, int attackerCreature, int defenderCreature, Card[] defendTraits){
+        Player aPlayer = findPlayer(attackerPlayer);
+        Player dPlayer = findPlayer(defenderPlayer);
+
+        Card[] cards = null;
+
+        aPlayer.attackCreature(
+                aPlayer.findCreature(attackerCreature),
+                dPlayer.findCreature(defenderCreature),
+                null,
+                cards
+        );
     }
 }

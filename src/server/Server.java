@@ -55,7 +55,6 @@ public class Server extends Thread{
             try {
                 Socket newPlayer = serverSocket.accept();
                 PlayerListener playerListener = new PlayerListener(this, newPlayer, controler);
-                playersStream.add(playerListener.getOS());
                 playerListener.start();
 
             } catch (IOException e) {
@@ -192,6 +191,7 @@ public class Server extends Thread{
         }
     }
 
+
     ObjectOutputStream findPlayerStream(int playerNumber){
         for(OS playerStream : playersStream){
             if(playerStream.playerNumber == playerNumber) return playerStream.os;
@@ -199,7 +199,6 @@ public class Server extends Thread{
 
         return null;
     }
-
 
     private void sendingAllResults(){
         for (OS playerStream : playersStream) { // Игроки
@@ -211,5 +210,9 @@ public class Server extends Thread{
             }
 
         }
+    }
+
+    synchronized public void addPlayerOS(OS os){
+        playersStream.add(os);
     }
 }

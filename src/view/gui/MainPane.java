@@ -2,12 +2,13 @@ package view.gui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.geometry.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import model.Phase;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -15,12 +16,14 @@ import java.io.IOException;
 
 public class MainPane extends BorderPane {
 
-    @FXML private TextArea text_common;
+    @FXML private AnchorPane pane;
     @FXML private TextArea text_chat;
     @FXML private TextField text_input;
 
     @FXML private HBox creature_box;
     @FXML private VBox action_box;
+
+    Chat chat;
 
     public MainPane(){
         FXMLLoader fxmlLoader = new FXMLLoader(
@@ -40,14 +43,16 @@ public class MainPane extends BorderPane {
 
     @FXML
     private void initialize(){
-        text_common.setText("Hello");
-        text_chat.setText("Hello");
-        text_input.setText("Hello");
+        chat = new Chat(text_chat);
 
-        setAction_box(Phase.GROWTH);
+        chat.addMessage("system","Hello");
+        chat.addMessage("system","And hello");
+        chat.addMessage("system","And ... hello!!!");
+
+        setActionBox(Phase.GROWTH);
     }
 
-    public void setAction_box(Phase phase) {
+    public void setActionBox(Phase phase) {
         action_box.getChildren().clear();
 
         switch (phase){
@@ -55,13 +60,18 @@ public class MainPane extends BorderPane {
 
                 Button addTrait = new Button();
                 addTrait.setText("Положить свойство");
+                addTrait.setPrefWidth(500);
                 //addTrait.setPrefSize();
 
                 Button addPairTrait = new Button();
                 addPairTrait.setText("Положить парное свойство");
+                addPairTrait.setPrefWidth(500);
 
                 Button addTraitToOtherCreature = new Button();
                 addTraitToOtherCreature.setText("Положить свойство на чужое существо");
+                addTraitToOtherCreature.setTextAlignment(TextAlignment.CENTER);
+                addTraitToOtherCreature.setWrapText(true);
+                addTraitToOtherCreature.setPrefWidth(500);
 
                 action_box.getChildren().addAll(addTrait, addPairTrait, addTraitToOtherCreature);
 
@@ -71,5 +81,18 @@ public class MainPane extends BorderPane {
 
                 break;
         }
+
+        Button showCards = new Button();
+        showCards.setText("Показать свои карты");
+        showCards.setPrefWidth(500);
+
+        Separator separator = new Separator(Orientation.HORIZONTAL);
+        separator.setPrefWidth(500);
+        separator.setPrefHeight(10);
+        separator.setValignment(VPos.BASELINE);
+        separator.setStyle("-fx-background-color: white");
+
+        action_box.getChildren().addAll(separator, showCards);
     }
+
 }

@@ -50,13 +50,58 @@ public class Player {
         table.setFodder();
     }
 
-    public boolean attackCreature(Creature attacker, Creature defending){
-        if(attacker.attack(defending)) return true;
+
+    /**
+     * Ноль аргументов - абсолютная атака (нужна для клиента)
+     * Больше ноля - есть защитные trait => Полноценная атака
+     *
+     * @param attacker - attack Creature
+     * @param defender - defend Creature
+     * @param optional - optional Creature
+     * @param defendTrait - varlen Defend Traits
+     * @return - true if success attack
+     */
+    public boolean attackCreature(Creature attacker, Creature defender, Creature optional, Card ... defendTrait){
+        if(!attacker.isAttackPossible(defender))
+            return false;
+
+        if(attacker.isAbsoluteAttackPossible(defender)) {
+            attacker.attack(defender);
+            return true;
+        }
+
+        if(defendTrait.length == 0){
+            attacker.attack(defender);
+            return true;
+        }
+
+        //Правило постановки trait: первый всегда running
+        //Больше 3 trait быть (???) не должно
+
+        if(defendTrait[0].getTrait() == Trait.RUNNING){
+            if(Dice.rollOneDice() > 3)
+                return false;
+
+            if(defendTrait.length == 1)
+                return true;
+        }
+
+        switch (defendTrait[1].getTrait()){
+            case TAIL_LOSS:
+                if(Creature.isPairTrait(defendTrait[2].getTrait()))
+                    defender.removePairTrait(defendTrait[2].getTrait(), optional);
+                else
+                    defender.removeTrait(defendTrait[2]);
+                break;
+            case MIMICRY:
+                // Наверное, обойдется без этого
+                break;
+        }
 
         return true;
     }
 
-    public boolean defendCreature(Creature defending, Trait trait){
+    public boolean defendCreature(Creature defending, Trait  trait){
         //TODO:
         return true;
     }

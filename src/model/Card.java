@@ -1,5 +1,7 @@
 package model;
 
+import org.jetbrains.annotations.Contract;
+
 public class Card {
 
     private static int idCounter = 0;
@@ -36,6 +38,7 @@ public class Card {
         return id;
     }
 
+    @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object obj) {
         if(this == obj) return true;
@@ -43,6 +46,8 @@ public class Card {
         if(!(obj instanceof Card)) return false;
 
         Card card = (Card) obj;
+
+        if(card.getId() != id) return false; // !!!!!!!!!!!!!
 
         if((card.up != up && card.down != down)
                 || (card.up != down && card.down != up))
