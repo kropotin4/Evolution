@@ -110,4 +110,10 @@ public class Controler {
                 cards
         );
     }
+
+    public ArrayList<Creature> getCreatures(int playerNumber){
+        Player player = findPlayer(playerNumber);
+
+        return player.getCreatures();
+    }
 }

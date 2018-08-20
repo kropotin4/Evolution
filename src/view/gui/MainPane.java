@@ -25,6 +25,8 @@ public class MainPane extends BorderPane {
 
     Chat chat;
 
+    String system = "system";
+
     public MainPane(){
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/MainPane.fxml")
@@ -45,9 +47,11 @@ public class MainPane extends BorderPane {
     private void initialize(){
         chat = new Chat(text_chat);
 
-        chat.addMessage("system","Hello");
-        chat.addMessage("system","And hello");
-        chat.addMessage("system","And ... hello!!!");
+        chat.addMessage(system,"Hello");
+        chat.addMessage(system,"And hello");
+        chat.addMessage(system,"And ... hello!!!");
+
+        PlayerPane playerPane = new PlayerPane();
 
         setActionBox(Phase.GROWTH);
     }
@@ -55,12 +59,14 @@ public class MainPane extends BorderPane {
     public void setActionBox(Phase phase) {
         action_box.getChildren().clear();
 
+
         switch (phase){
             case GROWTH:
 
                 Button addTrait = new Button();
                 addTrait.setText("Положить свойство");
                 addTrait.setPrefWidth(500);
+
                 //addTrait.setPrefSize();
 
                 Button addPairTrait = new Button();
@@ -82,17 +88,19 @@ public class MainPane extends BorderPane {
                 break;
         }
 
+        VBox vBox = new VBox();
+        vBox.setPrefHeight(100);
+        vBox.setPrefWidth(500);
+        vBox.setAlignment(Pos.BOTTOM_CENTER);
+
         Button showCards = new Button();
         showCards.setText("Показать свои карты");
         showCards.setPrefWidth(500);
 
-        Separator separator = new Separator(Orientation.HORIZONTAL);
-        separator.setPrefWidth(500);
-        separator.setPrefHeight(10);
-        separator.setValignment(VPos.BASELINE);
-        separator.setStyle("-fx-background-color: white");
+        vBox.getChildren().add(showCards);
+        vBox.setPadding(new Insets(5, 0, 1, 0));
 
-        action_box.getChildren().addAll(separator, showCards);
+        action_box.getChildren().addAll(vBox);
     }
 
 }
