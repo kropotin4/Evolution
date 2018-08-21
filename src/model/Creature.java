@@ -57,7 +57,7 @@ public class Creature {
 
     ///endregion
 
-    Creature(Player player){
+    public Creature(Player player){
         this.player = player;
         id = commonID++;
     }
@@ -69,7 +69,7 @@ public class Creature {
     /**Adds new trait if possible; do some checks; changes constants
      * @return false if trait has not added
      */
-    boolean addTrait(Card card){
+    public boolean addTrait(Card card){
         if (card.getTrait() == Trait.FAT_TISSUE){
             ++fatCapacity;
             cards.add(card);

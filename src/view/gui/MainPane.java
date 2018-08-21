@@ -52,16 +52,23 @@ public class MainPane extends BorderPane {
         controler.addPlayer("anton");
 
         Player player = controler.getPlayers().get(0);
-        player.addCreature(new Card(Trait.BURROWING));
+
+        Creature creature = new Creature(player);
+        creature.addTrait(new Card(Trait.PREDATOR));
 
 
+        player.getCreatures().add(creature);
 
-        chat = new Chat(text_chat);
 
 
         PlayerPane playerPane = new PlayerPane(controler, 0);
-        pane.getChildren().add(playerPane);
 
+        playerPane.update();
+        creature_box.getChildren().add(playerPane);
+
+        playerPane.setVisible(true);
+
+        chat = new Chat(text_chat);
         setActionBox(Phase.GROWTH);
     }
 

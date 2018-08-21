@@ -36,12 +36,13 @@ public class PlayerPane extends HBox {
 
     @FXML
     private void initialize(){
-        update();
+        //update();
     }
 
     public void update(){
         for(Creature creature : controler.getCreatures(playerNumber)){
             CreatureNode creatureNode = new CreatureNode(creature);
+            creatureNode.update();
             this.getChildren().add(creatureNode);
         }
     }
