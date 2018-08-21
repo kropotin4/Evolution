@@ -1,5 +1,6 @@
 package view.gui;
 
+import control.Controler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
@@ -9,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import model.Phase;
+import model.*;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
@@ -45,13 +46,21 @@ public class MainPane extends BorderPane {
 
     @FXML
     private void initialize(){
+        Controler controler = new Controler();
+        controler.initialize(4, 1);
+
+        controler.addPlayer("anton");
+
+        Player player = controler.getPlayers().get(0);
+        player.addCreature(new Card(Trait.BURROWING));
+
+
+
         chat = new Chat(text_chat);
 
-        chat.addMessage(system,"Hello");
-        chat.addMessage(system,"And hello");
-        chat.addMessage(system,"And ... hello!!!");
 
-        PlayerPane playerPane = new PlayerPane();
+        PlayerPane playerPane = new PlayerPane(controler, 0);
+        pane.getChildren().add(playerPane);
 
         setActionBox(Phase.GROWTH);
     }

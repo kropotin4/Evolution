@@ -56,8 +56,8 @@ public class Controler {
     public int addPlayer(String login){
 
         //TODO: Нужна очередность ходов -> венуть номер в массиве.
-
-        return 1;
+        //
+        return table.addPlayer(login);
     }
     public int getPlayerCardsNumber(int playerNumber){
         Player player = findPlayer(playerNumber);

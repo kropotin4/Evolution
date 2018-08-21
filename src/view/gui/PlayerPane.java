@@ -3,13 +3,14 @@ package view.gui;
 import control.Controler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.Creature;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PlayerPane extends VBox {
+public class PlayerPane extends HBox {
 
     Controler controler;
     int playerNumber;

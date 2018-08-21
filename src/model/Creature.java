@@ -92,8 +92,6 @@ public class Creature {
         totalHunger += card.getTrait().getHunger();
         return switchTrait(card.getTrait(), true);
     }
-
-
     boolean removeTrait(Card card) {
         cards.remove(card);
 
@@ -293,6 +291,10 @@ public class Creature {
 
     public int getId(){
         return id;
+    }
+
+    public ArrayList<Card> getCards(){
+        return cards;
     }
 
     @Override

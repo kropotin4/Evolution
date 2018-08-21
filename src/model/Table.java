@@ -75,7 +75,13 @@ public class Table {
         return fodder;
     }
 
+    public int addPlayer(String login){
+        Player player = new Player(login);
 
+        players.add(player);
+
+        return players.size() - 1;
+    }
     public ArrayList<Player> getPlayers(){
         return players;
     }
