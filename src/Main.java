@@ -14,8 +14,8 @@ public class Main extends Application {
         MainPane mainPane = new MainPane();
         Scene scene = new Scene(mainPane, Color.TRANSPARENT);
 
-        primaryStage.setMinWidth(mainPane.getMinWidth() + 20);
-        primaryStage.setMinHeight(mainPane.getMinHeight() + 40);
+        primaryStage.setMinWidth(mainPane.getPrefWidth() + 20);
+        primaryStage.setMinHeight(mainPane.getPrefHeight() + 40);
 
         primaryStage.setScene(scene);
         primaryStage.show();

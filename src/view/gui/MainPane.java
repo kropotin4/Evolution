@@ -55,7 +55,7 @@ public class MainPane extends BorderPane {
 
         Creature creature = new Creature(player);
         creature.addTrait(new Card(Trait.PREDATOR));
-
+        creature.addTrait(new Card(Trait.FAT_TISSUE));
 
         player.getCreatures().add(creature);
 
@@ -100,6 +100,16 @@ public class MainPane extends BorderPane {
                 break;
 
             case EATING:
+
+                Button getEat = new Button();
+                getEat.setText("Взять еду из кормовой базы");
+                getEat.setPrefWidth(500);
+
+                Button attack = new Button();
+                attack.setText("Атака");
+                attack.setPrefWidth(500);
+
+                action_box.getChildren().addAll(getEat, attack);
 
                 break;
         }

@@ -41,7 +41,7 @@ public class PlayerPane extends HBox {
 
     public void update(){
         for(Creature creature : controler.getCreatures(playerNumber)){
-            CreatureNode creatureNode = new CreatureNode(creature);
+            CreatureNode creatureNode = new CreatureNode(this, creature);
             creatureNode.update();
             this.getChildren().add(creatureNode);
         }

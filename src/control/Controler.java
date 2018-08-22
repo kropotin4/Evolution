@@ -10,6 +10,11 @@ public class Controler {
     private Table table;
     private boolean haveInit = false;
 
+    public Controler(){}
+    public Controler(int quarterCardCount, int playerCount){
+        initialize(quarterCardCount, playerCount);
+    }
+
     public void initialize(int quarterCardCount, int playerCount){
         if(haveInit) throw new RuntimeException("Retry Contoler init");
         haveInit = true;
