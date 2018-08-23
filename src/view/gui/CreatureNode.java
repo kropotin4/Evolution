@@ -83,7 +83,7 @@ public class CreatureNode extends VBox {
 
     }
 
-    private void switchTraitStyle(Node node, Trait trait){
+    public static void switchTraitStyle(Node node, Trait trait){
         switch (trait){
             case PREDATOR:
                 setTraitStyle(node, "coral");
@@ -94,7 +94,7 @@ public class CreatureNode extends VBox {
         }
     }
 
-    private void setTraitStyle(Node node, String color){
+    private static void setTraitStyle(Node node, String color){
         node.setStyle("");
 
         node.setStyle("-fx-border-width: 1.5 0 0 0; -fx-border-color: green;");

@@ -1,21 +1,28 @@
 package view.gui;
 
 import control.Controler;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.*;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 
 public class MainPane extends BorderPane {
+
+    MainPane self = this;
 
     @FXML private AnchorPane pane;
     @FXML private TextArea text_chat;
@@ -122,6 +129,20 @@ public class MainPane extends BorderPane {
         Button showCards = new Button();
         showCards.setText("Показать свои карты");
         showCards.setPrefWidth(500);
+
+        showCards.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                Stage cardsStage = new Stage();
+                cardsStage.setHeight(250);
+                cardsStage.setWidth(450);
+
+                cardsStage.setTitle("Карты игрока");
+
+                cardsStage.show();
+            }
+        });
 
         vBox.getChildren().add(showCards);
         vBox.setPadding(new Insets(5, 0, 1, 0));
