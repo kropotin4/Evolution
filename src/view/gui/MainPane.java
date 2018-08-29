@@ -1,6 +1,7 @@
 package view.gui;
 
 import control.Controler;
+import control.ControlerGUI;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +36,8 @@ public class MainPane extends BorderPane {
 
     String system = "system";
 
+    CreatureNode selectedCreature;
+
     public MainPane(){
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/MainPane.fxml")
@@ -56,6 +59,8 @@ public class MainPane extends BorderPane {
         Controler controler = new Controler();
         controler.initialize(4, 1);
 
+        ControlerGUI controlerGUI = new ControlerGUI(controler, this);
+
         controler.addPlayer("anton");
 
         Player player = controler.getPlayers().get(0);
@@ -67,8 +72,7 @@ public class MainPane extends BorderPane {
         player.getCreatures().add(creature);
 
 
-
-        PlayerPane playerPane = new PlayerPane(controler, 0);
+        PlayerPane playerPane = new PlayerPane(controlerGUI, 0);
 
         playerPane.update();
         creature_box.getChildren().add(playerPane);
@@ -90,17 +94,31 @@ public class MainPane extends BorderPane {
                 addTrait.setText("Положить свойство");
                 addTrait.setPrefWidth(500);
 
-                //addTrait.setPrefSize();
+                addTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        //TODO: Сначала выбираем trait, потом тыкаем на существо
+                    }
+                });
 
                 Button addPairTrait = new Button();
                 addPairTrait.setText("Положить парное свойство");
                 addPairTrait.setPrefWidth(500);
 
+                addPairTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        //TODO: Сначала выбираем trait, потом тыкаем на 2 существа
+                    }
+                });
+
+                //Вероятно, можно обойтись бэз этого
                 Button addTraitToOtherCreature = new Button();
                 addTraitToOtherCreature.setText("Положить свойство на чужое существо");
                 addTraitToOtherCreature.setTextAlignment(TextAlignment.CENTER);
                 addTraitToOtherCreature.setWrapText(true);
                 addTraitToOtherCreature.setPrefWidth(500);
+
 
                 action_box.getChildren().addAll(addTrait, addPairTrait, addTraitToOtherCreature);
 
@@ -150,4 +168,7 @@ public class MainPane extends BorderPane {
         action_box.getChildren().addAll(vBox);
     }
 
+    public void setSelectedCreature(CreatureNode creatureNode){
+        selectedCreature = creatureNode;
+    }
 }

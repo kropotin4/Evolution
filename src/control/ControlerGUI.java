@@ -1,8 +1,12 @@
 package control;
 
 import model.Card;
+import model.Creature;
+import model.Player;
 import view.gui.CreatureNode;
 import view.gui.MainPane;
+
+import java.util.ArrayList;
 
 public class ControlerGUI {
 
@@ -32,5 +36,10 @@ public class ControlerGUI {
 
     }
 
-    public
+    public void selectCreature(CreatureNode creatureNode){
+        mainPane.setSelectedCreature(creatureNode);
+    }
+    public ArrayList<Creature> getCreatures(int playerNumber){
+        return controler.getCreatures(playerNumber);
+    }
 }
