@@ -39,7 +39,8 @@ public class Player {
     ArrayList<Creature> creatures = new ArrayList<>();
 
 
-    public Player(String login){
+    public Player(Table table, String login){
+        this.table = table;
         this.login = login;
     }
 
@@ -161,6 +162,9 @@ public class Player {
     }
     public int getPlayerCardsNumber(){
         return playerDeck.getCardsNumber();
+    }
+    public PlayerCardDeck getPlayerCardDeck(){
+        return playerDeck;
     }
 
     public String getLogin(){

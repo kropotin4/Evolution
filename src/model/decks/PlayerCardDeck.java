@@ -1,19 +1,26 @@
 package model.decks;
 
 import model.Card;
+import model.CardPair;
 
 import java.util.ArrayList;
 
 public class PlayerCardDeck {
-    private ArrayList<Card> deck = new ArrayList<>(12);
+    private ArrayList<CardPair> deck = new ArrayList<>(12);
 
 
-    public ArrayList<Card> getCardDeck(){
+    public ArrayList<CardPair> getCardDeck(){
         return deck;
     }
 
     public void addCard(Card card){
-        deck.add(card);
+        for(CardPair cardPair : deck){
+            if(cardPair.getCard() == card){
+                cardPair.add();
+                return;
+            }
+        }
+        deck.add(new CardPair(card));
     }
 
     public boolean removeCard(Card card){

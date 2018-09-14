@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import model.Card;
 import model.Creature;
@@ -22,9 +23,11 @@ public class CreatureNode extends VBox {
 
     PlayerPane playerPane;
 
-    Creature creature;
+    int creatureId;
 
-    public CreatureNode(PlayerPane playerPane, Creature creature){
+    boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    public CreatureNode(PlayerPane playerPane, int creatureId){
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/CreatureNode.fxml")
         );
@@ -40,13 +43,12 @@ public class CreatureNode extends VBox {
         }
 
         this.playerPane = playerPane;
-        this.creature = creature;
+        this.creatureId = creatureId;
     }
 
     @FXML
     private void initialize(){
-        //this.getStylesheets().add("-fx-border-color: green; -fx-border-width: 1;");
-        this.setStyle("-fx-border-color: green; -fx-border-width: 1;");
+        setBorder("green", 1);
         this.setPrefHeight(190);
         this.setMaxWidth(100);
         this.setAlignment(Pos.BOTTOM_CENTER);
@@ -56,8 +58,9 @@ public class CreatureNode extends VBox {
     public void update(){
         this.getChildren().clear();
 
-        ArrayList<Card> cards = creature.getCards();
-        for(int i = cards.size() - 1; i >= 0; --i){
+
+        ArrayList<Card> cards = playerPane.controler.getCreatureCards(this);
+        for(int i = cards.size() - 1; i >= 0; --i){ // Перечисление trait-ов
             Trait trait = cards.get(i).getTrait();
 
             Label label = new Label(trait.toString());
@@ -66,6 +69,8 @@ public class CreatureNode extends VBox {
             label.setAlignment(Pos.CENTER);
             label.setTextAlignment(TextAlignment.CENTER);
             label.setPrefWidth(500);
+
+            label.setFont(new Font(11));
 
             switchTraitStyle(label, trait);
 
@@ -91,13 +96,31 @@ public class CreatureNode extends VBox {
             case FAT_TISSUE:
                 setTraitStyle(node, "khaki");
                 break;
+            case SWIMMING:
+                setTraitStyle(node, "mediumturquoise");
+                break;
+            case PARASITE:
+                setTraitStyle(node, "orchid");
+                break;
         }
     }
-
     private static void setTraitStyle(Node node, String color){
         node.setStyle("");
 
-        node.setStyle("-fx-border-width: 1.5 0 0 0; -fx-border-color: green;");
+        //node.setStyle("-fx-border-width: 1.5 0 0.5 0; -fx-border-color: green;");
         node.setStyle(node.getStyle() + " -fx-background-color: " + color + ";");
+    }
+
+    public void setBorder(String color, double width){
+        this.setStyle("");
+
+        this.setStyle("-fx-border-color: " + color + "; -fx-border-width: " + width + ";");
+    }
+
+    public PlayerPane getPlayerPane() {
+        return playerPane;
+    }
+    public int getCreatureId(){
+        return creatureId;
     }
 }

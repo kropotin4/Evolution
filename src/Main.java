@@ -11,13 +11,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        MainPane mainPane = new MainPane();
-        Scene scene = new Scene(mainPane, Color.TRANSPARENT);
+        MainPane mainPane = new MainPane(primaryStage);
+        mainPane.show();
+        /*Scene scene = new Scene(mainPane, Color.TRANSPARENT);
 
         primaryStage.setMinWidth(mainPane.getPrefWidth() + 20);
         primaryStage.setMinHeight(mainPane.getPrefHeight() + 40);
 
+        primaryStage.setTitle("Эволюция");
+
         primaryStage.setScene(scene);
-        primaryStage.show();
+        primaryStage.show();*/
     }
 }

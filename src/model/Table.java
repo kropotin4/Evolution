@@ -76,7 +76,7 @@ public class Table {
     }
 
     public int addPlayer(String login){
-        Player player = new Player(login);
+        Player player = new Player(this, login);
 
         players.add(player);
 

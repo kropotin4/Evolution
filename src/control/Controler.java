@@ -46,6 +46,10 @@ public class Controler {
                 isUp
         );
     }
+    public ArrayList<Card> getCreatureCards(int playerNumber, int creatureID){
+        Player player = findPlayer(playerNumber);
+        return (ArrayList<Card>)player.findCreature(creatureID).getCards().clone();
+    }
 
     public void setFodder(){
         table.setFodder();
