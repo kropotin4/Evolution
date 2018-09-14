@@ -25,6 +25,9 @@ public class PlayerPane extends HBox {
     ImageView imageView = new ImageView("/images/icon1.png");
 
     public PlayerPane(ControlerGUI controler, int playerNumber){
+        this.controler = controler;
+        this.playerNumber = playerNumber;
+
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/PlayerPane.fxml")
         );
@@ -38,9 +41,6 @@ public class PlayerPane extends HBox {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-
-        this.controler = controler;
-        this.playerNumber = playerNumber;
     }
 
     @FXML
@@ -50,6 +50,9 @@ public class PlayerPane extends HBox {
     }
 
     public void update(){
+        if(controler.getCreatures(playerNumber).size() == 0)
+            return;
+
         for(Creature creature : controler.getCreatures(playerNumber)){
             CreatureNode creatureNode = new CreatureNode(this, creature.getId());
             creatureNode.update();

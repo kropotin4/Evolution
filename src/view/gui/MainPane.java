@@ -57,6 +57,9 @@ public class MainPane extends BorderPane {
     boolean isCardSelected = false;
 
     public MainPane(Stage primaryStage, Controler controler){
+        this.primaryStage = primaryStage;
+        this.controler = new ControlerGUI(controler, this, 0);
+
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/MainPane.fxml")
         );
@@ -70,9 +73,6 @@ public class MainPane extends BorderPane {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-
-        this.primaryStage = primaryStage;
-        this.controler = new ControlerGUI(controler, this, 0);
     }
 
     @FXML
@@ -138,6 +138,8 @@ public class MainPane extends BorderPane {
 
         bottom_action_box.setPadding(new Insets(5, 0, 1, 0));
         bottom_action_box.setSpacing(5);
+
+        controler.startGame();
     }
 
     public void setActionBox(Phase phase) {

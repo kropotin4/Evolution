@@ -11,29 +11,35 @@ public class Table {
     int step = 0;
     int playerTurn = 0;
 
-    static int fodder = 0;
+    int fodder = 0;
 
     CommonCardDeck commonDeck;
 
     Dice dice;
+    int initCardsNumber;
 
     ArrayList<Player> players;
     int passNumber;
 
-
+    //Создание общей колоды + создание игроков + раздача им карт + определение кубика
     public Table(int quarterCardCount, int playerCount){
         commonDeck = new CommonCardDeck(quarterCardCount);
         setDice(playerCount);
+        initCardsNumber = 8;
 
         //TODO: передавать в стол готовую колоду, чтобы можно было выбирать карты поштучно
         players = new ArrayList<>(playerCount);
+        for(int i = 0; i < playerCount; ++i){
+            addPlayer("");
+        }
 
-        /*for(int i = 0; i < initialCardCount; ++i){
-            for(Player player : players){
-
+        for(int i = 0; i < initCardsNumber; ++i){
+            for(Player player : players) {
+                player.getCard();
             }
-        }*/
-        //игра начинается с фазы раздачи карт. В этот момент игроки и получат свои карты
+        }
+
+
 
     }
 
@@ -50,6 +56,8 @@ public class Table {
                 if(passNumber == players.size()){
                     curPhase = Phase.CALC_FODDER_BASE;
                     playerTurn = (playerTurn + 1) % players.size();
+                    for(Player player : players)
+                        player.setPass(false);
                     break;
                 }
 
@@ -61,6 +69,8 @@ public class Table {
                 if(allPass){
                     curPhase = Phase.CALC_FODDER_BASE;
                     playerTurn = (oldTurn + 1) % players.size();
+                    for(Player player : players)
+                        player.setPass(false);
                     break;
                 }
                 break;
@@ -68,6 +78,8 @@ public class Table {
                 if(passNumber == players.size()){
                     curPhase = Phase.EXTINCTION;
                     playerTurn = (playerTurn + 1) % players.size();
+                    for(Player player : players)
+                        player.setPass(false);
                     break;
                 }
 
@@ -79,6 +91,8 @@ public class Table {
                 if(allPass){
                     curPhase = Phase.EXTINCTION;
                     playerTurn = (oldTurn + 1) % players.size();
+                    for(Player player : players)
+                        player.setPass(false);
                     break;
                 }
                 break;

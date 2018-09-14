@@ -49,7 +49,7 @@ public class ServerListener extends Thread {
         if(!(mesObject instanceof Table))
             throw new RuntimeException("...");
 
-        controler.initialize((Table) mesObject);
+        //controler.initialize((Table) mesObject);
 
         while(true){
 

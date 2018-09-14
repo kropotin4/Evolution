@@ -8,28 +8,14 @@ import java.util.UUID;
 public class Controler {
 
     private Table table;
-    private boolean haveInit = false;
 
-    public Controler(){}
     public Controler(int quarterCardCount, int playerCount){
-        initialize(quarterCardCount, playerCount);
-    }
-
-    public void initialize(int quarterCardCount, int playerCount){
-        if(haveInit) throw new RuntimeException("Retry Contoler init");
-        haveInit = true;
-
         table = new Table(quarterCardCount, playerCount);
     }
-    public void initialize(Table table){
-        if(haveInit) throw new RuntimeException("Retry Contoler init");
-        haveInit = true;
 
-        this.table = table;
-    }
 
     public void doNextMove(){
-
+        table.doNextMove();
     }
 
     // +? проверку на return
@@ -81,6 +67,9 @@ public class Controler {
     }
     public Player getPlayPlayer(){
         return table.getPlayers().get(table.getPlayerTurn());
+    }
+    public int getPlayerTurn(){
+        return table.getPlayerTurn();
     }
     public Player findPlayer(int playerNumber){
         if(playerNumber < 0 || playerNumber >= table.getPlayers().size()){

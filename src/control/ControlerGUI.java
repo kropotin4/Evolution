@@ -23,8 +23,13 @@ public class ControlerGUI {
         this.playerNumber = playerNumber;
     }
 
-    public void doNextMove(){
+    public void startGame(){
+        mainPane.update(0);
+    }
 
+    public void doNextMove(){
+        controler.doNextMove();
+        mainPane.update(controler.getPlayerTurn());
     }
 
     public int getPlayersNumber(){

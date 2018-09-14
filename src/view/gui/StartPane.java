@@ -42,9 +42,7 @@ public class StartPane extends VBox {
     private void initialize(){
         this.setPrefSize(500, 300);
 
-        Controler controler = new Controler();
-        controler.initialize(2, 2);
-
+        Controler controler = new Controler(2, 2);
 
 
         play_yourself.setOnMouseClicked(new EventHandler<MouseEvent>() {
