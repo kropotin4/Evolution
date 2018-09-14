@@ -18,6 +18,7 @@ public class Table {
     Dice dice;
 
     ArrayList<Player> players;
+    int passNumber;
 
 
     public Table(int quarterCardCount, int playerCount){
@@ -36,6 +37,61 @@ public class Table {
 
     }
 
+    public void doNextMove(){
+        boolean allPass = true;
+        int i = 0, oldTurn = playerTurn;
+
+        switch (curPhase){
+            case CALC_FODDER_BASE:
+                setFodder();
+                curPhase = Phase.GROWTH;
+                break;
+            case GROWTH:
+                if(passNumber == players.size()){
+                    curPhase = Phase.CALC_FODDER_BASE;
+                    playerTurn = (playerTurn + 1) % players.size();
+                    break;
+                }
+
+                while(i++ <= players.size()){
+                    playerTurn = (playerTurn + 1) % players.size();
+                    if(players.get(playerTurn).isPass) continue;
+                    allPass = false;
+                }
+                if(allPass){
+                    curPhase = Phase.CALC_FODDER_BASE;
+                    playerTurn = (oldTurn + 1) % players.size();
+                    break;
+                }
+                break;
+            case EATING:
+                if(passNumber == players.size()){
+                    curPhase = Phase.EXTINCTION;
+                    playerTurn = (playerTurn + 1) % players.size();
+                    break;
+                }
+
+                while(i++ <= players.size()){
+                    playerTurn = (playerTurn + 1) % players.size();
+                    if(players.get(playerTurn).isPass) continue;
+                    allPass = false;
+                }
+                if(allPass){
+                    curPhase = Phase.EXTINCTION;
+                    playerTurn = (oldTurn + 1) % players.size();
+                    break;
+                }
+                break;
+            case EXTINCTION:
+                //TODO: Написать смерть
+                curPhase = Phase.DEALING;
+                break;
+            case DEALING:
+                //TODO: Раздача карт
+                curPhase = Phase.GROWTH;
+                break;
+        }
+    }
 
     public CommonCardDeck getCommonDeck() {
         return commonDeck;

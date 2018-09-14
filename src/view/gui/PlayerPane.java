@@ -6,6 +6,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -19,6 +21,8 @@ public class PlayerPane extends HBox {
 
     ControlerGUI controler;
     int playerNumber;
+
+    ImageView imageView = new ImageView("/images/icon1.png");
 
     public PlayerPane(ControlerGUI controler, int playerNumber){
         FXMLLoader fxmlLoader = new FXMLLoader(
@@ -41,7 +45,8 @@ public class PlayerPane extends HBox {
 
     @FXML
     private void initialize(){
-        //update();
+        this.setStyle("-fx-border-width: 1; -fx-border-color: black;");
+        update();
     }
 
     public void update(){
@@ -108,6 +113,12 @@ public class PlayerPane extends HBox {
 
     void setCreatureBorders(CreatureNode creatureNode, String color, double width){
         creatureNode.setBorder(color, width);
+    }
+
+    public ImageView showAddIcon(){
+        this.getChildren().add(imageView);
+
+        return imageView;
     }
 
     public int getPlayerNumber(){

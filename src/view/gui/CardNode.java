@@ -51,6 +51,7 @@ public class CardNode extends HBox {
         card_number.setWrapText(true);
 
         this.setPrefSize(125, 80);
+        this.setMaxSize(125, 80);
         this.setSpacing(2);
 
         this.getChildren().addAll(traits_box, card_number);
@@ -62,7 +63,7 @@ public class CardNode extends HBox {
     private void initialize(){
 
 
-        this.setStyle("-fx-border-width: 1; -fx-border-color: green;");
+        this.setStyle("-fx-border-width: 1; -fx-border-color: goldenrod;");
 
         if (card.getTrait(true) == card.getTrait(false)) {
 
@@ -112,6 +113,13 @@ public class CardNode extends HBox {
 
         card_number.setText("x" + number);
         card_number.setStyle("-fx-font-weight: bold;");
+    }
+
+    public void setSelected(boolean isSelected){
+        if(isSelected)
+            this.setStyle("-fx-border-width: 3; -fx-border-color: green;");
+        else
+            this.setStyle("-fx-border-width: 1; -fx-border-color: goldenrod;");
     }
 
 }

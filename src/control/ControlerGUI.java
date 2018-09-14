@@ -23,6 +23,14 @@ public class ControlerGUI {
         this.playerNumber = playerNumber;
     }
 
+    public void doNextMove(){
+
+    }
+
+    public int getPlayersNumber(){
+        return controler.getPlayersNumber();
+    }
+
     public void addTraitToCreature(CreatureNode creatureNode, Card card){
 
     }

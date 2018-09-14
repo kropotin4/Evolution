@@ -3,6 +3,7 @@ import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import view.gui.MainPane;
+import view.gui.StartPane;
 
 public class Main extends Application {
     public static void main(String[] args){
@@ -11,8 +12,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        MainPane mainPane = new MainPane(primaryStage);
-        mainPane.show();
+        StartPane startPane = new StartPane(primaryStage);
+        startPane.show();
         /*Scene scene = new Scene(mainPane, Color.TRANSPARENT);
 
         primaryStage.setMinWidth(mainPane.getPrefWidth() + 20);

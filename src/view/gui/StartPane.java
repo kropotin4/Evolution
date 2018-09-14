@@ -1,5 +1,7 @@
 package view.gui;
 
+import control.Controler;
+import control.ControlerGUI;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,8 +16,7 @@ import java.io.IOException;
 
 public class StartPane extends VBox {
 
-    @FXML
-    Button play_yourself;
+    @FXML Button play_yourself;
 
     Stage primaryStage;
 
@@ -24,7 +25,7 @@ public class StartPane extends VBox {
                 getClass().getResource("/StartPane.fxml")
         );
 
-        ///fxmlLoader.setRoot(this);
+        fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
         try {
@@ -39,11 +40,18 @@ public class StartPane extends VBox {
 
     @FXML
     private void initialize(){
+        this.setPrefSize(500, 300);
+
+        Controler controler = new Controler();
+        controler.initialize(2, 2);
+
+
 
         play_yourself.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-
+                MainPane mainPane = new MainPane(primaryStage, controler);
+                mainPane.show();
             }
         });
     }

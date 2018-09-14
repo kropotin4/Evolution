@@ -28,6 +28,10 @@ public class Controler {
         this.table = table;
     }
 
+    public void doNextMove(){
+
+    }
+
     // +? проверку на return
     public void addTraitToCreature(int playerNumber, int creatureID, Card card, boolean isUp){
         Player player = findPlayer(playerNumber);

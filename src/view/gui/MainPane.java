@@ -8,6 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -17,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import model.*;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -26,12 +29,19 @@ public class MainPane extends BorderPane {
 
     MainPane self = this;
 
-    @FXML private AnchorPane pane;
+    @FXML private VBox players_pane;
     @FXML private TextArea text_chat;
     @FXML private TextField text_input;
 
     @FXML private HBox creature_box;
-    @FXML private VBox action_box;
+
+    @FXML private VBox bottom_action_box;
+    @FXML private VBox top_action_box;
+
+    Button showCardsButton = new Button();
+    Button addTraitButton = new Button();
+    Button getEatButton = new Button();
+    Button attackButton = new Button();
 
     ControlerGUI controler;
     Stage primaryStage;
@@ -44,7 +54,9 @@ public class MainPane extends BorderPane {
     CreatureNode selectedCreature;
     CardNode selectedCard;
 
-    public MainPane(Stage primaryStage){
+    boolean isCardSelected = false;
+
+    public MainPane(Stage primaryStage, Controler controler){
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/MainPane.fxml")
         );
@@ -60,113 +72,91 @@ public class MainPane extends BorderPane {
         }
 
         this.primaryStage = primaryStage;
+        this.controler = new ControlerGUI(controler, this, 0);
     }
 
     @FXML
     private void initialize(){
-        Controler controler = new Controler();
-        controler.initialize(4, 1);
 
-        ControlerGUI controlerGUI = new ControlerGUI(controler, this, 0);
-        this.controler = controlerGUI;
-        controler.addPlayer("anton");
-
-        Player player = controler.getPlayers().get(0);
-
-        Creature creature = new Creature(player);
-        creature.addTrait(new Card(Trait.PREDATOR));
-        creature.addTrait(new Card(Trait.FAT_TISSUE));
-
-        player.getCreatures().add(creature);
-
-        player.getCard();
-        player.getCard();
-        player.getCard();
-
-        PlayerPane playerPane = new PlayerPane(controlerGUI, 0);
-
-        playerPane.update();
-        creature_box.getChildren().add(playerPane);
-
-
-        deckPane = new DeckPane(controlerGUI);
+        deckPane = new DeckPane(controler);
         chat = new Chat(text_chat);
         setActionBox(Phase.GROWTH);
+
+        ///region addTrait init
+        addTraitButton.setText("Положить свойство");
+        addTraitButton.setPrefWidth(500);
+
+        addTraitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                //TODO: Сначала выбираем trait, потом тыкаем на существо
+                if(!deckPane.isShow)
+                    showDeckPane();
+
+            }
+        });
+        ///endregion
+
+        ///region getEatButton init
+        getEatButton.setText("Взять еду из кормовой базы");
+        getEatButton.setPrefWidth(500);
+
+        getEatButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });
+        ///endregion
+
+        ///region attackButton init
+        attackButton.setText("Атака");
+        attackButton.setPrefWidth(500);
+
+        attackButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });
+        ///endregion
+
+        ///region showCards init
+        showCardsButton.setText("Показать свои карты");
+        showCardsButton.setPrefWidth(500);
+
+        showCardsButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                showDeckPane();
+
+            }
+        });
+        bottom_action_box.getChildren().add(showCardsButton);
+        ///endregion
+
+        bottom_action_box.setPadding(new Insets(5, 0, 1, 0));
+        bottom_action_box.setSpacing(5);
     }
 
     public void setActionBox(Phase phase) {
-        action_box.getChildren().clear();
-
+        top_action_box.getChildren().clear();
 
         switch (phase){
             case GROWTH:
 
-                Button addTrait = new Button();
-                addTrait.setText("Положить свойство");
-                addTrait.setPrefWidth(500);
-
-                addTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        //TODO: Сначала выбираем trait, потом тыкаем на существо
-
-                    }
-                });
-
-
-                action_box.getChildren().add(addTrait);
+                top_action_box.getChildren().add(addTraitButton);
 
                 break;
 
             case EATING:
 
-                Button getEat = new Button();
-                getEat.setText("Взять еду из кормовой базы");
-                getEat.setPrefWidth(500);
-
-                Button attack = new Button();
-                attack.setText("Атака");
-                attack.setPrefWidth(500);
-
-                action_box.getChildren().addAll(getEat, attack);
+                top_action_box.getChildren().addAll(getEatButton, attackButton);
 
                 break;
         }
 
-        VBox vBox = new VBox();
-        vBox.setPrefHeight(100);
-        vBox.setPrefWidth(500);
-        vBox.setAlignment(Pos.BOTTOM_CENTER);
-
-        Button showCards = new Button();
-        showCards.setText("Показать свои карты");
-        showCards.setPrefWidth(500);
-
-        showCards.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-
-                deckPane.update();
-
-                Scene scene = new Scene(deckPane, Color.TRANSPARENT);
-
-                Stage cardsStage = new Stage();
-                cardsStage.setHeight(250);
-                cardsStage.setWidth(450);
-
-                cardsStage.setScene(scene);
-
-                cardsStage.setTitle("Карты игрока");
-
-                cardsStage.show();
-
-            }
-        });
-
-        vBox.getChildren().add(showCards);
-        vBox.setPadding(new Insets(5, 0, 1, 0));
-
-        action_box.getChildren().addAll(vBox);
     }
 
     public void setSelectedCreature(CreatureNode creatureNode){
@@ -174,6 +164,36 @@ public class MainPane extends BorderPane {
     }
     public void setSelectedCard(CardNode cardNode){
         selectedCard = cardNode;
+    }
+
+    public void showSelectedCard(boolean isShow){
+        bottom_action_box.getChildren().clear();
+
+        if(isShow) {
+            CardNode cardNode = new CardNode(new Card(Trait.FAT_TISSUE, Trait.SYMBIOSYS), 4);
+            bottom_action_box.getChildren().addAll(cardNode, showCardsButton);
+
+        }
+        else bottom_action_box.getChildren().add(showCardsButton);
+    }
+
+    private void showDeckPane(){
+        deckPane.update();
+        deckPane.show();
+    }
+
+    public void update(int playerNumber){
+
+        for(int i = 0; i < controler.getPlayersNumber(); ++i){
+            if(i == playerNumber) continue;
+
+            PlayerPane playerPane = new PlayerPane(controler, i);
+            players_pane.getChildren().add(playerPane);
+        }
+
+        PlayerPane playerPane = new PlayerPane(controler, playerNumber);
+        creature_box.getChildren().add(playerPane);
+
     }
 
     public void show(){

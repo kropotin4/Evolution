@@ -33,6 +33,8 @@ public class Player {
 
     String login;
 
+    boolean isPass = false;
+
     PlayerCardDeck playerDeck = new PlayerCardDeck();
     DropCardDeck dropDeck = new DropCardDeck();
 
@@ -167,6 +169,11 @@ public class Player {
         return playerDeck;
     }
 
+    public void setPass(boolean isPass){
+        this.isPass = isPass;
+        if(isPass) table.passNumber++;
+        else table.passNumber--;
+    }
     public String getLogin(){
         return login;
     }
