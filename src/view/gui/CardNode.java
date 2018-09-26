@@ -1,7 +1,5 @@
 package view.gui;
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -9,9 +7,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import model.Card;
 
-import java.io.IOException;
-
 public class CardNode extends HBox {
+
+    int id;
 
     Card card;
     int number;
@@ -24,6 +22,7 @@ public class CardNode extends HBox {
     public CardNode(Card card, int number){
         this.card = card;
         this.number = number;
+        this.id = card.getId();
         /*
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/CardNode.fxml")
@@ -54,7 +53,7 @@ public class CardNode extends HBox {
         this.setMaxSize(125, 80);
         this.setSpacing(2);
 
-        this.getChildren().addAll(traits_box, card_number);
+        this.getChildren().addAll(traits_box);
 
         initialize();
     }
@@ -111,8 +110,16 @@ public class CardNode extends HBox {
     public void setNumber(int number){
         if(number < 0) throw new RuntimeException("CardNode: setNumber: number < 0");
 
+        switch (number){
+            case 1:
+                card_number.setText("");
+                return;
+            default:
+                break;
+        }
         card_number.setText("x" + number);
         card_number.setStyle("-fx-font-weight: bold;");
+        this.getChildren().add(card_number);
     }
 
     public void setSelected(boolean isSelected){
@@ -121,5 +128,27 @@ public class CardNode extends HBox {
         else
             this.setStyle("-fx-border-width: 1; -fx-border-color: goldenrod;");
     }
+
+
+    public Card getCard(){
+        return card;
+    }
+    public int getID() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof CardNode))
+            return false;
+
+        CardNode cardNode = (CardNode) obj;
+
+        if(cardNode.getID() == this.getID())
+            return true;
+
+        return false;
+    }
+
 
 }

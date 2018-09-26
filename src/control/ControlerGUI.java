@@ -2,7 +2,7 @@ package control;
 
 import model.Card;
 import model.Creature;
-import model.Player;
+import model.Phase;
 import model.decks.PlayerCardDeck;
 import view.gui.CardNode;
 import view.gui.CreatureNode;
@@ -35,8 +35,21 @@ public class ControlerGUI {
     public int getPlayersNumber(){
         return controler.getPlayersNumber();
     }
+    public Phase getCurrentPhase(){
+        return controler.getCurrentPhase();
+    }
 
-    public void addTraitToCreature(CreatureNode creatureNode, Card card){
+    public void addCreature(CardNode cardNode){
+        controler.addCreature(playerNumber, cardNode.getCard());
+        mainPane.setIsCreatureAdding(false);
+        mainPane.setIsCardSelecting(false);
+        mainPane.updateCurrentPlayer();
+    }
+
+    public void addTraitToCreature(CreatureNode creatureNode, CardNode cardNode){
+
+    }
+    public void addTraitToSelectedCreature(CardNode cardNode, boolean isUp){
 
     }
     public void addPairTraitToCreature(CreatureNode creatureNode1, CreatureNode creatureNode2, Card card){
@@ -45,6 +58,9 @@ public class ControlerGUI {
 
     public ArrayList<Card> getCreatureCards(CreatureNode creatureNode){
         return controler.getCreatureCards(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+    }
+    public int getPlayerCardNumber(){
+        return controler.getPlayerCardsNumber(playerNumber);
     }
 
     public void getFoodFromFodder(CreatureNode creatureNode){
@@ -67,8 +83,25 @@ public class ControlerGUI {
 
     public void selectCard(CardNode cardNode){
         mainPane.setSelectedCard(cardNode);
+        mainPane.showSelectedCard(true);
+    }
+    public CardNode getSelectedCard(){
+        return mainPane.getSelectedCard();
     }
     public PlayerCardDeck getPlayerCardDeck(){
         return controler.getPlayers().get(playerNumber).getPlayerCardDeck();
+    }
+    public boolean isCardSelecting(){
+        return mainPane.isCardSelecting();
+    }
+    public boolean isCardSelected(){
+        return mainPane.isCardSelected();
+    }
+    public boolean isCreatureAdding(){
+        return mainPane.isCreatureAdding();
+    }
+
+    public void setDeckPaneTop(){
+        mainPane.deckPane.setTop();
     }
 }

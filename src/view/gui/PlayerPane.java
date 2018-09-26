@@ -5,6 +5,8 @@ import control.ControlerGUI;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,10 +21,18 @@ import java.util.ArrayList;
 
 public class PlayerPane extends HBox {
 
+    PlayerPane self = this;
     ControlerGUI controler;
     int playerNumber;
 
-    ImageView imageView = new ImageView("/images/icon1.png");
+    HBox imageBox = new HBox();
+    Image plus1 = new Image("/images/plus1.png");
+    Image plus2 = new Image("/images/plus2.png");
+    ImageView imageView = new ImageView(plus1);
+    boolean imageIsShow = false;
+
+    long startTime;
+    long endTime;
 
     public PlayerPane(ControlerGUI controler, int playerNumber){
         this.controler = controler;
@@ -46,6 +56,30 @@ public class PlayerPane extends HBox {
     @FXML
     private void initialize(){
         this.setStyle("-fx-border-width: 1; -fx-border-color: black;");
+        this.setMinHeight(100);
+        this.setAlignment(Pos.CENTER_LEFT);
+        this.setPadding(new Insets(3));
+        this.setSpacing(3);
+
+        imageBox.getChildren().add(imageView);
+        imageBox.setAlignment(Pos.CENTER);
+        imageBox.setPrefSize(80, 300);
+        imageView.setCache(true);
+
+        imageView.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                imageView.setImage(plus2);
+            }
+        });
+
+        imageView.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                imageView.setImage(plus1);
+            }
+        });
+
         update();
     }
 
@@ -53,8 +87,10 @@ public class PlayerPane extends HBox {
         if(controler.getCreatures(playerNumber).size() == 0)
             return;
 
+        int num = 0;
+        this.getChildren().clear();
         for(Creature creature : controler.getCreatures(playerNumber)){
-            CreatureNode creatureNode = new CreatureNode(this, creature.getId());
+            CreatureNode creatureNode = new CreatureNode(this, creature.getId(), num++);
             creatureNode.update();
             this.getChildren().add(creatureNode);
 
@@ -64,12 +100,29 @@ public class PlayerPane extends HBox {
                     controler.selectCreature(creatureNode);
                     System.out.println("Select creature: " + creature.getId());
 
-                    setFalseStyle(creatureNode);
+                    if(event.getClickCount() == 1){
+                        startTime = System.nanoTime();
+                    }
+                    else{
+                        endTime = System.nanoTime();
+                        if(endTime - startTime >= 250){ // Окончание выбора карты + закрытие DeckPane
+                            if(controler.isCardSelected()){
+                                //controler.addTraitToCreature(creatureNode, controler.getSelectedCard());
+
+                            }
+
+                        }
+                    }
+
+                    //setFalseStyle(creatureNode);
                 }
             });
 
-            setTrueStyle(creatureNode);
+            //setTrueStyle(creatureNode);
         }
+
+        if(imageIsShow)
+            this.getChildren().add(imageBox);
     }
     public void setCreaturesWithTraitTrue(Trait trait){
 
@@ -118,10 +171,18 @@ public class PlayerPane extends HBox {
         creatureNode.setBorder(color, width);
     }
 
-    public ImageView showAddIcon(){
-        this.getChildren().add(imageView);
-
+    public ImageView getAddIcon(){
         return imageView;
+    }
+    public void showAddIcon(boolean isShow){
+        if(isShow && !imageIsShow) {
+            this.getChildren().add(imageBox);
+            imageIsShow = true;
+        }
+        else if(!isShow) {
+            this.getChildren().remove(imageBox);
+            imageIsShow = false;
+        }
     }
 
     public int getPlayerNumber(){

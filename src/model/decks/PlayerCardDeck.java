@@ -24,7 +24,18 @@ public class PlayerCardDeck {
     }
 
     public boolean removeCard(Card card){
-        return deck.remove(card);
+        for(CardPair cardPair : deck){
+            if(cardPair.getCard() == card){
+                if(cardPair.getNumber() == 1){
+                    return deck.remove(cardPair);
+                }
+                else{
+                    cardPair.reduce();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public int getCardsNumber(){

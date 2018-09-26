@@ -24,10 +24,11 @@ public class CreatureNode extends VBox {
     PlayerPane playerPane;
 
     int creatureId;
+    int number;
 
     boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    public CreatureNode(PlayerPane playerPane, int creatureId){
+    public CreatureNode(PlayerPane playerPane, int creatureId, int creatureNumber){
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/CreatureNode.fxml")
         );
@@ -41,7 +42,7 @@ public class CreatureNode extends VBox {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-
+        this.number = creatureNumber;
         this.playerPane = playerPane;
         this.creatureId = creatureId;
     }
@@ -51,13 +52,13 @@ public class CreatureNode extends VBox {
         setBorder("green", 1);
         this.setPrefHeight(190);
         this.setMaxWidth(100);
+        this.setMinWidth(100);
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setPadding(new Insets(2));
     }
 
     public void update(){
         this.getChildren().clear();
-
 
         ArrayList<Card> cards = playerPane.controler.getCreatureCards(this);
         for(int i = cards.size() - 1; i >= 0; --i){ // Перечисление trait-ов
@@ -77,7 +78,7 @@ public class CreatureNode extends VBox {
             this.getChildren().add(label);
         }
 
-        Label button = new Label("0");
+        Label button = new Label(Integer.toString(number));
         button.setAlignment(Pos.CENTER);
         button.setTextAlignment(TextAlignment.CENTER);
         button.setPrefHeight(7);
