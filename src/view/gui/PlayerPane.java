@@ -31,6 +31,8 @@ public class PlayerPane extends HBox {
     ImageView imageView = new ImageView(plus1);
     boolean imageIsShow = false;
 
+    ArrayList<CreatureNode> creatureNodes = new ArrayList<>(8);
+
     long startTime;
     long endTime;
 
@@ -89,10 +91,12 @@ public class PlayerPane extends HBox {
 
         int num = 0;
         this.getChildren().clear();
+        creatureNodes.clear();
         for(Creature creature : controler.getCreatures(playerNumber)){
             CreatureNode creatureNode = new CreatureNode(this, creature.getId(), num++);
             creatureNode.update();
             this.getChildren().add(creatureNode);
+            creatureNodes.add(creatureNode);
 
             creatureNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -108,7 +112,7 @@ public class PlayerPane extends HBox {
                         if(endTime - startTime >= 250){ // Окончание выбора карты + закрытие DeckPane
                             if(controler.isCardSelected()){
                                 //controler.addTraitToCreature(creatureNode, controler.getSelectedCard());
-
+                                controler.showAddTraitPane();
                             }
 
                         }
@@ -125,31 +129,32 @@ public class PlayerPane extends HBox {
             this.getChildren().add(imageBox);
     }
     public void setCreaturesWithTraitTrue(Trait trait){
-
-        for(Node node : this.getChildren()){
-            CreatureNode creatureNode = (CreatureNode) node;
-
+        for(CreatureNode creatureNode : creatureNodes){
             setTrueStyle(creatureNode);
             creatureNode.isFalse = false;
         }
     }
     public void setAllCreaturesFalse(){
-
-        for(Node node : this.getChildren()){
-            CreatureNode creatureNode = (CreatureNode) node;
+        for(CreatureNode creatureNode : creatureNodes){
             setFalseStyle(creatureNode);
             creatureNode.isFalse = true;
         }
-
     }
     public void setAllCreaturesDefault(){
-
-        for(Node node : this.getChildren()){
-            CreatureNode creatureNode = (CreatureNode) node;
+        for(CreatureNode creatureNode : creatureNodes){
             setDefaultStyle(creatureNode);
             creatureNode.isFalse = false;
         }
+    }
+    public void setHungerCreaturesTrue(){
+        for(CreatureNode creatureNode : creatureNodes){
 
+            if(controler.isCreatureFed(creatureNode)){
+                setTrueStyle(creatureNode);
+                creatureNode.isFalse = false;
+            }
+
+        }
     }
 
     void setTrueStyle(CreatureNode creatureNode){

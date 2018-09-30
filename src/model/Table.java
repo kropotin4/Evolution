@@ -39,7 +39,7 @@ public class Table {
             }
         }
 
-
+        curPhase = Phase.GROWTH;
 
     }
 
@@ -50,7 +50,7 @@ public class Table {
         switch (curPhase){
             case CALC_FODDER_BASE:
                 setFodder();
-                curPhase = Phase.GROWTH;
+                curPhase = Phase.EATING;  /// !!!!!!!!!!!!!
                 break;
             case GROWTH:
                 if(passNumber == players.size()){

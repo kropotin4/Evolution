@@ -24,6 +24,6 @@ public class Dice {
 
     public static int rollOneDice(){
         Random r = new Random();
-        return r.nextInt() % faces + 1;
+        return r.nextInt(faces) + 1;
     }
 }

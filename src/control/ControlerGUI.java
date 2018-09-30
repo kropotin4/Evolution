@@ -3,6 +3,7 @@ package control;
 import model.Card;
 import model.Creature;
 import model.Phase;
+import model.Trait;
 import model.decks.PlayerCardDeck;
 import view.gui.CardNode;
 import view.gui.CreatureNode;
@@ -28,29 +29,57 @@ public class ControlerGUI {
     }
 
     public void doNextMove(){
-        controler.doNextMove();
+        playerNumber = controler.doNextMove();
         mainPane.update(controler.getPlayerTurn());
     }
 
+    public void passPlayer(){
+        controler.setPlayerPass(playerNumber);
+        doNextMove();
+    }
     public int getPlayersNumber(){
         return controler.getPlayersNumber();
     }
     public Phase getCurrentPhase(){
         return controler.getCurrentPhase();
     }
+    public int getFoodNumber(){
+        return controler.getFoodNumber();
+    }
+
+    public int getCreauterHunger(CreatureNode creatureNode){
+        return controler.getCreauterHunger(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+    }
+    public int getCreauterSatiety(CreatureNode creatureNode){
+        return controler.getCreauterSatiety(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+    }
+    public boolean isCreatureFed(CreatureNode creatureNode){
+        return controler.isCreatureFed(playerNumber, creatureNode.getCreatureId());
+    }
 
     public void addCreature(CardNode cardNode){
         controler.addCreature(playerNumber, cardNode.getCard());
+        mainPane.showSelectedCard(false);
         mainPane.setIsCreatureAdding(false);
         mainPane.setIsCardSelecting(false);
         mainPane.updateCurrentPlayer();
     }
 
+    public void showAddTraitPane(){
+        mainPane.showAddTraitPane();
+    }
     public void addTraitToCreature(CreatureNode creatureNode, CardNode cardNode){
 
     }
     public void addTraitToSelectedCreature(CardNode cardNode, boolean isUp){
-
+        if(!controler.findTrait(playerNumber, mainPane.getSelectedCreature().getCreatureId(), cardNode.getCard(), isUp)
+        || cardNode.getCard().getTrait(isUp) != Trait.PARASITE) {
+            controler.addTraitToCreature(playerNumber, mainPane.getSelectedCreature().getCreatureId(), cardNode.getCard(), isUp);
+            mainPane.showSelectedCard(false);
+            mainPane.setIsCreatureAdding(false);
+            mainPane.setIsCardSelecting(false);
+            mainPane.updateCurrentPlayer();
+        }
     }
     public void addPairTraitToCreature(CreatureNode creatureNode1, CreatureNode creatureNode2, Card card){
 
@@ -70,9 +99,7 @@ public class ControlerGUI {
     public void attackCreature(CreatureNode attacker, CreatureNode defender){
 
     }
-    public void defendCreature(){
 
-    }
 
     public void selectCreature(CreatureNode creatureNode){
         mainPane.setSelectedCreature(creatureNode);
@@ -81,6 +108,9 @@ public class ControlerGUI {
         return controler.getCreatures(playerNumber);
     }
 
+    //public boolean findCard(CreatureNode creatureNode, CardNode cardNode){
+    //   return controler.findCard(playerNumber, creatureNode.getCreatureId(), cardNode.getCard());
+    //}
     public void selectCard(CardNode cardNode){
         mainPane.setSelectedCard(cardNode);
         mainPane.showSelectedCard(true);

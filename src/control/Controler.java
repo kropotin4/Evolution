@@ -9,15 +9,19 @@ public class Controler {
 
     private Table table;
     private Player player;
+    private Creature creature;
+
 
     public Controler(int quarterCardCount, int playerCount){
         table = new Table(quarterCardCount, playerCount);
     }
 
 
-    public void doNextMove(){
+    public int doNextMove(){
         table.doNextMove();
+        return table.getPlayerTurn();
     }
+
 
     public void addCreature(int playerNumber, Card card){
         player = findPlayer(playerNumber);
@@ -25,6 +29,7 @@ public class Controler {
     }
     // +? проверку на return
     public void addTraitToCreature(int playerNumber, int creatureID, Card card, boolean isUp){
+        System.out.println("Controler: addTraitToCreature: " + playerNumber + " " + creatureID + " " + card + " " + isUp);
         player = findPlayer(playerNumber);
         player.addTraitToCreature(
                 player.findCreature(creatureID),
@@ -45,18 +50,44 @@ public class Controler {
         player = findPlayer(playerNumber);
         return (ArrayList<Card>)player.findCreature(creatureID).getCards().clone();
     }
+    public boolean findTrait(int playerNumber, int creatureID, Card card, boolean isUp){
+        System.out.println("Controler: findCard: " + playerNumber + " " + creatureID + " " + card + " " + isUp);
+        player = findPlayer(playerNumber);
+
+        return player.findCreature(creatureID).findTrait(card.getTrait(isUp));
+    }
 
     public void setFodder(){
         table.setFodder();
     }
+    public int getFoodNumber(){
+        return table.getFodder();
+    }
     public void getFoodFromFodder(int creatureID){
 
+    }
+
+    public int getCreauterHunger(int playerNumber, int creatureID){
+        player = findPlayer(playerNumber);
+        return player.findCreature(creatureID).getTotalHunger();
+    }
+    public int getCreauterSatiety(int playerNumber, int creatureID){
+        player = findPlayer(playerNumber);
+        return player.findCreature(creatureID).getTotalSatiety();
+    }
+    public boolean isCreatureFed(int playerNumber, int creatureID){
+        player = findPlayer(playerNumber);
+        return player.findCreature(creatureID).isFed();
     }
 
     public Phase getCurrentPhase(){
         return table.getCurrentPhase();
     }
 
+    public void setPlayerPass(int playerNumber){
+        player = findPlayer(playerNumber);
+        player.setPass(true);
+    }
     public int addPlayer(String login){
 
         //TODO: Нужна очередность ходов -> венуть номер в массиве.

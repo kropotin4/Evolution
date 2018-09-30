@@ -6,6 +6,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -34,6 +36,7 @@ public class MainPane extends BorderPane {
     @FXML private AnchorPane playing_pane;
     PlayerPane playerPane;
 
+    @FXML private HBox info_pane;
     @FXML private VBox bottom_action_box;
     @FXML private VBox top_action_box;
 
@@ -41,11 +44,16 @@ public class MainPane extends BorderPane {
     Button addTraitButton = new Button();
     Button getEatButton = new Button();
     Button attackButton = new Button();
+    Button passButton = new Button();
+
+    Label foodLabel = new Label();
+    Label phaseLabel = new Label();
 
     ControlerGUI controler;
     Stage primaryStage;
 
     AddTraitPane addTraitPane;
+    boolean pressedCreatureNode = false;
     public DeckPane deckPane;
     boolean pressedPlusImage = false;
     Chat chat;
@@ -54,12 +62,15 @@ public class MainPane extends BorderPane {
     Image cancel2 = new Image("/images/cancel2.png");
     ImageView cancelImage = new ImageView(cancel1);
 
-
+    Image cursorAsk = new Image("/images/cur4.png");
 
     String system = "system";
 
     CreatureNode selectedCreature;
     CardNode selectedCard;
+
+    boolean isAttackerSelecting = false;
+    boolean isAttackedSelecting = false;
 
     boolean isCardSelecting = false;
     boolean isCardSelected = false;
@@ -102,11 +113,12 @@ public class MainPane extends BorderPane {
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(!pressedPlusImage) {
+                if(!pressedPlusImage && !pressedCreatureNode) {
                     primaryStage.setAlwaysOnTop(true);
                     primaryStage.setAlwaysOnTop(false);
                 }
                 pressedPlusImage = false;
+                pressedCreatureNode = false;
             }
         });
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -121,6 +133,12 @@ public class MainPane extends BorderPane {
         bottom_action_box.setPadding(new Insets(5, 0, 1, 0));
         bottom_action_box.setSpacing(5);
 
+        top_action_box.setPadding(new Insets(3));
+        bottom_action_box.setPadding(new Insets(3));
+
+        info_pane.setPadding(new Insets(3));
+        info_pane.setSpacing(10);
+        info_pane.setAlignment(Pos.CENTER);
 
         controler.startGame();
         setPhaseElement(Phase.GROWTH);
@@ -187,7 +205,19 @@ public class MainPane extends BorderPane {
         bottom_action_box.getChildren().add(showCardsButton);
         ///endregion
 
-        ///region cancelImage
+        ///region passButton init
+        passButton.setText("Пасс");
+        passButton.setPrefWidth(500);
+
+        passButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                controler.passPlayer();
+            }
+        });
+        ///endregion
+
+        ///region cancelImage init
         cancelImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -230,6 +260,7 @@ public class MainPane extends BorderPane {
                 break;
         }
 
+        top_action_box.getChildren().add(passButton);
     }
 
     public void setSelectedCreature(CreatureNode creatureNode){
@@ -241,6 +272,9 @@ public class MainPane extends BorderPane {
 
     public CardNode getSelectedCard(){
         return selectedCard;
+    }
+    public CreatureNode getSelectedCreature(){
+        return selectedCreature;
     }
 
     public void showSelectedCard(boolean isShow){
@@ -283,6 +317,12 @@ public class MainPane extends BorderPane {
         this.isCreatureAdding = isCreatureAdding;
     }
 
+    public void showAddTraitPane(){
+        addTraitPane.show();
+        addTraitPane.setCardNode(selectedCard);
+        pressedCreatureNode = true;
+        addTraitPane.setTop(true);
+    }
     private void showDeckPane(){
         deckPane.update();
         deckPane.show();
@@ -308,11 +348,15 @@ public class MainPane extends BorderPane {
         AnchorPane.setTopAnchor(playerPane, 0.0);
         AnchorPane.setBottomAnchor(playerPane, 0.0);
 
+        setPhaseElement(controler.getCurrentPhase());
         checkAddImage();
+        checkInfoPane();
     }
     public void updateCurrentPlayer(){
         playerPane.update();
+        setPhaseElement(controler.getCurrentPhase());
         checkAddImage();
+        checkInfoPane();
     }
     /*Плюсик в фазе GROWTH для удобного добавления существа
     * + обработка нажатия на него*/
@@ -327,7 +371,6 @@ public class MainPane extends BorderPane {
                 public void handle(MouseEvent event) {
                     if(isCardSelected){
                         controler.addCreature(selectedCard);
-                        showSelectedCard(false);
                     }
                     else {
                         if (!deckPane.isShow)
@@ -342,6 +385,15 @@ public class MainPane extends BorderPane {
         }
         else{
             playerPane.showAddIcon(false);
+        }
+    }
+    private void checkInfoPane(){
+        info_pane.getChildren().clear();
+        phaseLabel.setText(controler.getCurrentPhase().toString());
+        info_pane.getChildren().add(phaseLabel);
+        if(controler.getCurrentPhase() == Phase.EATING){
+            foodLabel.setText("Еды: " + controler.getFoodNumber());
+            info_pane.getChildren().add(foodLabel);
         }
     }
 

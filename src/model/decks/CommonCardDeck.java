@@ -4,6 +4,7 @@ import model.Card;
 import model.Trait;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class CommonCardDeck {
     private ArrayList<Card> deck = new ArrayList<>(21);
@@ -13,6 +14,8 @@ public class CommonCardDeck {
 
         for(int i = 0; i < quarter; ++i)
             deck.addAll(oneQuarter());
+
+        deck = shuffle(deck);
     }
 
     public Card getCard(){
@@ -51,5 +54,17 @@ public class CommonCardDeck {
         quarter.add(new Card(Trait.HIGH_BODY, Trait.FAT_TISSUE));
 
         return quarter;
+    }
+
+    private ArrayList<Card> shuffle(ArrayList<Card> cards){
+        Random random = new Random();
+        int size = cards.size();
+        ArrayList<Card> resDeck = new ArrayList<>(size);
+
+        for(int i = 0; i < size; ++i){
+            resDeck.add(cards.remove(random.nextInt(cards.size())));
+        }
+
+        return resDeck;
     }
 }

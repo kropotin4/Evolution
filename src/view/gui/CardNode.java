@@ -23,21 +23,7 @@ public class CardNode extends HBox {
         this.card = card;
         this.number = number;
         this.id = card.getId();
-        /*
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/CardNode.fxml")
-        );
 
-        //fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
-        */
         this.setAlignment(Pos.CENTER);
 
         traits_box = new VBox();
@@ -71,6 +57,7 @@ public class CardNode extends HBox {
             label.setPrefWidth(traits_box.getPrefWidth());
             label.setPrefHeight(40);
             label.setWrapText(true);
+            label.setAlignment(Pos.CENTER);
             label.setTextAlignment(TextAlignment.CENTER);
 
             //CreatureNode.switchTraitStyle(label, card.getTrait());

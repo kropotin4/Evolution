@@ -16,7 +16,6 @@ public class Card {
         up = trait;
         down = trait;
     }
-
     public Card(Trait upTrait, Trait downTrait){
         idCounter++;
         up = upTrait;
@@ -28,6 +27,9 @@ public class Card {
     }
     public Trait getTrait(boolean isUp){
         return isUp ? up : down;
+    }
+    public boolean isUp(){
+        return isUp;
     }
 
     public void turnCard(){
@@ -54,5 +56,20 @@ public class Card {
             return false;
 
         return true;
+    }
+
+    @Override
+    public String toString() {
+        if(up == down)
+            return "Card{" +
+                    "id=" + id +
+                    ", trait=" + up +
+                    '}';
+        else
+            return "Card{" +
+                    "id=" + id +
+                    ", up=" + up +
+                    ", down=" + down +
+                    '}';
     }
 }

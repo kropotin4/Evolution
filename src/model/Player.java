@@ -138,7 +138,10 @@ public class Player {
 
     public boolean addTraitToCreature(Creature creature, Card card, boolean isUp){
         if(playerDeck.removeCard(card)){
-            if(!isUp) card.turnCard();
+            //if(!isUp) card.turnCard();
+            if(isUp != card.isUp())
+                card.turnCard();
+
             creature.addTrait(card);
             return true;
         }

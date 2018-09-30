@@ -26,6 +26,8 @@ public class CreatureNode extends VBox {
     int creatureId;
     int number;
 
+    Button eatButton = new Button();
+
     boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     public CreatureNode(PlayerPane playerPane, int creatureId, int creatureNumber){
@@ -55,6 +57,13 @@ public class CreatureNode extends VBox {
         this.setMinWidth(100);
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setPadding(new Insets(2));
+        this.setSpacing(1);
+
+        eatButton.setAlignment(Pos.CENTER);
+        eatButton.setTextAlignment(TextAlignment.CENTER);
+        eatButton.setPrefSize(50, 4);
+        eatButton.setFont(new Font(12));
+        eatButton.setStyle("-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: transparent;");
     }
 
     public void update(){
@@ -78,14 +87,9 @@ public class CreatureNode extends VBox {
             this.getChildren().add(label);
         }
 
-        Label button = new Label(Integer.toString(number));
-        button.setAlignment(Pos.CENTER);
-        button.setTextAlignment(TextAlignment.CENTER);
-        button.setPrefHeight(7);
-        button.setPrefWidth(20);
-        button.setStyle("-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: transparent;");
+        eatButton.setText(playerPane.controler.getCreauterSatiety(this) + "/" + playerPane.controler.getCreauterHunger(this));
 
-        this.getChildren().add(button);
+        this.getChildren().add(eatButton);
 
     }
 

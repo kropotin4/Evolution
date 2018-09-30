@@ -92,6 +92,27 @@ public class Creature {
         totalHunger += card.getTrait().getHunger();
         return switchTrait(card.getTrait(), true);
     }
+    public boolean findTrait(Trait trait){
+        switch (trait){
+            case PREDATOR: return isPredator;
+            case HIGH_BODY: return isBig;
+            case RUNNING: return isRunning;
+            case MIMICRY: return isMimetic;
+            case GRAZING: return isGrazing;
+            case POISONOUS: return isPoisonous;
+            case TAIL_LOSS: return isTailLossable;
+            case HIBERNATION: return isHibernatable;
+            case SCAVENGER: return isScavenger;
+            case PIRACY: return isPirate;
+            case BURROWING: return isBurrowing;
+            case CAMOUFLAGE: return isCamouflaged;
+            case SHARP_VISION: return isSharp;
+            case PARASITE: return isInfected;
+            case SWIMMING: return isSwimming;
+            case FAT_TISSUE: return false; // Всегда false
+        }
+        return false;
+    }
     boolean removeTrait(Card card) {
         cards.remove(card);
 
@@ -214,10 +235,15 @@ public class Creature {
         return false;
     }
 
-    boolean isFed(){
+    public boolean isFed(){
         return totalSatiety == totalHunger;
     }
-
+    public int getTotalHunger(){
+        return totalHunger;
+    }
+    public int getTotalSatiety(){
+        return totalSatiety;
+    }
     boolean isSatisfied(){
         return (fatCapacity == fatQuantity) && isFed();
     }
@@ -293,6 +319,9 @@ public class Creature {
         return id;
     }
 
+    public boolean findCard(Card card){
+        return cards.contains(card);
+    }
     public ArrayList<Card> getCards(){
         return cards;
     }
