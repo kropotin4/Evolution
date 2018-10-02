@@ -9,6 +9,6 @@ public class Saver {
         ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(filepath));
         objectOut.writeObject(t);
         objectOut.close();
-        System.out.println("The Object  was successfully written to a file");
+        System.out.println("The Table was successfully save in \"" + filepath + "\"");
     }
 }

@@ -28,7 +28,8 @@ public class CreatureNode extends VBox {
 
     Button eatButton = new Button();
 
-    boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack
 
     public CreatureNode(PlayerPane playerPane, int creatureId, int creatureNumber){
         FXMLLoader fxmlLoader = new FXMLLoader(
@@ -120,6 +121,62 @@ public class CreatureNode extends VBox {
         this.setStyle("");
 
         this.setStyle("-fx-border-color: " + color + "; -fx-border-width: " + width + ";");
+    }
+
+    public void setStyleType(int styleType){
+        this.styleType = styleType;
+        switch (styleType){
+            case 0:
+                setDefaultStyle();
+                break;
+            case 1:
+                setTrueStyle();
+                break;
+            case 2:
+                setFalseStyle();
+                break;
+            case 3:
+                setAttackStyle();
+                break;
+            default:
+                this.setStyle("");
+                setBorder("violet", 2.5);
+                System.out.println("CreatureNode: setStyleType: Error -> styleType: " + styleType);
+                break;
+        }
+    }
+
+    private void setAttackStyle(){
+        this.setStyle("");
+        setBorder("gold", 2.5);
+        this.setStyle(this.getStyle() + "-fx-background-color: rgba(255,215,0,0.3);");
+    }
+    private void setTrueStyle(){
+        this.setStyle("");
+        setBorder("green", 2.5);
+        this.setStyle(this.getStyle() + "-fx-background-color: rgba(0,255,127,0.3);");
+    }
+    private void setFalseStyle(){
+        this.setStyle("");
+        setBorder("red", 2.5);
+        this.setStyle(this.getStyle() + "-fx-background-color: rgba(255,99,71,0.3);");
+    }
+    private void setDefaultStyle(){
+        this.setStyle("");
+        setBorder("green", 1);
+    }
+
+    public boolean isDefaultStyle(){
+        return styleType == 0;
+    }
+    public boolean isGreenStyle(){
+        return styleType == 1;
+    }
+    public boolean isRedStyle(){
+        return styleType == 2;
+    }
+    public boolean isAttackStyle(){
+        return styleType == 3;
     }
 
     public PlayerPane getPlayerPane() {

@@ -1,7 +1,6 @@
 package view.gui;
 
-import control.Controler;
-import control.ControlerGUI;
+import control.Controller;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,13 +41,13 @@ public class StartPane extends VBox {
     private void initialize(){
         this.setPrefSize(500, 300);
 
-        Controler controler = new Controler(2, 2);
+        Controller controller = new Controller(2, 2);
 
 
         play_yourself.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                MainPane mainPane = new MainPane(primaryStage, controler);
+                MainPane mainPane = new MainPane(primaryStage, controller);
                 mainPane.show();
             }
         });

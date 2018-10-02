@@ -1,7 +1,7 @@
 package view.gui;
 
 import com.jfoenix.controls.JFXMasonryPane;
-import control.ControlerGUI;
+import control.ControllerGUI;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -20,14 +20,14 @@ public class DeckPane extends JFXMasonryPane {
 
     Stage cardsStage = new Stage();
 
-    ControlerGUI controler;
+    ControllerGUI controler;
 
     long startTime;
     long endTime;
 
     boolean isShow = false;
 
-    public DeckPane(ControlerGUI controler){
+    public DeckPane(ControllerGUI controler){
         this.controler = controler;
 
         this.setPrefSize(450, 400);

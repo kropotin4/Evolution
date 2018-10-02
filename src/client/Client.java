@@ -1,6 +1,6 @@
 package client;
 
-import control.Controler;
+import control.Controller;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -14,11 +14,11 @@ public class Client extends Thread{
 
     ServerListener serverListener;
 
-    Client(Controler controler, String login) throws IOException {
+    Client(Controller controller, String login) throws IOException {
         this.login = login;
         Socket server = new Socket(ip, port);
 
-        serverListener = new ServerListener(server, this, controler);
+        serverListener = new ServerListener(server, this, controller);
         serverListener.start();
     }
 

@@ -13,15 +13,15 @@ import view.gui.PlayerPane;
 
 import java.util.ArrayList;
 
-public class ControlerGUI {
+public class ControllerGUI {
 
-    Controler controler;
+    Controller controller;
     MainPane mainPane;
 
     int playerNumber; // Меняется в doNextMove()
 
-    public ControlerGUI(Controler controler, MainPane mainPane, int playerNumber){
-        this.controler = controler;
+    public ControllerGUI(Controller controller, MainPane mainPane, int playerNumber){
+        this.controller = controller;
         this.mainPane = mainPane;
         this.playerNumber = playerNumber;
     }
@@ -31,43 +31,43 @@ public class ControlerGUI {
     }
 
     public void doNextMove(){
-        playerNumber = controler.doNextMove();
-        mainPane.update(controler.getPlayerTurn());
+        playerNumber = controller.doNextMove();
+        mainPane.update(controller.getPlayerTurn());
     }
 
     public void passPlayer(){
-        controler.setPlayerPass(playerNumber);
+        controller.setPlayerPass(playerNumber);
         doNextMove();
     }
     public int getPlayersNumber(){
-        return controler.getPlayersNumber();
+        return controller.getPlayersNumber();
     }
     public Phase getCurrentPhase(){
-        return controler.getCurrentPhase();
+        return controller.getCurrentPhase();
     }
     public int getFoodNumber(){
-        return controler.getFoodNumber();
+        return controller.getFoodNumber();
     }
 
     public boolean havePlayerPredator(){
-        return controler.havePlayerPredator(playerNumber);
+        return controller.havePlayerPredator(playerNumber);
     }
 
     public boolean haveHungryCreature(){
-        return controler.haveHungryCreature(playerNumber);
+        return controller.haveHungryCreature(playerNumber);
     }
     public int getCreauterHunger(CreatureNode creatureNode){
-        return controler.getCreauterHunger(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+        return controller.getCreatureHunger(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
     public int getCreauterSatiety(CreatureNode creatureNode){
-        return controler.getCreauterSatiety(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+        return controller.getCreatureSatiety(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
     public boolean isCreatureFed(CreatureNode creatureNode){
-        return controler.isCreatureFed(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+        return controller.isCreatureFed(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
 
     public void addCreature(CardNode cardNode){
-        controler.addCreature(playerNumber, cardNode.getCard());
+        controller.addCreature(playerNumber, cardNode.getCard());
         mainPane.showSelectedCard(false);
         mainPane.setIsCreatureAdding(false);
         mainPane.setIsCardSelecting(false);
@@ -75,7 +75,7 @@ public class ControlerGUI {
     }
 
     public boolean findTrait(CreatureNode creatureNode, Trait trait){
-        return controler.findTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), trait);
+        return controller.findTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), trait);
     }
 
     public void showAddTraitPane(){
@@ -85,9 +85,9 @@ public class ControlerGUI {
 
     }
     public void addTraitToSelectedCreature(CardNode cardNode, boolean isUp){
-        if(!controler.findTrait(playerNumber, mainPane.getSelectedCreature().getCreatureId(), cardNode.getCard(), isUp)
+        if(!controller.findTrait(playerNumber, mainPane.getSelectedCreature().getCreatureId(), cardNode.getCard(), isUp)
         && cardNode.getCard().getTrait(isUp) != Trait.PARASITE) {
-            controler.addTraitToCreature(playerNumber, mainPane.getSelectedCreature().getCreatureId(), cardNode.getCard(), isUp);
+            controller.addTraitToCreature(playerNumber, mainPane.getSelectedCreature().getCreatureId(), cardNode.getCard(), isUp);
             mainPane.showSelectedCard(false);
             mainPane.setIsCreatureAdding(false);
             mainPane.setIsCardSelecting(false);
@@ -99,15 +99,15 @@ public class ControlerGUI {
     }
 
     public ArrayList<Card> getCreatureCards(CreatureNode creatureNode){
-        return controler.getCreatureCards(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+        return controller.getCreatureCards(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
     public int getPlayerCardNumber(){
-        return controler.getPlayerCardsNumber(playerNumber);
+        return controller.getPlayerCardsNumber(playerNumber);
     }
 
     public void getFoodFromFodder(CreatureNode creatureNode){
         mainPane.setIsFoodGetting(false);
-        controler.getFoodFromFodder(playerNumber, creatureNode.getCreatureId());
+        controller.getFoodFromFodder(playerNumber, creatureNode.getCreatureId());
         mainPane.updateCurrentPlayer();
     }
     public boolean isFoodGetting(){
@@ -121,13 +121,13 @@ public class ControlerGUI {
             PlayerPane playerPane = (PlayerPane) node;
 
             for (CreatureNode creatureNode1 : playerPane.getCreatureNodes()) {
-                if (controler.isAttackPossible(
+                if (controller.isAttackPossible(
                         attackerPlayer,
                         playerPane.getPlayerNumber(),
                         attackerCreature,
                         creatureNode1.getCreatureId())) {
 
-                    playerPane.setAttackStyle(creatureNode1);
+                    playerPane.setAttackStyle(creatureNode1); // Замена на setStyleType
                 }
 
             }
@@ -142,11 +142,11 @@ public class ControlerGUI {
         mainPane.setSelectedCreature(creatureNode);
     }
     public ArrayList<Creature> getCreatures(int playerNumber){
-        return controler.getCreatures(playerNumber);
+        return controller.getCreatures(playerNumber);
     }
 
     //public boolean findCard(CreatureNode creatureNode, CardNode cardNode){
-    //   return controler.findCard(playerNumber, creatureNode.getCreatureId(), cardNode.getCard());
+    //   return controller.findCard(playerNumber, creatureNode.getCreatureId(), cardNode.getCard());
     //}
     public void selectCard(CardNode cardNode){
         mainPane.setSelectedCard(cardNode);
@@ -156,7 +156,7 @@ public class ControlerGUI {
         return mainPane.getSelectedCard();
     }
     public PlayerCardDeck getPlayerCardDeck(){
-        return controler.getPlayers().get(playerNumber).getPlayerCardDeck();
+        return controller.getPlayers().get(playerNumber).getPlayerCardDeck();
     }
     public boolean isCardSelecting(){
         return mainPane.isCardSelecting();

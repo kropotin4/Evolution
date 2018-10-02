@@ -1,7 +1,6 @@
 package server;
 
-import control.Controler;
-import model.Player;
+import control.Controller;
 import server.message.EatingMessage;
 import server.message.Message;
 import server.message.MessageType;
@@ -18,7 +17,7 @@ import java.util.Properties;
 public class Server extends Thread{
 
 
-    Controler controler;
+    Controller controller;
 
     ServerSocket serverSocket;
 
@@ -29,8 +28,8 @@ public class Server extends Thread{
     Message recievedMessage;
     EatingMessage eatingMessage;
 
-    Server(Controler controler) throws IOException {
-        this.controler = controler;
+    Server(Controller controller) throws IOException {
+        this.controller = controller;
 
         properties = new Properties();
         properties.load(new FileInputStream("server_properties"));
@@ -50,11 +49,11 @@ public class Server extends Thread{
 
     public void beginPlay(){
 
-        for(int i = 0; i < controler.getPlayersNumber(); ++i) {
+        for(int i = 0; i < controller.getPlayersNumber(); ++i) {
 
             try {
                 Socket newPlayer = serverSocket.accept();
-                PlayerListener playerListener = new PlayerListener(this, newPlayer, controler);
+                PlayerListener playerListener = new PlayerListener(this, newPlayer, controller);
                 playerListener.start();
 
             } catch (IOException e) {
@@ -69,7 +68,7 @@ public class Server extends Thread{
         boolean end = false;
         while (!end){
 
-            switch (controler.getCurrentPhase()) {
+            switch (controller.getCurrentPhase()) {
                 case GROWTH:
 
                     growthPhaseHandler();
@@ -112,9 +111,9 @@ public class Server extends Thread{
 
         //Игроки должны получить сообщения типа "положи карту, если можешь, или скажи пас"
 
-        for (int playerNumber = 0; playerNumber < controler.getPlayersNumber(); ++playerNumber) { // Игроки
+        for (int playerNumber = 0; playerNumber < controller.getPlayersNumber(); ++playerNumber) { // Игроки
 
-            if(controler.getPlayerCardsNumber(playerNumber) <= 0){
+            if(controller.getPlayerCardsNumber(playerNumber) <= 0){
                 //TODO: Он пас
             }
             else{
@@ -138,12 +137,12 @@ public class Server extends Thread{
     }
 
     private void cfbPhaseHandler(){
-        controler.setFodder();
+        controller.setFodder();
         sendingAllResults();
     }
 
     private void eatingPhaseHandler() {
-        for (int playerNumber = 0; playerNumber < controler.getPlayersNumber(); ++playerNumber) { // Игроки
+        for (int playerNumber = 0; playerNumber < controller.getPlayersNumber(); ++playerNumber) { // Игроки
 
             //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 
@@ -177,7 +176,7 @@ public class Server extends Thread{
     }
 
     private void extinctionPhaseHandler(){
-        for (int playerNumber = 0; playerNumber < controler.getPlayersNumber(); ++playerNumber) { // Игроки
+        for (int playerNumber = 0; playerNumber < controller.getPlayersNumber(); ++playerNumber) { // Игроки
 
             //TODO: что-то им отправляем -> какие действия мы от игрока ждем
 

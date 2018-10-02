@@ -1,7 +1,7 @@
 package view.gui;
 
 import com.jfoenix.controls.JFXRadioButton;
-import control.ControlerGUI;
+import control.ControllerGUI;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,13 +15,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
 
 public class AddTraitPane  extends VBox {
 
     Stage AddTraitStage = new Stage();
 
-    ControlerGUI controler;
+    ControllerGUI controler;
 
     CardNode cardNode;
 
@@ -34,7 +33,7 @@ public class AddTraitPane  extends VBox {
 
     boolean isOneTrait;
 
-    public AddTraitPane(ControlerGUI controler){
+    public AddTraitPane(ControllerGUI controler){
         this.controler = controler;
         this.setMinSize(150, 100);
         this.setPrefSize(250, 100);

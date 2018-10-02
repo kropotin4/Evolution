@@ -1,6 +1,6 @@
 package server;
 
-import control.Controler;
+import control.Controller;
 import model.*;
 import server.message.*;
 import server.message.action.ActionMessage;
@@ -17,7 +17,7 @@ public class PlayerListener extends Thread {
     Server server;
 
     Socket socket;
-    Controler controler;
+    Controller controller;
 
     String login;
     int playerNumber;
@@ -27,14 +27,14 @@ public class PlayerListener extends Thread {
 
     Message message;
 
-    PlayerListener(Server server, Socket socket, Controler controler) throws IOException {
+    PlayerListener(Server server, Socket socket, Controller controller) throws IOException {
         this.server = server;
         this.socket = socket;
 
         os = new ObjectOutputStream(socket.getOutputStream());
         is = new ObjectInputStream(socket.getInputStream());
 
-        this.controler = controler;
+        this.controller = controller;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PlayerListener extends Thread {
         if(start instanceof StartMessage){
             StartMessage startMessage = (StartMessage) start;
             login = startMessage.getLogin();
-            playerNumber = controler.addPlayer(login);
+            playerNumber = controller.addPlayer(login);
         }
         else{
             System.out.println("New player start StartMessage not received");
@@ -75,9 +75,9 @@ public class PlayerListener extends Thread {
                 message = (Message) mesObject;
 
 
-                if(controler.isPlayersTurn(playerNumber)){
+                if(controller.isPlayersTurn(playerNumber)){
 
-                    switch (controler.getCurrentPhase()){
+                    switch (controller.getCurrentPhase()){
                         case GROWTH:
                             if(message.getMessageType() != MessageType.GROWTH) continue; // Надо еще что-то сделать!
 
@@ -126,7 +126,7 @@ public class PlayerListener extends Thread {
         switch (growthMessage.getType()){
             case 0: //GrowthMessage(UUID creature, Card card, boolean isUp)
 
-                controler.addTraitToCreature(playerNumber,
+                controller.addTraitToCreature(playerNumber,
                         growthMessage.getFirstCreatureId(),
                         growthMessage.getCard(),
                         growthMessage.isUp()
@@ -140,7 +140,7 @@ public class PlayerListener extends Thread {
                     //TODO: Работа с симбионтом
                 }
                 else{
-                    controler.addPairTraitToCreature(
+                    controller.addPairTraitToCreature(
                             playerNumber,
                             growthMessage.getFirstCreatureId(),
                             growthMessage.getSecondCreatureId(),
@@ -161,7 +161,7 @@ public class PlayerListener extends Thread {
             case 0: //Взятие еды из К.Б. (Существо)
                     //EatingMessage(int eatingCreature, boolean haveAction)
 
-                //controler.getFoodFromFodder(eatingMessage.getEatingCreautureId());
+                //controller.getFoodFromFodder(eatingMessage.getEatingCreautureId());
 
                 ///region haveAction handle
                 if(eatingMessage.isHaveAction()){
@@ -200,7 +200,7 @@ public class PlayerListener extends Thread {
             case 1: //Атака существа (Существо + Свойства, Существо) Пока без свойств
                     //EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature)
 
-               controler.attackCreature(
+               controller.attackCreature(
                        playerNumber,
                        eatingMessage.getDefendingPlayerNumber(),
                        eatingMessage.getAttackerCreatureId(),
@@ -211,7 +211,7 @@ public class PlayerListener extends Thread {
                     //EatingMessage(int playerAttacker, UUID defendingCreature, Trait trait)
 
 
-                controler.attackCreature(
+                controller.attackCreature(
                         eatingMessage.getAttackerPlayerNumber(),
                         playerNumber,
                         eatingMessage.getAttackerCreatureId(),

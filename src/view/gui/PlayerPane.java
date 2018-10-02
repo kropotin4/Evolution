@@ -1,18 +1,15 @@
 package view.gui;
 
-import control.Controler;
-import control.ControlerGUI;
+import control.ControllerGUI;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import model.Creature;
 import model.Trait;
 
@@ -22,7 +19,7 @@ import java.util.ArrayList;
 public class PlayerPane extends HBox {
 
     PlayerPane self = this;
-    ControlerGUI controler;
+    ControllerGUI controler;
     int playerNumber;
 
     HBox imageBox = new HBox();
@@ -36,7 +33,7 @@ public class PlayerPane extends HBox {
     long startTime;
     long endTime;
 
-    public PlayerPane(ControlerGUI controler, int playerNumber){
+    public PlayerPane(ControllerGUI controler, int playerNumber){
         this.controler = controler;
         this.playerNumber = playerNumber;
 
@@ -114,15 +111,16 @@ public class PlayerPane extends HBox {
                                 //controler.addTraitToCreature(creatureNode, controler.getSelectedCard());
                                 controler.showAddTraitPane();
                             }
-                            else if(!creatureNode.isFalse && controler.isFoodGetting() && !controler.isCreatureFed(creatureNode)){
+                            else if(creatureNode.isGreenStyle() && controler.isFoodGetting() && !controler.isCreatureFed(creatureNode)){
                                 self.setAllCreaturesDefault();
                                 controler.getFoodFromFodder(creatureNode);
                             }
-                            else if(!creatureNode.isFalse && controler.isAttackerSelecting()){
+                            else if(creatureNode.isGreenStyle() && controler.isAttackerSelecting()){
                                 setAllCreaturesDefault();
-                                setAttackStyle(creatureNode);
+                                creatureNode.setStyleType(3);
                                 controler.setIsAttackedSelecting(true);
                                 controler.setIsAttackerSelecting(false);
+                                controler.showAttackedCreatures(creatureNode);
                             }
 
                         }
@@ -143,31 +141,25 @@ public class PlayerPane extends HBox {
     public void setCreaturesWithTraitTrue(Trait trait){
         for(CreatureNode creatureNode : creatureNodes){
             if(controler.findTrait(creatureNode, trait)) {
-                setTrueStyle(creatureNode);
-                creatureNode.isFalse = false;
+                creatureNode.setStyleType(1);
             }
         }
     }
     public void setAllCreaturesFalse(){
         for(CreatureNode creatureNode : creatureNodes){
-            setFalseStyle(creatureNode);
-            creatureNode.isFalse = true;
+            creatureNode.setStyleType(2);
         }
     }
     public void setAllCreaturesDefault(){
         for(CreatureNode creatureNode : creatureNodes){
-            setDefaultStyle(creatureNode);
-            creatureNode.isFalse = false;
+            creatureNode.setStyleType(0);
         }
     }
     public void setHungerCreaturesTrue(){
         for(CreatureNode creatureNode : creatureNodes){
-
             if(!controler.isCreatureFed(creatureNode)){
-                setTrueStyle(creatureNode);
-                creatureNode.isFalse = false;
+                creatureNode.setStyleType(1);
             }
-
         }
     }
 
@@ -175,20 +167,6 @@ public class PlayerPane extends HBox {
         creatureNode.setStyle("");
         setCreatureBorders(creatureNode, "gold", 2.5);
         creatureNode.setStyle(creatureNode.getStyle() + "-fx-background-color: rgba(255,215,0,0.3);");
-    }
-    void setTrueStyle(CreatureNode creatureNode){
-        creatureNode.setStyle("");
-        setCreatureBorders(creatureNode, "green", 2.5);
-        creatureNode.setStyle(creatureNode.getStyle() + "-fx-background-color: rgba(0,255,127,0.3);");
-    }
-    void setFalseStyle(CreatureNode creatureNode){
-        creatureNode.setStyle("");
-        setCreatureBorders(creatureNode, "red", 2.5);
-        creatureNode.setStyle(creatureNode.getStyle() + "-fx-background-color: rgba(255,99,71,0.3);");
-    }
-    void setDefaultStyle(CreatureNode creatureNode){
-        creatureNode.setStyle("");
-        setCreatureBorders(creatureNode, "green", 1);
     }
 
     void setCreatureBorders(CreatureNode creatureNode, String color, double width){

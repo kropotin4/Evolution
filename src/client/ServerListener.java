@@ -1,6 +1,6 @@
 package client;
 
-import control.Controler;
+import control.Controller;
 import model.Table;
 import server.message.Message;
 import server.message.RequestMessage;
@@ -15,17 +15,17 @@ public class ServerListener extends Thread {
 
     Socket server;
     Client client;
-    Controler controler;
+    Controller controller;
 
     ObjectOutputStream os;
     ObjectInputStream is;
 
     Object mesObject = null;
 
-    ServerListener(Socket server, Client client, Controler controler) throws IOException {
+    ServerListener(Socket server, Client client, Controller controller) throws IOException {
         this.server = server;
         this.client = client;
-        this.controler = controler;
+        this.controller = controller;
 
         os = new ObjectOutputStream(server.getOutputStream());
         is = new ObjectInputStream(server.getInputStream());
@@ -49,7 +49,7 @@ public class ServerListener extends Thread {
         if(!(mesObject instanceof Table))
             throw new RuntimeException("...");
 
-        //controler.initialize((Table) mesObject);
+        //controller.initialize((Table) mesObject);
 
         while(true){
 

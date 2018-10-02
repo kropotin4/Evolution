@@ -1,14 +1,12 @@
 package view.gui;
 
-import control.Controler;
-import control.ControlerGUI;
+import control.Controller;
+import control.ControllerGUI;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
-import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,7 +23,6 @@ import javafx.stage.WindowEvent;
 import model.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainPane extends BorderPane {
 
@@ -61,7 +58,7 @@ public class MainPane extends BorderPane {
     Label foodLabel = new Label();
     Label phaseLabel = new Label();
 
-    ControlerGUI controler;
+    ControllerGUI controler;
     Stage primaryStage;
 
     AddTraitPane addTraitPane;
@@ -87,9 +84,9 @@ public class MainPane extends BorderPane {
     boolean isCardSelected = false;
     boolean isCreatureAdding = false;
 
-    public MainPane(Stage primaryStage, Controler controler){
+    public MainPane(Stage primaryStage, Controller controller){
         this.primaryStage = primaryStage;
-        this.controler = new ControlerGUI(controler, this, 0);
+        this.controler = new ControllerGUI(controller, this, 0);
 
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/MainPane.fxml")
@@ -343,6 +340,9 @@ public class MainPane extends BorderPane {
                 }
 
                 break;
+            default:
+
+                break;
         }
 
         top_action_box.getChildren().add(passButton);
@@ -472,7 +472,7 @@ public class MainPane extends BorderPane {
     * + обработка нажатия на него*/
     private void checkAddImage(){
         if(controler.getCurrentPhase() == Phase.GROWTH
-                || controler.getPlayerCardNumber() > 0){
+                && controler.getPlayerCardNumber() > 0){
 
             playerPane.showAddIcon(true);
             ImageView addIcon = playerPane.getAddIcon();

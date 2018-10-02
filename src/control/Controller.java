@@ -7,35 +7,37 @@ import storage.Saver;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Controler {
+public class Controller {
 
     private Table table;
     private Player player;
     private Creature creature;
 
+    Saver saver = new Saver();
+    Loader loader = new Loader();
 
-    public Controler(int quarterCardCount, int playerCount){
+    public Controller(int quarterCardCount, int playerCount){
         table = new Table(quarterCardCount, playerCount);
     }
 
 
     public int doNextMove(){
         table.doNextMove();
-        Saver saver = new Saver();
+
         try {
             saver.saveTable(table, "dump" + table.step);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        /*
         if(table.step > 15){
-            Loader loader = new Loader();
             try {
                 table = loader.loadTable("dump" + (table.step - 10));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         return table.getPlayerTurn();
     }
@@ -47,7 +49,7 @@ public class Controler {
     }
     // +? проверку на return
     public void addTraitToCreature(int playerNumber, int creatureID, Card card, boolean isUp){
-        System.out.println("Controler: addTraitToCreature: " + playerNumber + " " + creatureID + " " + card + " " + isUp);
+        System.out.println("Controller: addTraitToCreature: " + playerNumber + " " + creatureID + " " + card + " " + isUp);
         player = findPlayer(playerNumber);
         player.addTraitToCreature(
                 player.findCreature(creatureID),
@@ -69,13 +71,13 @@ public class Controler {
         return (ArrayList<Card>)player.findCreature(creatureID).getCards().clone();
     }
     public boolean findTrait(int playerNumber, int creatureID, Card card, boolean isUp){
-        System.out.println("Controler: findCard: " + playerNumber + " " + creatureID + " " + card + " " + isUp);
+        System.out.println("Controller: findCard: " + playerNumber + " " + creatureID + " " + card + " " + isUp);
         player = findPlayer(playerNumber);
 
         return player.findCreature(creatureID).findTrait(card.getTrait(isUp));
     }
     public boolean findTrait(int playerNumber, int creatureID, Trait trait){
-        System.out.println("Controler: findCard: " + playerNumber + " " + creatureID + " " + trait);
+        System.out.println("Controller: findCard: " + playerNumber + " " + creatureID + " " + trait);
         player = findPlayer(playerNumber);
 
         return player.findCreature(creatureID).findTrait(trait);
@@ -112,11 +114,11 @@ public class Controler {
         }
         return false;
     }
-    public int getCreauterHunger(int playerNumber, int creatureID){
+    public int getCreatureHunger(int playerNumber, int creatureID){
         player = findPlayer(playerNumber);
         return player.findCreature(creatureID).getTotalHunger();
     }
-    public int getCreauterSatiety(int playerNumber, int creatureID){
+    public int getCreatureSatiety(int playerNumber, int creatureID){
         player = findPlayer(playerNumber);
         return player.findCreature(creatureID).getTotalSatiety();
     }
@@ -154,7 +156,7 @@ public class Controler {
     }
     public Player findPlayer(int playerNumber){
         if(playerNumber < 0 || playerNumber >= table.getPlayers().size()){
-            throw new RuntimeException("Controler: playerNumber = " + playerNumber);
+            throw new RuntimeException("Controller: playerNumber = " + playerNumber);
         }
 
         return table.getPlayers().get(playerNumber);
