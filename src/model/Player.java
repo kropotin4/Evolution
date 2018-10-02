@@ -4,6 +4,7 @@ import model.decks.CommonCardDeck;
 import model.decks.DropCardDeck;
 import model.decks.PlayerCardDeck;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ import java.util.UUID;
  *********************/
 
 
-public class Player {
+public class Player implements Serializable {
 
     public final UUID id = UUID.randomUUID();
 

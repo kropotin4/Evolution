@@ -3,10 +3,11 @@ package model.decks;
 import model.Card;
 import model.Trait;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CommonCardDeck {
+public class CommonCardDeck implements Serializable {
     private ArrayList<Card> deck = new ArrayList<>(21);
 
     public CommonCardDeck(int quarter){

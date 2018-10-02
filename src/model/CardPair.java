@@ -1,6 +1,8 @@
 package model;
 
-public class CardPair {
+import java.io.Serializable;
+
+public class CardPair implements Serializable {
 
     Card card;
     int number;

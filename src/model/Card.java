@@ -2,7 +2,9 @@ package model;
 
 import org.jetbrains.annotations.Contract;
 
-public class Card {
+import java.io.Serializable;
+
+public class Card implements Serializable {
 
     private static int idCounter = 0;
     private int id = idCounter;

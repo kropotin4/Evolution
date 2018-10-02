@@ -3,9 +3,10 @@ package model.decks;
 import model.Card;
 import model.CardPair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PlayerCardDeck {
+public class PlayerCardDeck implements Serializable {
     private ArrayList<CardPair> deck = new ArrayList<>(12);
 
 
