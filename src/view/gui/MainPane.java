@@ -2,12 +2,14 @@ package view.gui;
 
 import control.Controler;
 import control.ControlerGUI;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -23,10 +25,16 @@ import javafx.stage.WindowEvent;
 import model.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainPane extends BorderPane {
 
     MainPane self = this;
+
+    Image cancel1 = new Image("/images/cancel1.png");
+    Image cancel2 = new Image("/images/cancel2.png");
+    Image cancel3 = new Image("/images/cancel3.png");
+    Image cancel4 = new Image("/images/cancel4.png");
 
     @FXML private AnchorPane pane;
     @FXML private VBox players_pane;
@@ -42,8 +50,12 @@ public class MainPane extends BorderPane {
 
     Button showCardsButton = new Button();
     Button addTraitButton = new Button();
+    HBox eatButtonBox = new HBox();
     Button getEatButton = new Button();
+    ImageView cancelEatImage = new ImageView(cancel3);
+    HBox attackButtonBox = new HBox();
     Button attackButton = new Button();
+    ImageView cancelAttackImage = new ImageView(cancel3);
     Button passButton = new Button();
 
     Label foodLabel = new Label();
@@ -58,8 +70,6 @@ public class MainPane extends BorderPane {
     boolean pressedPlusImage = false;
     Chat chat;
 
-    Image cancel1 = new Image("/images/cancel1.png");
-    Image cancel2 = new Image("/images/cancel2.png");
     ImageView cancelImage = new ImageView(cancel1);
 
     Image cursorAsk = new Image("/images/cur4.png");
@@ -69,6 +79,7 @@ public class MainPane extends BorderPane {
     CreatureNode selectedCreature;
     CardNode selectedCard;
 
+    boolean isFoodGetting = false;
     boolean isAttackerSelecting = false;
     boolean isAttackedSelecting = false;
 
@@ -130,11 +141,11 @@ public class MainPane extends BorderPane {
 
         initButton();
 
-        bottom_action_box.setPadding(new Insets(5, 0, 1, 0));
+        top_action_box.setSpacing(5);
         bottom_action_box.setSpacing(5);
 
-        top_action_box.setPadding(new Insets(3));
-        bottom_action_box.setPadding(new Insets(3));
+        top_action_box.setPadding(new Insets(6));
+        bottom_action_box.setPadding(new Insets(5));
 
         info_pane.setPadding(new Insets(3));
         info_pane.setSpacing(10);
@@ -164,26 +175,86 @@ public class MainPane extends BorderPane {
         });
         ///endregion
 
-        ///region getEatButton init
+        ///region getEatButton + cancelEatImage + eatButtonBox init
+        eatButtonBox.getChildren().add(getEatButton);
+        eatButtonBox.setPrefWidth(500);
+        eatButtonBox.setPrefHeight(25);
+        eatButtonBox.setMinHeight(25);
+        eatButtonBox.setAlignment(Pos.CENTER);
+
         getEatButton.setText("Взять еду из кормовой базы");
         getEatButton.setPrefWidth(500);
 
         getEatButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                isFoodGetting = true;
+                playerPane.setHungerCreaturesTrue();
+                if(eatButtonBox.getChildren().size() < 2)
+                    eatButtonBox.getChildren().add(cancelEatImage);
+            }
+        });
+        cancelEatImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                isFoodGetting = false;
+                playerPane.setAllCreaturesDefault();
+                eatButtonBox.getChildren().remove(1);
+            }
+        });
 
+        cancelEatImage.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                cancelEatImage.setImage(cancel4);
+            }
+        });
+        cancelEatImage.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                cancelEatImage.setImage(cancel3);
             }
         });
         ///endregion
 
-        ///region attackButton init
+        ///region attackButton + cancelAttackImage + attackButtonBox init
+        attackButtonBox.getChildren().add(attackButton);
+        attackButtonBox.setPrefWidth(500);
+        attackButtonBox.setPrefHeight(25);
+        attackButtonBox.setMinHeight(25);
+        attackButtonBox.setAlignment(Pos.CENTER);
+
         attackButton.setText("Атака");
         attackButton.setPrefWidth(500);
 
         attackButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                isAttackerSelecting = true;
+                playerPane.setCreaturesWithTraitTrue(Trait.PREDATOR);
+                if(attackButtonBox.getChildren().size() < 2)
+                    attackButtonBox.getChildren().add(cancelAttackImage);
+            }
+        });
+        cancelAttackImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                isAttackerSelecting = false;
+                playerPane.setAllCreaturesDefault();
+                attackButtonBox.getChildren().remove(1);
+            }
+        });
 
+        cancelAttackImage.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                cancelAttackImage.setImage(cancel4);
+            }
+        });
+        cancelAttackImage.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                cancelAttackImage.setImage(cancel3);
             }
         });
         ///endregion
@@ -245,6 +316,9 @@ public class MainPane extends BorderPane {
     public void setPhaseElement(Phase phase) {
         top_action_box.getChildren().clear();
 
+        getEatButton.setDisable(false);
+        attackButton.setDisable(false);
+
         switch (phase){
             case GROWTH:
 
@@ -253,14 +327,27 @@ public class MainPane extends BorderPane {
                 break;
 
             case EATING:
+                if(eatButtonBox.getChildren().size() == 2)
+                    eatButtonBox.getChildren().remove(1);
+                if(attackButtonBox.getChildren().size() == 2)
+                    attackButtonBox.getChildren().remove(1);
 
                 playerPane.showAddIcon(false);
-                top_action_box.getChildren().addAll(getEatButton, attackButton);
+                top_action_box.getChildren().addAll(eatButtonBox, attackButtonBox);
+
+                if(controler.getFoodNumber() <= 0 || !controler.haveHungryCreature())
+                    getEatButton.setDisable(true);
+
+                if(!controler.havePlayerPredator()){
+                    attackButton.setDisable(true);
+                }
 
                 break;
         }
 
         top_action_box.getChildren().add(passButton);
+        //if(controler.getFoodNumber() <= 0)
+            //passButton.setDisable(true);
     }
 
     public void setSelectedCreature(CreatureNode creatureNode){
@@ -317,6 +404,25 @@ public class MainPane extends BorderPane {
         this.isCreatureAdding = isCreatureAdding;
     }
 
+    public boolean isFoodGetting(){
+        return isFoodGetting;
+    }
+    public void setIsFoodGetting(boolean isFoodGetting){
+        this.isFoodGetting = isFoodGetting;
+    }
+    public boolean isAttackerSelecting(){
+        return isAttackerSelecting;
+    }
+    public void setIsAttackerSelecting(boolean isAttackerSelecting){
+        this.isAttackerSelecting = isAttackerSelecting;
+    }
+    public boolean isAttackedSelecting(){
+        return  isAttackedSelecting;
+    }
+    public void setIsAttackedSelecting(boolean isAttackedSelecting){
+        this.isAttackerSelecting = isAttackedSelecting       ;
+    }
+
     public void showAddTraitPane(){
         addTraitPane.show();
         addTraitPane.setCardNode(selectedCard);
@@ -326,6 +432,10 @@ public class MainPane extends BorderPane {
     private void showDeckPane(){
         deckPane.update();
         deckPane.show();
+    }
+
+    public ObservableList<Node> getPlayersPane() {
+        return players_pane.getChildren();
     }
 
     public void update(int playerNumber){

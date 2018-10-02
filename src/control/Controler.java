@@ -56,6 +56,24 @@ public class Controler {
 
         return player.findCreature(creatureID).findTrait(card.getTrait(isUp));
     }
+    public boolean findTrait(int playerNumber, int creatureID, Trait trait){
+        System.out.println("Controler: findCard: " + playerNumber + " " + creatureID + " " + trait);
+        player = findPlayer(playerNumber);
+
+        return player.findCreature(creatureID).findTrait(trait);
+    }
+
+    public boolean havePlayerPredator(int playerNumber){
+        player = findPlayer(playerNumber);
+
+        for(Creature creature : player.getCreatures()){
+            if(!creature.isFed()){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public void setFodder(){
         table.setFodder();
@@ -63,10 +81,19 @@ public class Controler {
     public int getFoodNumber(){
         return table.getFodder();
     }
-    public void getFoodFromFodder(int creatureID){
-
+    public void getFoodFromFodder(int playerNumber, int creatureID){
+        player = findPlayer(playerNumber);
+        player.getFoodFromFodder(creatureID);
     }
 
+    public boolean haveHungryCreature(int playerNumber){
+        player = findPlayer(playerNumber);
+        for(Creature creature : player.getCreatures()){
+            if(!creature.isFed())
+                return true;
+        }
+        return false;
+    }
     public int getCreauterHunger(int playerNumber, int creatureID){
         player = findPlayer(playerNumber);
         return player.findCreature(creatureID).getTotalHunger();
@@ -121,12 +148,24 @@ public class Controler {
         return table.getPlayerNumber();
     }
 
-    public boolean attackCreature(int attackerPlayer, int defenderPlayer, int attackerCreature, int defenderCreature){
+    public boolean isAttackPossible(int attackerPlayer, int defenderPlayer, int attackerCreatureID, int defenderCreatureID){
         Player aPlayer = findPlayer(attackerPlayer);
         Player dPlayer = findPlayer(defenderPlayer);
 
-        Creature attacker = aPlayer.findCreature(attackerCreature);
-        Creature defender = dPlayer.findCreature(defenderCreature);
+        Creature attacker = aPlayer.findCreature(attackerCreatureID);
+        Creature defender = dPlayer.findCreature(defenderCreatureID);
+
+        if(attacker.isAttackPossible(defender))
+            return true;
+
+        return false;
+    }
+    public boolean attackCreature(int attackerPlayer, int defenderPlayer, int attackerCreatureID, int defenderCreatureID){
+        Player aPlayer = findPlayer(attackerPlayer);
+        Player dPlayer = findPlayer(defenderPlayer);
+
+        Creature attacker = aPlayer.findCreature(attackerCreatureID);
+        Creature defender = dPlayer.findCreature(defenderCreatureID);
 
         if(attacker.isAbsoluteAttackPossible(defender)){
             aPlayer.attackCreature(attacker, defender, null);

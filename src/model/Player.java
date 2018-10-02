@@ -156,10 +156,14 @@ public class Player {
         return false;
     }
 
-    public boolean getFoodFromFodder(Creature creature, Trait trait){
+    public boolean getFoodFromFodder(int creatureID){
         //TODO: Проработать механику взятия еда на всех уровнях
-
-        return true;
+        if(!table.isFodderBaseEmpty()) {
+            this.findCreature(creatureID).addFood();
+            table.getFood(1);
+            return true;
+        }
+        return false;
     }
 
     public void getCard(){

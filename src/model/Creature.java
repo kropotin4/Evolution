@@ -235,6 +235,10 @@ public class Creature {
         return false;
     }
 
+    public void addFood(){
+        if(totalSatiety < totalHunger)
+            ++totalSatiety;
+    }
     public boolean isFed(){
         return totalSatiety == totalHunger;
     }
@@ -262,7 +266,7 @@ public class Creature {
         isAttacked = true;
     }
 
-    boolean isAttackPossible(Creature creature){
+    public boolean isAttackPossible(Creature creature){
         if ((creature.isCamouflaged && !this.isSharp)
         || (creature.isBurrowing && creature.isFed())
         || (!creature.symbiontList.isEmpty())

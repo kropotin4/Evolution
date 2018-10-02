@@ -161,7 +161,7 @@ public class PlayerListener extends Thread {
             case 0: //Взятие еды из К.Б. (Существо)
                     //EatingMessage(int eatingCreature, boolean haveAction)
 
-                controler.getFoodFromFodder(eatingMessage.getEatingCreautureId());
+                //controler.getFoodFromFodder(eatingMessage.getEatingCreautureId());
 
                 ///region haveAction handle
                 if(eatingMessage.isHaveAction()){

@@ -114,6 +114,16 @@ public class PlayerPane extends HBox {
                                 //controler.addTraitToCreature(creatureNode, controler.getSelectedCard());
                                 controler.showAddTraitPane();
                             }
+                            else if(!creatureNode.isFalse && controler.isFoodGetting() && !controler.isCreatureFed(creatureNode)){
+                                self.setAllCreaturesDefault();
+                                controler.getFoodFromFodder(creatureNode);
+                            }
+                            else if(!creatureNode.isFalse && controler.isAttackerSelecting()){
+                                setAllCreaturesDefault();
+                                setAttackStyle(creatureNode);
+                                controler.setIsAttackedSelecting(true);
+                                controler.setIsAttackerSelecting(false);
+                            }
 
                         }
                     }
@@ -128,10 +138,14 @@ public class PlayerPane extends HBox {
         if(imageIsShow)
             this.getChildren().add(imageBox);
     }
+
+    // Доделать!!!!!!!!!!!!!!!!!!!!
     public void setCreaturesWithTraitTrue(Trait trait){
         for(CreatureNode creatureNode : creatureNodes){
-            setTrueStyle(creatureNode);
-            creatureNode.isFalse = false;
+            if(controler.findTrait(creatureNode, trait)) {
+                setTrueStyle(creatureNode);
+                creatureNode.isFalse = false;
+            }
         }
     }
     public void setAllCreaturesFalse(){
@@ -149,7 +163,7 @@ public class PlayerPane extends HBox {
     public void setHungerCreaturesTrue(){
         for(CreatureNode creatureNode : creatureNodes){
 
-            if(controler.isCreatureFed(creatureNode)){
+            if(!controler.isCreatureFed(creatureNode)){
                 setTrueStyle(creatureNode);
                 creatureNode.isFalse = false;
             }
@@ -157,6 +171,11 @@ public class PlayerPane extends HBox {
         }
     }
 
+    public void setAttackStyle(CreatureNode creatureNode){
+        creatureNode.setStyle("");
+        setCreatureBorders(creatureNode, "gold", 2.5);
+        creatureNode.setStyle(creatureNode.getStyle() + "-fx-background-color: rgba(255,215,0,0.3);");
+    }
     void setTrueStyle(CreatureNode creatureNode){
         creatureNode.setStyle("");
         setCreatureBorders(creatureNode, "green", 2.5);
@@ -192,5 +211,8 @@ public class PlayerPane extends HBox {
 
     public int getPlayerNumber(){
         return playerNumber;
+    }
+    public ArrayList<CreatureNode> getCreatureNodes(){
+        return creatureNodes;
     }
 }
