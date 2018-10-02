@@ -1,6 +1,8 @@
 package model;
 
-public enum Phase {
+import java.io.Serializable;
+
+public enum Phase implements Serializable {
     DEALING{
         @Override
         public String toString() {

@@ -2,9 +2,10 @@ package model.decks;
 
 import model.Card;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DropCardDeck {
+public class DropCardDeck implements Serializable {
     private ArrayList<Card> deck = new ArrayList<>(12);
 
     public DropCardDeck(){}

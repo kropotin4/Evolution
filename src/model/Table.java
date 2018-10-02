@@ -2,13 +2,14 @@ package model;
 
 import model.decks.CommonCardDeck;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Table {
+public class Table implements Serializable {
 
     Phase curPhase;
-    int step = 0;
+    public int step = 0;
     int playerTurn = 0;
 
     int fodder = 0;
@@ -46,7 +47,7 @@ public class Table {
     public void doNextMove(){
         boolean allPass = true;
         int i = 0, oldTurn = playerTurn;
-
+        step++;
         switch (curPhase){
             case CALC_FODDER_BASE:
                 setFodder();

@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -7,7 +8,7 @@ import java.util.UUID;
  * responsible for the creature
  * **************************/
 
-public class Creature {
+public class Creature implements Serializable {
 
     ///region fields
     private static int commonID = 0;

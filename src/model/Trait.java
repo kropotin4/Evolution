@@ -1,12 +1,14 @@
 package model;
 
+import java.io.Serializable;
+
 /********************************
  * Перечесление всех свойств.
  *
  * Новые свойства добавлять сюда.
  *********************************/
 
-public enum Trait {
+public enum Trait implements Serializable {
 
     PREDATOR{
         @Override

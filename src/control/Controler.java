@@ -1,9 +1,11 @@
 package control;
 
 import model.*;
+import storage.Loader;
+import storage.Saver;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class Controler {
 
@@ -19,6 +21,22 @@ public class Controler {
 
     public int doNextMove(){
         table.doNextMove();
+        Saver saver = new Saver();
+        try {
+            saver.saveTable(table, "dump" + table.step);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(table.step > 15){
+            Loader loader = new Loader();
+            try {
+                table = loader.loadTable("dump" + (table.step - 10));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         return table.getPlayerTurn();
     }
 
