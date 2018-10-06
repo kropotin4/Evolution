@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.CardPair;
+import model.CardsStack;
 import model.decks.PlayerCardDeck;
 
 public class DeckPane extends JFXMasonryPane {
@@ -47,8 +47,8 @@ public class DeckPane extends JFXMasonryPane {
 
         PlayerCardDeck playerCardDeck = controler.getPlayerCardDeck();
 
-        for(CardPair cardPair : playerCardDeck.getCardDeck()){
-            CardNode cardNode = new CardNode(cardPair.getCard(), cardPair.getNumber());
+        for(CardsStack cardsStack : playerCardDeck.getCardDeck()){
+            CardNode cardNode = new CardNode(cardsStack.getCard(), cardsStack.getNumber());
 
             cardNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override

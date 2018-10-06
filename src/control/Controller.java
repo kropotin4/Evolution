@@ -44,6 +44,7 @@ public class Controller {
 
 
     public void addCreature(int playerNumber, Card card){
+        System.out.println("Controller: addCreature: " + playerNumber  + " " + card);
         player = findPlayer(playerNumber);
         player.addCreature(card);
     }
@@ -186,6 +187,8 @@ public class Controller {
 
         Creature attacker = aPlayer.findCreature(attackerCreatureID);
         Creature defender = dPlayer.findCreature(defenderCreatureID);
+
+        System.out.println("Controller: attackCreature: " + aPlayer  + " (" + attacker + ") " + dPlayer + " (" + defender + ")");
 
         if(attacker.isAbsoluteAttackPossible(defender)){
             aPlayer.attackCreature(attacker, defender, null);

@@ -51,13 +51,13 @@ public class Card implements Serializable {
 
         Card card = (Card) obj;
 
-        if(card.getId() != id) return false; // !!!!!!!!!!!!!
+        //if(card.getId() != id) return false; // !!!!!!!!!!!!!
 
-        if((card.up != up && card.down != down)
-                || (card.up != down && card.down != up))
-            return false;
+        if((card.up == up && card.down == down)
+                || (card.up == down && card.down == up))
+            return true;
 
-        return true;
+        return false;
     }
 
     @Override

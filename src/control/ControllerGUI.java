@@ -127,14 +127,27 @@ public class ControllerGUI {
                         attackerCreature,
                         creatureNode1.getCreatureId())) {
 
-                    playerPane.setAttackStyle(creatureNode1); // Замена на setStyleType
+                    creatureNode1.setStyleType(1);
                 }
 
             }
         }
     }
-    public void attackCreature(CreatureNode attacker, CreatureNode defender){
-
+    public void setAttackerCreature(CreatureNode creatureNode){
+        System.out.println("ControllerGUI: setAttackerCreature: " + creatureNode);
+        setIsAttackedSelecting(true);
+        setIsAttackerSelecting(false);
+        showAttackedCreatures(creatureNode);
+        mainPane.setAttackerCreature(creatureNode);
+    }
+    public void attackCreature(CreatureNode defender){
+        controller.attackCreature(
+                mainPane.getAttackerCreature().getPlayerPane().getPlayerNumber(),
+                defender.getPlayerPane().getPlayerNumber(),
+                mainPane.getAttackerCreature().getCreatureId(),
+                defender.getCreatureId()
+        );
+        mainPane.getAttackerCreature().setStyleType(0);
     }
 
 

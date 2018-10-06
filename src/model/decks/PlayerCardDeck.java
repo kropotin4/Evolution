@@ -1,37 +1,37 @@
 package model.decks;
 
 import model.Card;
-import model.CardPair;
+import model.CardsStack;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class PlayerCardDeck implements Serializable {
-    private ArrayList<CardPair> deck = new ArrayList<>(12);
+    private ArrayList<CardsStack> deck = new ArrayList<>(12);
 
 
-    public ArrayList<CardPair> getCardDeck(){
+    public ArrayList<CardsStack> getCardDeck(){
         return deck;
     }
 
     public void addCard(Card card){
-        for(CardPair cardPair : deck){
-            if(cardPair.getCard() == card){
-                cardPair.add();
+        for(CardsStack cardsStack : deck){
+            if(cardsStack.getCard().equals(card)){
+                cardsStack.add(card);
                 return;
             }
         }
-        deck.add(new CardPair(card));
+        deck.add(new CardsStack(card));
     }
 
     public boolean removeCard(Card card){
-        for(CardPair cardPair : deck){
-            if(cardPair.getCard() == card){
-                if(cardPair.getNumber() == 1){
-                    return deck.remove(cardPair);
+        for(CardsStack cardsStack : deck){
+            if(cardsStack.getCard() == card){
+                if(cardsStack.getNumber() == 1){
+                    return deck.remove(cardsStack);
                 }
                 else{
-                    cardPair.reduce();
+                    cardsStack.reduce();
                     return true;
                 }
             }

@@ -118,9 +118,11 @@ public class PlayerPane extends HBox {
                             else if(creatureNode.isGreenStyle() && controler.isAttackerSelecting()){
                                 setAllCreaturesDefault();
                                 creatureNode.setStyleType(3);
-                                controler.setIsAttackedSelecting(true);
-                                controler.setIsAttackerSelecting(false);
-                                controler.showAttackedCreatures(creatureNode);
+
+                                controler.setAttackerCreature(creatureNode);
+                            }
+                            else if(creatureNode.isGreenStyle() && controler.isAttackedSelecting()){
+                                controler.attackCreature(creatureNode);
                             }
 
                         }

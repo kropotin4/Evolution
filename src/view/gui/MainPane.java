@@ -74,6 +74,7 @@ public class MainPane extends BorderPane {
     String system = "system";
 
     CreatureNode selectedCreature;
+    CreatureNode attackerCreature;
     CardNode selectedCard;
 
     boolean isFoodGetting = false;
@@ -353,16 +354,23 @@ public class MainPane extends BorderPane {
     public void setSelectedCreature(CreatureNode creatureNode){
         selectedCreature = creatureNode;
     }
+    public void setAttackerCreature(CreatureNode creatureNode){
+        this.attackerCreature = creatureNode;
+    }
     public void setSelectedCard(CardNode cardNode){
         selectedCard = cardNode;
     }
 
-    public CardNode getSelectedCard(){
-        return selectedCard;
-    }
     public CreatureNode getSelectedCreature(){
         return selectedCreature;
     }
+    public CreatureNode getAttackerCreature(){
+        return attackerCreature;
+    }
+    public CardNode getSelectedCard(){
+        return selectedCard;
+    }
+
 
     public void showSelectedCard(boolean isShow){
         bottom_action_box.getChildren().clear();
@@ -420,7 +428,7 @@ public class MainPane extends BorderPane {
         return  isAttackedSelecting;
     }
     public void setIsAttackedSelecting(boolean isAttackedSelecting){
-        this.isAttackerSelecting = isAttackedSelecting       ;
+        this.isAttackedSelecting = isAttackedSelecting;
     }
 
     public void showAddTraitPane(){
