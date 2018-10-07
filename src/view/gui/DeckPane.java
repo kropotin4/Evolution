@@ -38,6 +38,8 @@ public class DeckPane extends JFXMasonryPane {
 
         this.setPadding(new Insets(5));
 
+
+
         setStage();
     }
 
@@ -105,6 +107,7 @@ public class DeckPane extends JFXMasonryPane {
     }
     public void close(){
         isShow = false;
+        controler.setIsCreatureAdding(false);
         cardsStage.close();
     }
     public void setTop(){
@@ -126,8 +129,7 @@ public class DeckPane extends JFXMasonryPane {
         cardsStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                isShow = false;
-                cardsStage.close();
+                close();
             }
         });
     }

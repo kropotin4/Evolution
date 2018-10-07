@@ -88,7 +88,7 @@ public class Controller {
         player = findPlayer(playerNumber);
 
         for(Creature creature : player.getCreatures()){
-            if(!creature.isFed()){
+            if(!creature.isFed() && findTrait(playerNumber, creature.getId(), Trait.PREDATOR)){
                 return true;
             }
         }

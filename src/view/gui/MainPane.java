@@ -1,5 +1,6 @@
 package view.gui;
 
+import com.jfoenix.controls.JFXRadioButton;
 import control.Controller;
 import control.ControllerGUI;
 import javafx.collections.ObservableList;
@@ -26,6 +27,7 @@ import java.io.IOException;
 
 public class MainPane extends BorderPane {
 
+    ///region field
     MainPane self = this;
 
     Image cancel1 = new Image("/images/cancel1.png");
@@ -79,11 +81,12 @@ public class MainPane extends BorderPane {
 
     boolean isFoodGetting = false;
     boolean isAttackerSelecting = false;
-    boolean isAttackedSelecting = false;
+    boolean isDefenderSelecting = false;
 
     boolean isCardSelecting = false;
     boolean isCardSelected = false;
     boolean isCreatureAdding = false;
+    ///endregion
 
     public MainPane(Stage primaryStage, Controller controller){
         this.primaryStage = primaryStage;
@@ -229,7 +232,8 @@ public class MainPane extends BorderPane {
             @Override
             public void handle(MouseEvent event) {
                 isAttackerSelecting = true;
-                playerPane.setCreaturesWithTraitTrue(Trait.PREDATOR);
+                playerPane.setAttackerCreaturesTrue();
+                //playerPane.setCreaturesWithTraitTrue(Trait.PREDATOR);
                 if(attackButtonBox.getChildren().size() < 2)
                     attackButtonBox.getChildren().add(cancelAttackImage);
             }
@@ -382,7 +386,27 @@ public class MainPane extends BorderPane {
             HBox cardBox = new HBox();
             cardBox.setAlignment(Pos.CENTER);
             CardNode cardNode = new CardNode(selectedCard.card, 1);
-            cardBox.getChildren().addAll(cardNode, cancelImage);
+
+            if(selectedCard.card.getTrait(true) != selectedCard.card.getTrait(false)){
+                ToggleGroup group = new ToggleGroup();
+
+                JFXRadioButton firtsTrait = new JFXRadioButton();
+                JFXRadioButton secondTrait = new JFXRadioButton();
+                firtsTrait.setToggleGroup(group);
+                secondTrait.setToggleGroup(group);
+
+                VBox radioBox = new VBox();
+                radioBox.setPrefWidth(15);
+                radioBox.setPrefHeight(80);
+                radioBox.setAlignment(Pos.CENTER);
+                radioBox.setSpacing(12);
+
+                radioBox.getChildren().addAll(firtsTrait, secondTrait);
+                cardBox.getChildren().addAll(radioBox, cardNode, cancelImage);
+            }
+            else
+                cardBox.getChildren().addAll(cardNode, cancelImage);
+
             bottom_action_box.getChildren().addAll(cardBox, showCardsButton);
 
         }
@@ -424,16 +448,17 @@ public class MainPane extends BorderPane {
     public void setIsAttackerSelecting(boolean isAttackerSelecting){
         this.isAttackerSelecting = isAttackerSelecting;
     }
-    public boolean isAttackedSelecting(){
-        return  isAttackedSelecting;
+    public boolean isDefenderSelecting(){
+        return isDefenderSelecting;
     }
-    public void setIsAttackedSelecting(boolean isAttackedSelecting){
-        this.isAttackedSelecting = isAttackedSelecting;
+    public void setIsDefenderSelecting(boolean isDefenderSelecting){
+        this.isDefenderSelecting = isDefenderSelecting;
     }
 
-    public void showAddTraitPane(){
+    public void showAddTraitPane(CreatureNode selectedCreature, double X, double Y){
         addTraitPane.show();
         addTraitPane.setCardNode(selectedCard);
+        addTraitPane.setCreatureNode(selectedCreature);
         pressedCreatureNode = true;
         addTraitPane.setTop(true);
     }
@@ -444,6 +469,9 @@ public class MainPane extends BorderPane {
 
     public ObservableList<Node> getPlayersPane() {
         return players_pane.getChildren();
+    }
+    public PlayerPane getCurrentPlayerPane(){
+        return playerPane;
     }
 
     public void update(int playerNumber){

@@ -11,12 +11,18 @@ import view.gui.CreatureNode;
 import view.gui.MainPane;
 import view.gui.PlayerPane;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class ControllerGUI {
 
     Controller controller;
+    ControllerClient controllerClient;
+    ControllerServer controllerServer;
     MainPane mainPane;
+
+    int type;
 
     int playerNumber; // Меняется в doNextMove()
 
@@ -24,7 +30,21 @@ public class ControllerGUI {
         this.controller = controller;
         this.mainPane = mainPane;
         this.playerNumber = playerNumber;
+        type = 0;
     }
+    public ControllerGUI(ControllerClient controllerClient, MainPane mainPane, int playerNumber){
+        this.controllerClient = controllerClient;
+        this.mainPane = mainPane;
+        this.playerNumber = playerNumber;
+        type = 1;
+    }
+    public ControllerGUI(ControllerServer controllerServer, MainPane mainPane, int playerNumber){
+        this.controllerServer = controllerServer;
+        this.mainPane = mainPane;
+        this.playerNumber = playerNumber;
+        type = 2;
+    }
+
 
     public void startGame(){
         mainPane.update(0);
@@ -78,23 +98,34 @@ public class ControllerGUI {
         return controller.findTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), trait);
     }
 
-    public void showAddTraitPane(){
-        mainPane.showAddTraitPane();
+    public void showAddTraitPane(CreatureNode selectedCreature, double X, double Y){
+        mainPane.showAddTraitPane(selectedCreature, X, Y);
     }
-    public void addTraitToCreature(CreatureNode creatureNode, CardNode cardNode){
-
-    }
-    public void addTraitToSelectedCreature(CardNode cardNode, boolean isUp){
-        if(!controller.findTrait(playerNumber, mainPane.getSelectedCreature().getCreatureId(), cardNode.getCard(), isUp)
-        && cardNode.getCard().getTrait(isUp) != Trait.PARASITE) {
-            controller.addTraitToCreature(playerNumber, mainPane.getSelectedCreature().getCreatureId(), cardNode.getCard(), isUp);
+    public void addTraitToCreature(CreatureNode creatureNode, CardNode cardNode, boolean isUp){
+        if(!controller.findTrait(playerNumber, creatureNode.getCreatureId(), cardNode.getCard(), isUp)
+                && cardNode.getCard().getTrait(isUp) != Trait.PARASITE) {
+            controller.addTraitToCreature(playerNumber, creatureNode.getCreatureId(), cardNode.getCard(), isUp);
             mainPane.showSelectedCard(false);
             mainPane.setIsCreatureAdding(false);
             mainPane.setIsCardSelecting(false);
             mainPane.updateCurrentPlayer();
         }
     }
-    public void addPairTraitToCreature(CreatureNode creatureNode1, CreatureNode creatureNode2, Card card){
+
+    public void addPairTraitToCreature(CreatureNode creatureNode1, CreatureNode creatureNode2, CardNode cardNode, boolean isUp){
+
+        controller.addPairTraitToCreature(
+                playerNumber,
+                creatureNode1.getCreatureId(),
+                creatureNode2.getCreatureId(),
+                cardNode.getCard(),
+                isUp
+        );
+
+        mainPane.showSelectedCard(false);
+        mainPane.setIsCreatureAdding(false);
+        mainPane.setIsCardSelecting(false);
+        mainPane.updateCurrentPlayer();
 
     }
 
@@ -114,7 +145,7 @@ public class ControllerGUI {
         return mainPane.isFoodGetting();
     }
 
-    public void showAttackedCreatures(CreatureNode creatureNode) {
+    public void showDefenderSelecting(CreatureNode creatureNode) {
         int attackerPlayer = creatureNode.getPlayerPane().getPlayerNumber();
         int attackerCreature = creatureNode.getCreatureId();
         for (Node node : mainPane.getPlayersPane()) {
@@ -132,14 +163,29 @@ public class ControllerGUI {
 
             }
         }
+
+        for(CreatureNode creatureNode1 : mainPane.getCurrentPlayerPane().getCreatureNodes()){
+            if(creatureNode == creatureNode1) continue;
+
+            if (controller.isAttackPossible(
+                    attackerPlayer,
+                    mainPane.getCurrentPlayerPane().getPlayerNumber(),
+                    attackerCreature,
+                    creatureNode1.getCreatureId())) {
+
+                creatureNode1.setStyleType(1);
+            }
+        }
+
     }
     public void setAttackerCreature(CreatureNode creatureNode){
         System.out.println("ControllerGUI: setAttackerCreature: " + creatureNode);
-        setIsAttackedSelecting(true);
+        setIsDefenderSelecting(true);
         setIsAttackerSelecting(false);
-        showAttackedCreatures(creatureNode);
+        showDefenderSelecting(creatureNode);
         mainPane.setAttackerCreature(creatureNode);
     }
+    /// Не передает ход
     public void attackCreature(CreatureNode defender){
         controller.attackCreature(
                 mainPane.getAttackerCreature().getPlayerPane().getPlayerNumber(),
@@ -148,6 +194,7 @@ public class ControllerGUI {
                 defender.getCreatureId()
         );
         mainPane.getAttackerCreature().setStyleType(0);
+        mainPane.update(playerNumber);
     }
 
 
@@ -177,6 +224,9 @@ public class ControllerGUI {
     public boolean isCardSelected(){
         return mainPane.isCardSelected();
     }
+    public void setIsCreatureAdding(boolean isCreatureAdding){
+        mainPane.setIsCreatureAdding(isCreatureAdding);
+    }
     public boolean isCreatureAdding(){
         return mainPane.isCreatureAdding();
     }
@@ -187,11 +237,11 @@ public class ControllerGUI {
     public void setIsAttackerSelecting(boolean isAttackerSelecting){
         mainPane.setIsAttackerSelecting(isAttackerSelecting);
     }
-    public boolean isAttackedSelecting(){
-        return mainPane.isAttackedSelecting();
+    public boolean isDefenderSelecting(){
+        return mainPane.isDefenderSelecting();
     }
-    public void setIsAttackedSelecting(boolean isAttackedSelecting){
-        mainPane.setIsAttackedSelecting(isAttackedSelecting);
+    public void setIsDefenderSelecting(boolean isAttackedSelecting){
+        mainPane.setIsDefenderSelecting(isAttackedSelecting);
     }
 
     public void setDeckPaneTop(){

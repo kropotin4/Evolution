@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import model.Creature;
 import model.Trait;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -109,7 +110,7 @@ public class PlayerPane extends HBox {
                         if(endTime - startTime >= 250){ // Окончание выбора карты + закрытие DeckPane
                             if(controler.isCardSelected()){
                                 //controler.addTraitToCreature(creatureNode, controler.getSelectedCard());
-                                controler.showAddTraitPane();
+                                controler.showAddTraitPane(creatureNode, event.getSceneX(), event.getSceneY());
                             }
                             else if(creatureNode.isGreenStyle() && controler.isFoodGetting() && !controler.isCreatureFed(creatureNode)){
                                 self.setAllCreaturesDefault();
@@ -121,7 +122,7 @@ public class PlayerPane extends HBox {
 
                                 controler.setAttackerCreature(creatureNode);
                             }
-                            else if(creatureNode.isGreenStyle() && controler.isAttackedSelecting()){
+                            else if(creatureNode.isGreenStyle() && controler.isDefenderSelecting()){
                                 controler.attackCreature(creatureNode);
                             }
 
@@ -143,6 +144,13 @@ public class PlayerPane extends HBox {
     public void setCreaturesWithTraitTrue(Trait trait){
         for(CreatureNode creatureNode : creatureNodes){
             if(controler.findTrait(creatureNode, trait)) {
+                creatureNode.setStyleType(1);
+            }
+        }
+    }
+    public void setAttackerCreaturesTrue(){
+        for(CreatureNode creatureNode : creatureNodes){
+            if(controler.findTrait(creatureNode, Trait.PREDATOR) && !controler.isCreatureFed(creatureNode)) {
                 creatureNode.setStyleType(1);
             }
         }

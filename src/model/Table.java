@@ -51,6 +51,9 @@ public class Table implements Serializable {
         switch (curPhase){
             case CALC_FODDER_BASE:
                 setFodder();
+                for(Player player : players){
+                    player.setPass(false);
+                }
                 curPhase = Phase.EATING;  /// !!!!!!!!!!!!!
                 break;
             case GROWTH:
@@ -65,7 +68,11 @@ public class Table implements Serializable {
                 while(i++ <= players.size()){
                     playerTurn = (playerTurn + 1) % players.size();
                     if(players.get(playerTurn).isPass) continue;
-                    allPass = false;
+                    else{
+                        allPass = false;
+                        break;
+                    }
+
                 }
                 if(allPass){
                     curPhase = Phase.CALC_FODDER_BASE;
@@ -87,7 +94,10 @@ public class Table implements Serializable {
                 while(i++ <= players.size()){
                     playerTurn = (playerTurn + 1) % players.size();
                     if(players.get(playerTurn).isPass) continue;
-                    allPass = false;
+                    else{
+                        allPass = false;
+                        break;
+                    }
                 }
                 if(allPass){
                     curPhase = Phase.EXTINCTION;
@@ -97,14 +107,35 @@ public class Table implements Serializable {
                     break;
                 }
                 break;
-            case EXTINCTION:
-                //TODO: Написать смерть
-                curPhase = Phase.DEALING;
-                break;
-            case DEALING:
-                //TODO: Раздача карт
+            case EXTINCTION: {
+                Creature creature = null;
+                for (Player player : players) {
+                    for (int g = 0; g < player.getCreatures().size(); ++g) {
+                        creature = player.getCreatures().get(g);
+
+                        if (creature.isFed()) {
+                            creature.setHunger();
+                        } else {
+                            player.killCreature(creature);
+                            g--;
+                        }
+                    }
+                }
+
+                for(Player player : players){
+                    for(int g = 0; g < player.getCreatures().size(); ++g)
+                        player.getCard();
+                    player.getCard();
+                    player.setPass(false);
+                }
+
                 curPhase = Phase.GROWTH;
                 break;
+            }
+            //case DEALING:
+            //   //TODO: Раздача карт
+            //    curPhase = Phase.GROWTH;
+            //    break;
         }
     }
 

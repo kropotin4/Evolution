@@ -243,6 +243,9 @@ public class Creature implements Serializable {
     public boolean isFed(){
         return totalSatiety == totalHunger;
     }
+    public void setHunger(){
+        totalSatiety = 0;
+    }
     public int getTotalHunger(){
         return totalHunger;
     }
@@ -334,14 +337,14 @@ public class Creature implements Serializable {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append("Creature " + id + ":\nTraits:\n");
+        str.append("Creature " + id + ":\n\tTraits:\n");
         for (Card card : cards){
-            System.out.print(">" + card.getTrait() + "\n");
+            str.append("\t\t>" + card.getTrait() + "\n");
         }
-        str.append("Satisfaction: " + totalSatiety + "\\" + totalHunger + "\n");
-        str.append("Fatness: " + fatQuantity + "\\" + fatCapacity + "\n");
+        str.append("\tSatisfaction: " + totalSatiety + "\\" + totalHunger + "\n");
+        str.append("\tFatness: " + fatQuantity + "\\" + fatCapacity + "\n");
         if (!cooperationList.isEmpty()) {
-            str.append("Cooperated with: ");
+            str.append("\tCooperated with: ");
             for (Creature creature : cooperationList) {
                 str.append(creature.id + " ");
             }
@@ -349,7 +352,7 @@ public class Creature implements Serializable {
         }
 
         if (!communicationList.isEmpty()) {
-            str.append("Communicated with: ");
+            str.append("\tCommunicated with: ");
             for (Creature creature : communicationList) {
                 str.append(creature.id + " ");
             }
@@ -357,7 +360,7 @@ public class Creature implements Serializable {
         }
 
         if (!symbiontList.isEmpty()) {
-            str.append("Symbionts: ");
+            str.append("\tSymbionts: ");
             for (Creature creature : symbiontList) {
                 str.append(creature.id + " ");
             }
@@ -365,7 +368,7 @@ public class Creature implements Serializable {
         }
 
         if (!otherAnimalList.isEmpty()) {
-            str.append("Is symbiont for: ");
+            str.append("\tIs symbiont for: ");
             for (Creature creature : otherAnimalList) {
                 str.append(creature.id + " ");
             }

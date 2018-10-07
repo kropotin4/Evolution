@@ -18,11 +18,12 @@ import javafx.stage.StageStyle;
 
 public class AddTraitPane  extends VBox {
 
-    Stage AddTraitStage = new Stage();
+    Stage addTraitStage = new Stage();
 
     ControllerGUI controler;
 
     CardNode cardNode;
+    CreatureNode creatureNode;
 
     Button addButton;
 
@@ -74,15 +75,18 @@ public class AddTraitPane  extends VBox {
             @Override
             public void handle(MouseEvent event) {
                 if(isOneTrait){
-                    controler.addTraitToSelectedCreature(cardNode, true);
+                    //controler.addTraitToSelectedCreature(cardNode, true);
+                    controler.addTraitToCreature(creatureNode, cardNode, true);
                 }
                 else{
                     if(firtsTrait.isSelected()) {
-                        controler.addTraitToSelectedCreature(cardNode, true);
+                        //controler.addTraitToSelectedCreature(cardNode, true);
+                        controler.addTraitToCreature(creatureNode, cardNode, true);
                         firtsTrait.setSelected(false);
                     }
                     else {
-                        controler.addTraitToSelectedCreature(cardNode, false);
+                        //controler.addTraitToSelectedCreature(cardNode, false);
+                        controler.addTraitToCreature(creatureNode, cardNode, false);
                         secondTrait.setSelected(false);
                     }
                 }
@@ -120,39 +124,42 @@ public class AddTraitPane  extends VBox {
             radioBox.getChildren().addAll(firtsTrait, secondTrait);
         }
     }
+    public void setCreatureNode(CreatureNode creatureNode){
+        this.creatureNode = creatureNode;
+    }
+
 
     public void show(){
-        AddTraitStage.show();
-
+        addTraitStage.show();
     }
     public void close(){
-        AddTraitStage.close();
+        addTraitStage.close();
     }
 
     public void setTop(boolean isAlways){
-        AddTraitStage.setAlwaysOnTop(true);
+        addTraitStage.setAlwaysOnTop(true);
         if(!isAlways)
-            AddTraitStage.setAlwaysOnTop(false);
+            addTraitStage.setAlwaysOnTop(false);
     }
 
     private void setStage(){
         Scene scene = new Scene(this, Color.TRANSPARENT);
 
-        AddTraitStage.setTitle("Добавление свойства");
-        AddTraitStage.setHeight(this.getPrefHeight());
-        AddTraitStage.setWidth(this.getPrefWidth());
-        AddTraitStage.setMinHeight(this.getMinHeight());
-        AddTraitStage.setMinWidth(this.getMinWidth());
+        addTraitStage.setTitle("Добавление свойства");
+        addTraitStage.setHeight(this.getPrefHeight());
+        addTraitStage.setWidth(this.getPrefWidth());
+        addTraitStage.setMinHeight(this.getMinHeight());
+        addTraitStage.setMinWidth(this.getMinWidth());
 
-        AddTraitStage.initStyle(StageStyle.UTILITY);
+        addTraitStage.initStyle(StageStyle.UTILITY);
 
-        AddTraitStage.setScene(scene);
+        addTraitStage.setScene(scene);
         /*
-        AddTraitStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        addTraitStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
 
-                AddTraitStage.close();
+                addTraitStage.close();
             }
         });*/
     }
