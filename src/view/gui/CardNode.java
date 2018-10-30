@@ -60,7 +60,7 @@ public class CardNode extends HBox {
             label.setAlignment(Pos.CENTER);
             label.setTextAlignment(TextAlignment.CENTER);
 
-            //CreatureNode.switchTraitStyle(label, card.getTrait());
+            CreatureNode.switchTraitStyle(label, card.getTrait());
 
             traits_box.getChildren().add(label);
             traits_box.setVisible(true);

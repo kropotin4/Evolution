@@ -75,17 +75,17 @@ public class AddTraitPane  extends VBox {
             @Override
             public void handle(MouseEvent event) {
                 if(isOneTrait){
-                    //controler.addTraitToSelectedCreature(cardNode, true);
+                    //controller.addTraitToSelectedCreature(cardNode, true);
                     controler.addTraitToCreature(creatureNode, cardNode, true);
                 }
                 else{
                     if(firtsTrait.isSelected()) {
-                        //controler.addTraitToSelectedCreature(cardNode, true);
+                        //controller.addTraitToSelectedCreature(cardNode, true);
                         controler.addTraitToCreature(creatureNode, cardNode, true);
                         firtsTrait.setSelected(false);
                     }
                     else {
-                        //controler.addTraitToSelectedCreature(cardNode, false);
+                        //controller.addTraitToSelectedCreature(cardNode, false);
                         controler.addTraitToCreature(creatureNode, cardNode, false);
                         secondTrait.setSelected(false);
                     }

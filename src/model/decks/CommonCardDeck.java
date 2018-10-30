@@ -35,7 +35,7 @@ public class CommonCardDeck implements Serializable {
         quarter.add(new Card(Trait.CAMOUFLAGE, Trait.FAT_TISSUE));
         quarter.add(new Card(Trait.BURROWING, Trait.FAT_TISSUE));
         quarter.add(new Card(Trait.SHARP_VISION, Trait.FAT_TISSUE));
-        quarter.add(new Card(Trait.SYMBIOSYS));
+        quarter.add(new Card(Trait.SYMBIOSIS));
         quarter.add(new Card(Trait.PIRACY));
         quarter.add(new Card(Trait.GRAZING, Trait.FAT_TISSUE));
         quarter.add(new Card(Trait.TAIL_LOSS));

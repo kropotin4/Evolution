@@ -3,6 +3,7 @@ package control;
 import model.*;
 import storage.Loader;
 import storage.Saver;
+import view.gui.CreatureNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,9 +52,21 @@ public class Controller {
     // +? проверку на return
     public void addTraitToCreature(int playerNumber, int creatureID, Card card, boolean isUp){
         System.out.println("Controller: addTraitToCreature: " + playerNumber + " " + creatureID + " " + card + " " + isUp);
+
         player = findPlayer(playerNumber);
         player.addTraitToCreature(
+                player,
                 player.findCreature(creatureID),
+                card,
+                isUp
+        );
+    }
+    public void addTraitToCreature(int puttingPlayerNumber, int OwnerPlayerNumber, int creatureID, Card card, boolean isUp){
+        System.out.println("Controller: addTraitToCreature: " + puttingPlayerNumber + " " + OwnerPlayerNumber + " " + creatureID + " " + card + " " + isUp);
+
+        player.addTraitToCreature(
+                findPlayer(puttingPlayerNumber),
+                findPlayer(OwnerPlayerNumber).findCreature(creatureID),
                 card,
                 isUp
         );
@@ -83,6 +96,18 @@ public class Controller {
 
         return player.findCreature(creatureID).findTrait(trait);
     }
+    public boolean canAddTrait(int playerNumber, int creatureID, Trait trait){
+        System.out.println("Controller: canAddTrait: " + playerNumber + " " + creatureID + " " + trait);
+        player = findPlayer(playerNumber);
+
+        return player.findCreature(creatureID).canAddTrait(trait);
+    }
+    public boolean canAddPairTrait(int playerNumber, int firstCreatureID, int secondCreatureID, Trait trait){
+        System.out.println("Controller: canAddTrait: " + playerNumber + " " + firstCreatureID + " " + secondCreatureID + " " + trait);
+        player = findPlayer(playerNumber);
+
+        return player.findCreature(firstCreatureID).canAddPairTrait(trait, player.findCreature(secondCreatureID));
+    }
 
     public boolean havePlayerPredator(int playerNumber){
         player = findPlayer(playerNumber);
@@ -106,11 +131,15 @@ public class Controller {
         player = findPlayer(playerNumber);
         player.getFoodFromFodder(creatureID);
     }
+    public void getFoodFromFodderToFat(int playerNumber, int creatureID){
+        player = findPlayer(playerNumber);
+        player.getFoodFromFodderToFat(creatureID);
+    }
 
     public boolean haveHungryCreature(int playerNumber){
         player = findPlayer(playerNumber);
         for(Creature creature : player.getCreatures()){
-            if(!creature.isFed())
+            if(!creature.isSatisfied())
                 return true;
         }
         return false;
@@ -127,9 +156,26 @@ public class Controller {
         player = findPlayer(playerNumber);
         return player.findCreature(creatureID).isFed();
     }
+    public boolean isCreatureSatisfied(int playerNumber, int creatureID){
+        player = findPlayer(playerNumber);
+        return player.findCreature(creatureID).isSatisfied();
+    }
 
     public Phase getCurrentPhase(){
         return table.getCurrentPhase();
+    }
+
+    public ArrayList<CreaturesPair> getCommunicationCreatures(int playerNumber){
+        player = findPlayer(playerNumber);
+        return player.getCommunicationCreatures();
+    }
+    public ArrayList<CreaturesPair> getCooperationCreatures(int playerNumber){
+        player = findPlayer(playerNumber);
+        return player.getCooperationCreatures();
+    }
+    public ArrayList<SymbiosisPair> getSymbiosisCreatures(int playerNumber){
+        player = findPlayer(playerNumber);
+        return player.getSymbiosisCreatures();
     }
 
     public void setPlayerPass(int playerNumber){

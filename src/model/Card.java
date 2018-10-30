@@ -9,6 +9,8 @@ public class Card implements Serializable {
     private static int idCounter = 0;
     private int id = idCounter;
 
+    private boolean fat = false;
+
     private Trait up;
     private Trait down;
     private boolean isUp;
@@ -36,6 +38,13 @@ public class Card implements Serializable {
 
     public void turnCard(){
         isUp = !isUp;
+    }
+
+    public void setFat(boolean fat) {
+        this.fat = fat;
+    }
+    public boolean isFat() {
+        return fat;
     }
 
     public int getId(){

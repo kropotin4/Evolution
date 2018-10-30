@@ -136,7 +136,7 @@ public class PlayerListener extends Thread {
 
             case 1: //GrowthMessage(UUID creature1,UUID creature2, Card card, boolean isUp)
 
-                if(growthMessage.getCard().getTrait(growthMessage.isUp()) == Trait.SYMBIOSYS){
+                if(growthMessage.getCard().getTrait(growthMessage.isUp()) == Trait.SYMBIOSIS){
                     //TODO: Работа с симбионтом
                 }
                 else{

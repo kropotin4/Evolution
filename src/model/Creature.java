@@ -2,7 +2,6 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /****************************
  * responsible for the creature
@@ -43,14 +42,15 @@ public class Creature implements Serializable {
     private boolean isInfected = false;
     private boolean isSwimming = false;
 
+
     ArrayList<Creature> communicationList = new ArrayList<>();
     ArrayList<Creature> cooperationList = new ArrayList<>();
 
     //crocodiles: this creature can not eat if any symbiont is hungry; this creature can not be eaten if any symbiont is alive
-    ArrayList<Creature> symbiontList = new ArrayList<>();
+    ArrayList<Creature> crocodileList = new ArrayList<>();
 
     //birds: can not eat if this creature is hungry; can not be eaten if this animal is alive
-    ArrayList<Creature> otherAnimalList = new ArrayList<>();
+    ArrayList<Creature> birdList = new ArrayList<>();
 
 
     //Creature`s traits list (in order of obtaining)
@@ -61,10 +61,6 @@ public class Creature implements Serializable {
     public Creature(Player player){
         this.player = player;
         id = commonID++;
-    }
-
-    public Player getPlayer(){
-        return player;
     }
 
     /**Adds new trait if possible; do some checks; changes constants
@@ -110,26 +106,76 @@ public class Creature implements Serializable {
             case SHARP_VISION: return isSharp;
             case PARASITE: return isInfected;
             case SWIMMING: return isSwimming;
-            case FAT_TISSUE: return false; // Всегда false
+            case FAT_TISSUE: return fatCapacity > 0;
         }
         return false;
     }
+    public boolean canAddTrait(Trait trait){
+        if(trait == Trait.FAT_TISSUE)
+            return true;
+        else if(isPairTrait(trait)){
+            switch (trait){
+                case COOPERATION:
+                    if(cooperationList.size() >= 2) return false;
+                    return cooperationList.size() != (player.getCreatures().size() - 1);
+                case COMMUNICATION:
+                    if(communicationList.size() >= 2) return false;
+                    return communicationList.size() != (player.getCreatures().size() - 1);
+                case SYMBIOSIS:
+                    if((birdList.size() + crocodileList.size()) >= 2) return false;
+                    return (birdList.size() + crocodileList.size()) != (player.getCreatures().size() - 1);
+            }
+        }
+
+        return !findTrait(trait);
+    }
+    public boolean canAddPairTrait(Trait trait, Creature secondCreature){
+        switch (trait){
+            case COOPERATION:
+                /*for(CreaturesPair creaturesPair : player.cooperationCreatures){
+                    if(creaturesPair.haveCreature(this) && creaturesPair.haveCreature(secondCreature))
+                        return false;
+                }*/
+                for(Creature creature : cooperationList){
+                    if(creature == secondCreature)
+                        return false;
+                }//Старая версия
+                break;
+            case COMMUNICATION:
+                /*for(CreaturesPair creaturesPair : player.communicationCreatures){
+                    if(creaturesPair.haveCreature(this) && creaturesPair.haveCreature(secondCreature))
+                        return false;
+                }*/
+                for(Creature creature : communicationList){
+                    if(creature == secondCreature)
+                        return false;
+                }//Старая версия
+                break;
+            case SYMBIOSIS:
+                for(Creature creature : crocodileList){
+                    if(creature == secondCreature)
+                        return false;
+                }
+                for(Creature creature : birdList){
+                    if(creature == secondCreature)
+                        return false;
+                }
+                break;
+        }
+
+        return true;
+    }
     boolean removeTrait(Card card) {
         cards.remove(card);
+        if(card.isFat()) --fatQuantity;
 
-        return cancelTrait(card.getTrait()); //TODO: index deletion for fat tissue
-    }
-    boolean cancelTrait(Trait trait){
-        if (trait == trait.FAT_TISSUE){
+        if (card.getTrait() == Trait.FAT_TISSUE){
             --fatCapacity;
-            if (trait.FAT_TISSUE.isFatPlaced()){
-                --fatQuantity;
-            }
             return true;
         }
 
-        totalHunger -= trait.getHunger();
-        return switchTrait(trait, false);
+        totalHunger -= card.getTrait().getHunger();
+        return switchTrait(card.getTrait(), false);
     }
     boolean switchTrait(Trait trait, boolean turnOn){
         switch (trait){
@@ -172,65 +218,49 @@ public class Creature implements Serializable {
             case COOPERATION:
                 if (cooperationList.contains(creature)) return false;
                 cooperationList.add(creature);
-                //creature.cooperationList.add(this);
                 return true;
             case COMMUNICATION:
                 if (communicationList.contains(creature)) return false;
                 communicationList.add(creature);
-                //creature.communicationList.add(this);
                 return true;
-            case SYMBIOSYS:
-                if (true) {
-                    if (symbiontList.contains(creature)) return false;
-                    symbiontList.add(creature);
-                    //creature.symbiontList.add(this);
-                    return true;
-                } else {
-                    if (otherAnimalList.contains(creature)) return false;
-                    otherAnimalList.add(creature);
-                    //creature.otherAnimalList.add(this);
-                    return true;
-            }
         }
         return false;
+    }
+    boolean addSymbiosisTrait(Creature creature, boolean isCrocodile){
+        if(isCrocodile){
+            if(crocodileList.contains(creature)) return false;
+            crocodileList.add(creature);
+            return true;
+        }
+        else{
+            if(birdList.contains(creature)) return false;
+            birdList.add(creature);
+            return true;
+        }
     }
     boolean removePairTrait(Trait trait, Creature creature){
         switch (trait) {
             case COOPERATION:
-                if (cooperationList.contains(creature)) {
-                    cooperationList.remove(creature);
-                    //creature.cooperationList.remove(this);
-                    return true;
-                }
-                break;
+
+                return cooperationList.remove(creature);
+
             case COMMUNICATION:
-                if (communicationList.contains(creature)) {
-                    communicationList.remove(creature);
-                    //creature.communicationList.remove(this);
-                    return true;
-                }
-                break;
-            case SYMBIOSYS:
-                if (true) {
-                    if (symbiontList.contains(creature)) {
-                        symbiontList.remove(creature);
-                        //creature.symbiontList.remove(this);
-                        return true;
-                    }
-                } else {
-                    if (otherAnimalList.contains(creature)) {
-                        otherAnimalList.remove(creature);
-                        //creature.otherAnimalList.remove(this);
-                        return true;
-                    }
-                } break;
+
+                return communicationList.remove(creature);
+
+            case SYMBIOSIS:
+
+                if (!crocodileList.remove(creature))
+                    return birdList.remove(creature);
+
+                return true;
         }
         return false;
     }
-    static boolean isPairTrait(Trait trait){
+    public static boolean isPairTrait(Trait trait){
         if(trait == Trait.COMMUNICATION
         || trait == Trait.COOPERATION
-        || trait == Trait.SYMBIOSYS)
+        || trait == Trait.SYMBIOSIS)
             return true;
 
         return false;
@@ -239,6 +269,19 @@ public class Creature implements Serializable {
     public void addFood(){
         if(totalSatiety < totalHunger)
             ++totalSatiety;
+    }
+    public void addFat(){
+        if(fatQuantity < fatCapacity){
+            ++fatQuantity;
+           for(Card card : cards){
+               if(card.getTrait() == Trait.FAT_TISSUE){
+                   if(!card.isFat()) {
+                       card.setFat(true);
+                       break;
+                   }
+               }
+           }
+        }
     }
     public boolean isFed(){
         return totalSatiety == totalHunger;
@@ -252,11 +295,11 @@ public class Creature implements Serializable {
     public int getTotalSatiety(){
         return totalSatiety;
     }
-    boolean isSatisfied(){
+    public boolean isSatisfied(){
         return (fatCapacity == fatQuantity) && isFed();
     }
 
-    void attack (Creature creature){
+    void attack(Creature creature){
 
         if (creature.isPoisonous) isPoisoned = true;
 
@@ -273,14 +316,13 @@ public class Creature implements Serializable {
     public boolean isAttackPossible(Creature creature){
         if ((creature.isCamouflaged && !this.isSharp)
         || (creature.isBurrowing && creature.isFed())
-        || (!creature.symbiontList.isEmpty())
+        || (!creature.crocodileList.isEmpty())
         || (this.isSwimming != creature.isSwimming)
         || (creature.isBig && !this.isBig))
             return false;
 
         return true;
     }
-
     // Проверка необходима, чтобы выявить те случаи, когда защищающийся ничего не может сделать
     // ==>> Не нужно присылать ему сообщения
     public boolean isAbsoluteAttackPossible(Creature creature){
@@ -311,10 +353,13 @@ public class Creature implements Serializable {
     boolean getFood (){
         if (player.table.isFodderBaseEmpty()) return false;
         else if (this.isSatisfied()) return false;
-        if (!isFed()) ++totalSatiety; else ++fatQuantity;
+        if (isFed()) {
+            ++fatQuantity;
+        } else {
+            ++totalSatiety;
+        }
         return true;
     }
-
     boolean stealFood(Creature creature){
         if (this.isSatisfied()) return false;
         if (creature.isFed() || creature.totalSatiety == 0) return false;
@@ -323,6 +368,9 @@ public class Creature implements Serializable {
         return true;
     }
 
+    public Player getPlayer(){
+        return player;
+    }
     public int getId(){
         return id;
     }
@@ -359,17 +407,17 @@ public class Creature implements Serializable {
             str.append("\n");
         }
 
-        if (!symbiontList.isEmpty()) {
+        if (!crocodileList.isEmpty()) {
             str.append("\tSymbionts: ");
-            for (Creature creature : symbiontList) {
+            for (Creature creature : crocodileList) {
                 str.append(creature.id + " ");
             }
             str.append("\n");
         }
 
-        if (!otherAnimalList.isEmpty()) {
+        if (!birdList.isEmpty()) {
             str.append("\tIs symbiont for: ");
-            for (Creature creature : otherAnimalList) {
+            for (Creature creature : birdList) {
                 str.append(creature.id + " ");
             }
             str.append("\n");

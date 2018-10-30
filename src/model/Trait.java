@@ -80,7 +80,7 @@ public enum Trait implements Serializable {
             return "Падальщик";
         }
     },
-    SYMBIOSYS {
+    SYMBIOSIS {
         @Override
         public String toString() {
             return "Симбиоз";
@@ -134,15 +134,6 @@ public enum Trait implements Serializable {
         }
     },
     FAT_TISSUE{
-        boolean fat = false;
-        @Override
-        boolean isFatPlaced(){return fat;}
-        @Override
-        boolean setFat(boolean fat){
-            this.fat = fat;
-            return true;
-        }
-
         @Override
         public String toString() {
             return "Жировой запас";
@@ -150,7 +141,5 @@ public enum Trait implements Serializable {
     };
 
     int getHunger(){return 0;}
-    boolean isFatPlaced(){return false;}
-    boolean setFat(boolean fat){return false;}
 
 }

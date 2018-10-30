@@ -7,13 +7,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import model.Card;
-import model.Creature;
-import model.Phase;
 import model.Trait;
 
 import java.io.IOException;
@@ -21,15 +19,29 @@ import java.util.ArrayList;
 
 public class CreatureNode extends VBox {
 
-    PlayerPane playerPane;
+    private PlayerPane playerPane;
 
-    int creatureId;
-    int number;
+    private int creatureId;
+    private int number;
 
-    Button eatButton = new Button();
+
+    private HBox bottomBox = new HBox();
+
+    private Button eatButton = new Button();
+    private String eatButtonStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: transparent;";
+
+    private HBox leftBox = new HBox();
+
+    private VBox rightBox = new VBox();
+    private HBox commBox = new HBox();
+    private static final String commStyle = "-fx-border-width: 1; -fx-border-color: red; -fx-border-radius: 30; -fx-background-color: transparent;";
+    private static final String commStyleFull = "-fx-border-width: 1; -fx-border-color: red; -fx-border-radius: 30; -fx-background-color: rgba(255,99,71,0.4); -fx-background-radius: 30;";
+    private HBox coopBox = new HBox();
+    private static final String coopStyle = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: transparent;";
+    private static final String coopStyleFull = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: rgba(0,0,255,0.4); -fx-background-radius: 30;";
 
     //boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack
+    private int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack, 4 - poison
 
     public CreatureNode(PlayerPane playerPane, int creatureId, int creatureNumber){
         FXMLLoader fxmlLoader = new FXMLLoader(
@@ -54,27 +66,53 @@ public class CreatureNode extends VBox {
     private void initialize(){
         setBorder("green", 1);
         this.setPrefHeight(190);
-        this.setMaxWidth(100);
-        this.setMinWidth(100);
+        this.setMaxWidth(110);
+        this.setMinWidth(110);
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setPadding(new Insets(2));
         this.setSpacing(1);
+
+        bottomBox.setPrefSize(500, 15);
 
         eatButton.setAlignment(Pos.CENTER);
         eatButton.setTextAlignment(TextAlignment.CENTER);
         eatButton.setPrefSize(50, 4);
         eatButton.setFont(new Font(12));
-        eatButton.setStyle("-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: transparent;");
+        eatButton.setStyle(eatButtonStyle);
+
+        bottomBox.setAlignment(Pos.CENTER);
+        bottomBox.setPrefSize(this.getMinWidth(), 10);
+
+        leftBox.setAlignment(Pos.CENTER);
+        leftBox.setPrefSize(30, 10);
+
+        rightBox.setAlignment(Pos.CENTER);
+        rightBox.setPrefSize(30, 10);
+        commBox.setPrefSize(30, 5);
+        coopBox.setPrefSize(30, 5);
+
+
+        rightBox.getChildren().addAll(commBox, coopBox);
+
+        bottomBox.getChildren().addAll(leftBox, eatButton, rightBox);
     }
 
     public void update(){
         this.getChildren().clear();
 
-        ArrayList<Card> cards = playerPane.controler.getCreatureCards(this);
+        ArrayList<Card> cards = playerPane.controller.getCreatureCards(this);
         for(int i = cards.size() - 1; i >= 0; --i){ // Перечисление trait-ов
             Trait trait = cards.get(i).getTrait();
 
-            Label label = new Label(trait.toString());
+            Label label;
+            if(trait == Trait.FAT_TISSUE){
+                if(cards.get(i).isFat())
+                    label = new Label(trait.toString() + " (*)");
+                else
+                    label = new Label(trait.toString() + " ( )");
+            }
+            else
+                label = new Label(trait.toString());
 
             label.setWrapText(true);
             label.setAlignment(Pos.CENTER);
@@ -88,10 +126,65 @@ public class CreatureNode extends VBox {
             this.getChildren().add(label);
         }
 
-        eatButton.setText(playerPane.controler.getCreauterSatiety(this) + "/" + playerPane.controler.getCreauterHunger(this));
 
-        this.getChildren().add(eatButton);
+        int satiety = playerPane.controller.getCreauterSatiety(this);
+        int hunger = playerPane.controller.getCreauterHunger(this);
+        eatButton.setText(satiety + "/" + hunger);
+        if(satiety == hunger)
+            eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,255,127,0.2); -fx-background-radius: 30;");
+        else
+            eatButton.setStyle(eatButtonStyle);
 
+
+        this.getChildren().add(bottomBox);
+
+    }
+
+    public Label addCommunicationLink(int linkNumber){
+        Label label = new Label(Integer.toString(linkNumber));
+
+        label.setAlignment(Pos.CENTER);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.setPrefSize(15, 5);
+        label.setFont(new Font(9));
+        label.setStyle(commStyle);
+
+        commBox.getChildren().add(label);
+
+        return label;
+    }
+    public Label addCooperationLink(int linkNumber){
+        Label label = new Label(Integer.toString(linkNumber));
+
+        label.setAlignment(Pos.CENTER);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.setPrefSize(15, 5);
+        label.setFont(new Font(9));
+        label.setStyle(coopStyle);
+
+        coopBox.getChildren().add(label);
+
+        return label;
+    }
+    public void addSymbiosisLink(int linkNumber, boolean isCrocodile){
+
+    }
+
+    public static void setCommStyle(Node node, boolean isFull){
+        if(isFull){
+            node.setStyle(commStyleFull);
+        }
+        else{
+            node.setStyle(commStyle);
+        }
+    }
+    public static void setCoopStyle(Node node, boolean isFull){
+        if(isFull){
+            node.setStyle(coopStyleFull);
+        }
+        else{
+            node.setStyle(coopStyle);
+        }
     }
 
     public static void switchTraitStyle(Node node, Trait trait){
@@ -122,7 +215,6 @@ public class CreatureNode extends VBox {
 
         this.setStyle("-fx-border-color: " + color + "; -fx-border-width: " + width + ";");
     }
-
     public void setStyleType(int styleType){
         this.styleType = styleType;
         switch (styleType){
@@ -138,14 +230,22 @@ public class CreatureNode extends VBox {
             case 3:
                 setAttackStyle();
                 break;
+            case 4:
+                setPoisonStyle();
+                break;
             default:
                 this.setStyle("");
-                setBorder("violet", 2.5);
+                setBorder("hotpink", 2.5);
                 System.out.println("CreatureNode: setStyleType: Error -> styleType: " + styleType);
                 break;
         }
     }
 
+    private void setPoisonStyle(){
+        this.setStyle("");
+        setBorder("violet", 2.5);
+        this.setStyle(this.getStyle() + "-fx-background-color: rgba(238,130,238,0.3);");
+    }
     private void setAttackStyle(){
         this.setStyle("");
         setBorder("gold", 2.5);
@@ -177,6 +277,9 @@ public class CreatureNode extends VBox {
     }
     public boolean isAttackStyle(){
         return styleType == 3;
+    }
+    public boolean isPoisonStyle(){
+        return styleType == 4;
     }
 
     public PlayerPane getPlayerPane() {

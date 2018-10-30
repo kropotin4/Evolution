@@ -24,6 +24,7 @@ import javafx.stage.WindowEvent;
 import model.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainPane extends BorderPane {
 
@@ -79,13 +80,15 @@ public class MainPane extends BorderPane {
     CreatureNode attackerCreature;
     CardNode selectedCard;
 
-    boolean isFoodGetting = false;
-    boolean isAttackerSelecting = false;
-    boolean isDefenderSelecting = false;
+    boolean isFoodGetting = false; // Нажали на "Взять еду из кормовой базы"
+    boolean isAttackerSelecting = false; // Нажали на "Атака" и выбирают атакующее существо
+    boolean isDefenderSelecting = false; // Выбирают кого атаковать
 
-    boolean isCardSelecting = false;
-    boolean isCardSelected = false;
-    boolean isCreatureAdding = false;
+    boolean isCardSelecting = false; // Выбор карты (нажали "Положить свойство")
+    boolean isCardSelected = false; // Выбрали карту
+    boolean isPairTraitSelected = false; // Хотят положить парное свойство
+    boolean isUp = false; // Выбрано верхнее/нижнее свойство на двойной карте
+    boolean isCreatureAdding = false; // Нажали на большой зеленый плюс
     ///endregion
 
     public MainPane(Stage primaryStage, Controller controller){
@@ -154,6 +157,16 @@ public class MainPane extends BorderPane {
 
         controler.startGame();
         setPhaseElement(Phase.GROWTH);
+
+        ///temp
+        DefenseOrderPane defenseOrderPane = new DefenseOrderPane();
+        ArrayList<Trait> traits = new ArrayList<>();
+        traits.add(Trait.FAT_TISSUE);
+        traits.add(Trait.CAMOUFLAGE);
+        traits.add(Trait.PARASITE);
+        traits.add(Trait.SYMBIOSIS);
+        defenseOrderPane.setDefenseTraits(traits);
+        defenseOrderPane.show();
     }
 
     private void initButton(){
@@ -242,7 +255,7 @@ public class MainPane extends BorderPane {
             @Override
             public void handle(MouseEvent event) {
                 isAttackerSelecting = false;
-                playerPane.setAllCreaturesDefault();
+                setAllCreaturesDefault();
                 attackButtonBox.getChildren().remove(1);
             }
         });
@@ -351,7 +364,7 @@ public class MainPane extends BorderPane {
         }
 
         top_action_box.getChildren().add(passButton);
-        //if(controler.getFoodNumber() <= 0)
+        //if(controller.getFoodNumber() <= 0)
             //passButton.setDisable(true);
     }
 
@@ -395,6 +408,57 @@ public class MainPane extends BorderPane {
                 firtsTrait.setToggleGroup(group);
                 secondTrait.setToggleGroup(group);
 
+                firtsTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        isUp = true;
+                        System.out.print("MainPain: firstTrait -> ");
+                        if(Creature.isPairTrait(cardNode.getCard().getTrait(true)))
+                            isPairTraitSelected = true;
+                        else
+                            isPairTraitSelected = false;
+
+                        System.out.println("isPairTraitSelected = " + isPairTraitSelected + " ");
+
+                        if(cardNode.getCard().getTrait(true) != Trait.PARASITE){
+                            setAllCreaturesDefault();
+                            playerPane.setCanGettingTraitCreaturesTrue(cardNode.getCard().getTrait(true));
+                        }
+                        else{
+                            setAllCreaturesDefault();
+                            for (Node node : players_pane.getChildren()) {
+                                PlayerPane playerPane = (PlayerPane) node;
+
+                                playerPane.setCanGettingTraitCreaturesPoison(cardNode.getCard().getTrait(true));
+                            }
+                        }
+                    }
+                });
+                secondTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        isUp = false;
+                        System.out.print("MainPain: secondTrait -> ");
+                        if(Creature.isPairTrait(cardNode.getCard().getTrait(false)))
+                            isPairTraitSelected = true;
+                        else
+                            isPairTraitSelected = false;
+                        System.out.println("isPairTraitSelected = " + isPairTraitSelected + " ");
+                        if(cardNode.getCard().getTrait(false) != Trait.PARASITE){
+                            setAllCreaturesDefault();
+                            playerPane.setCanGettingTraitCreaturesTrue(cardNode.getCard().getTrait(false));
+                        }
+                        else{
+                            setAllCreaturesDefault();
+                            for (Node node : players_pane.getChildren()) {
+                                PlayerPane playerPane = (PlayerPane) node;
+
+                                playerPane.setCanGettingTraitCreaturesPoison(cardNode.getCard().getTrait(false));
+                            }
+                        }
+                    }
+                });
+
                 VBox radioBox = new VBox();
                 radioBox.setPrefWidth(15);
                 radioBox.setPrefHeight(80);
@@ -404,8 +468,28 @@ public class MainPane extends BorderPane {
                 radioBox.getChildren().addAll(firtsTrait, secondTrait);
                 cardBox.getChildren().addAll(radioBox, cardNode, cancelImage);
             }
-            else
+            else {
+
+                if(Creature.isPairTrait(cardNode.getCard().getTrait(true)))
+                    isPairTraitSelected = true;
+                else
+                    isPairTraitSelected = false;
+
+                if(cardNode.getCard().getTrait() != Trait.PARASITE){
+                    setAllCreaturesDefault();
+                    playerPane.setCanGettingTraitCreaturesTrue(cardNode.getCard().getTrait());
+                }
+                else{
+                    setAllCreaturesDefault();
+                    for (Node node : players_pane.getChildren()) {
+                        PlayerPane playerPane = (PlayerPane) node;
+
+                        playerPane.setCanGettingTraitCreaturesPoison(cardNode.getCard().getTrait());
+                    }
+                }
+
                 cardBox.getChildren().addAll(cardNode, cancelImage);
+            }
 
             bottom_action_box.getChildren().addAll(cardBox, showCardsButton);
 
@@ -415,6 +499,10 @@ public class MainPane extends BorderPane {
 
             isCardSelected = false;
             isCardSelecting = false;
+            isCreatureAdding = false;
+            isUp = false;
+            isPairTraitSelected = false;
+            setAllCreaturesDefault();
         }
     }
     public boolean isCardSelecting(){
@@ -434,6 +522,12 @@ public class MainPane extends BorderPane {
     }
     public void setIsCreatureAdding(boolean isCreatureAdding){
         this.isCreatureAdding = isCreatureAdding;
+    }
+    public boolean isUpTrait(){
+        return isUp;
+    }
+    public boolean isPairTraitSelected(){
+        return isPairTraitSelected;
     }
 
     public boolean isFoodGetting(){
@@ -472,6 +566,15 @@ public class MainPane extends BorderPane {
     }
     public PlayerPane getCurrentPlayerPane(){
         return playerPane;
+    }
+
+    public void setAllCreaturesDefault(){
+        playerPane.setAllCreaturesDefault();
+        for (Node node : players_pane.getChildren()) {
+            PlayerPane playerPane = (PlayerPane) node;
+
+            playerPane.setAllCreaturesDefault();
+        }
     }
 
     public void update(int playerNumber){

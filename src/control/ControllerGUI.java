@@ -1,18 +1,13 @@
 package control;
 
 import javafx.scene.Node;
-import model.Card;
-import model.Creature;
-import model.Phase;
-import model.Trait;
+import model.*;
 import model.decks.PlayerCardDeck;
 import view.gui.CardNode;
 import view.gui.CreatureNode;
 import view.gui.MainPane;
 import view.gui.PlayerPane;
 
-import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class ControllerGUI {
@@ -62,11 +57,24 @@ public class ControllerGUI {
     public int getPlayersNumber(){
         return controller.getPlayersNumber();
     }
+    public int getPlayerTurn(){
+        return controller.getPlayerTurn();
+    }
     public Phase getCurrentPhase(){
         return controller.getCurrentPhase();
     }
     public int getFoodNumber(){
         return controller.getFoodNumber();
+    }
+
+    public ArrayList<CreaturesPair> getCommunicationCreatures(int playerNumber){
+        return controller.getCommunicationCreatures(playerNumber);
+    }
+    public ArrayList<CreaturesPair> getCooperationCreatures(int playerNumber){
+        return controller.getCooperationCreatures(playerNumber);
+    }
+    public ArrayList<SymbiosisPair> getSymbiosisCreatures(int playerNumber){
+        return controller.getSymbiosisCreatures(playerNumber);
     }
 
     public boolean havePlayerPredator(){
@@ -85,6 +93,9 @@ public class ControllerGUI {
     public boolean isCreatureFed(CreatureNode creatureNode){
         return controller.isCreatureFed(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
+    public boolean isCreatureSatisfied(CreatureNode creatureNode){
+        return controller.isCreatureSatisfied(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+    }
 
     public void addCreature(CardNode cardNode){
         controller.addCreature(playerNumber, cardNode.getCard());
@@ -97,18 +108,57 @@ public class ControllerGUI {
     public boolean findTrait(CreatureNode creatureNode, Trait trait){
         return controller.findTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), trait);
     }
-
+    public boolean canAddTrait(CreatureNode creatureNode, Trait trait){
+        return controller.canAddTrait(
+                creatureNode.getPlayerPane().getPlayerNumber(),
+                creatureNode.getCreatureId(),
+                trait
+        );
+    }
+    public boolean canAddPairTrait(CreatureNode firstCreature, CreatureNode secondCreature, Trait trait){
+        return controller.canAddPairTrait(
+                firstCreature.getPlayerPane().getPlayerNumber(),
+                firstCreature.getCreatureId(),
+                secondCreature.getCreatureId(),
+                trait
+        );
+    }
+    public boolean isUpTrait(){
+        return mainPane.isUpTrait();
+    }
+    public boolean isPairTraitSelected(){
+        return mainPane.isPairTraitSelected();
+    }
     public void showAddTraitPane(CreatureNode selectedCreature, double X, double Y){
         mainPane.showAddTraitPane(selectedCreature, X, Y);
     }
     public void addTraitToCreature(CreatureNode creatureNode, CardNode cardNode, boolean isUp){
-        if(!controller.findTrait(playerNumber, creatureNode.getCreatureId(), cardNode.getCard(), isUp)
-                && cardNode.getCard().getTrait(isUp) != Trait.PARASITE) {
-            controller.addTraitToCreature(playerNumber, creatureNode.getCreatureId(), cardNode.getCard(), isUp);
+        if(controller.canAddTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), cardNode.getCard().getTrait(isUp))) {
+            controller.addTraitToCreature(
+                    creatureNode.getPlayerPane().getPlayerNumber(),
+                    creatureNode.getCreatureId(),
+                    cardNode.getCard(),
+                    isUp
+            );
             mainPane.showSelectedCard(false);
             mainPane.setIsCreatureAdding(false);
             mainPane.setIsCardSelecting(false);
             mainPane.updateCurrentPlayer();
+        }
+    }
+    public void addTraitToCreature(int playerNumber, CreatureNode creatureNode, CardNode cardNode, boolean isUp){
+        if(controller.canAddTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), cardNode.getCard().getTrait(isUp))) {
+            controller.addTraitToCreature(
+                    playerNumber,
+                    creatureNode.getPlayerPane().getPlayerNumber(),
+                    creatureNode.getCreatureId(),
+                    cardNode.getCard(),
+                    isUp
+            );
+            mainPane.showSelectedCard(false);
+            mainPane.setIsCreatureAdding(false);
+            mainPane.setIsCardSelecting(false);
+            mainPane.update(this.playerNumber);
         }
     }
 
@@ -132,6 +182,7 @@ public class ControllerGUI {
     public ArrayList<Card> getCreatureCards(CreatureNode creatureNode){
         return controller.getCreatureCards(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
+
     public int getPlayerCardNumber(){
         return controller.getPlayerCardsNumber(playerNumber);
     }
@@ -141,9 +192,15 @@ public class ControllerGUI {
         controller.getFoodFromFodder(playerNumber, creatureNode.getCreatureId());
         mainPane.updateCurrentPlayer();
     }
+    public void getFoodFromFodderToFat(CreatureNode creatureNode){
+        mainPane.setIsFoodGetting(false);
+        controller.getFoodFromFodderToFat(playerNumber, creatureNode.getCreatureId());
+        mainPane.updateCurrentPlayer();
+    }
     public boolean isFoodGetting(){
         return mainPane.isFoodGetting();
     }
+
 
     public void showDefenderSelecting(CreatureNode creatureNode) {
         int attackerPlayer = creatureNode.getPlayerPane().getPlayerNumber();
