@@ -1,12 +1,10 @@
 package control;
 
 import javafx.scene.Node;
+import javafx.stage.Stage;
 import model.*;
 import model.decks.PlayerCardDeck;
-import view.gui.CardNode;
-import view.gui.CreatureNode;
-import view.gui.MainPane;
-import view.gui.PlayerPane;
+import view.gui.*;
 
 import java.util.ArrayList;
 
@@ -17,32 +15,37 @@ public class ControllerGUI {
     ControllerServer controllerServer;
     MainPane mainPane;
 
-    int type;
+    GameType type;
 
     int playerNumber; // Меняется в doNextMove()
 
-    public ControllerGUI(Controller controller, MainPane mainPane, int playerNumber){
+    public ControllerGUI(Stage primaryStage, Controller controller, int playerNumber){
         this.controller = controller;
-        this.mainPane = mainPane;
+        this.mainPane = new MainPane(primaryStage, this);
         this.playerNumber = playerNumber;
-        type = 0;
+        type = GameType.ALONE;
+
+        //mainPane.setPhaseElement(Phase.GROWTH);
+        //startGame();
     }
-    public ControllerGUI(ControllerClient controllerClient, MainPane mainPane, int playerNumber){
+    public ControllerGUI(Stage primaryStage, Controller controller, ControllerClient controllerClient, MainPane mainPane, int playerNumber){
+        this.controller = controller;
         this.controllerClient = controllerClient;
-        this.mainPane = mainPane;
+        this.mainPane = new MainPane(primaryStage, this);
         this.playerNumber = playerNumber;
-        type = 1;
+        type = GameType.CLIENT;
     }
-    public ControllerGUI(ControllerServer controllerServer, MainPane mainPane, int playerNumber){
+    /*public ControllerGUI(Controller controller, ControllerServer controllerServer, MainPane mainPane, int playerNumber){
         this.controllerServer = controllerServer;
         this.mainPane = mainPane;
         this.playerNumber = playerNumber;
         type = 2;
-    }
+    }*/
 
 
     public void startGame(){
-        mainPane.update(0);
+        mainPane.show();
+        mainPane.update(playerNumber);
     }
 
     public void doNextMove(){
@@ -183,7 +186,7 @@ public class ControllerGUI {
         return controller.getCreatureCards(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
 
-    public int getPlayerCardNumber(){
+    public int getPlayerCardsNumber(){
         return controller.getPlayerCardsNumber(playerNumber);
     }
 

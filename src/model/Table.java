@@ -178,7 +178,7 @@ public class Table implements Serializable {
     }
 
     public int addPlayer(String login){
-        Player player = new Player(this, login);
+        Player player = new Player(this, login, players.size());
 
         players.add(player);
 
@@ -193,9 +193,9 @@ public class Table implements Serializable {
     public int getPlayerTurn(){
         return playerTurn;
     }
-    public Player findPlayer(UUID id){
+    public Player findPlayer(int playerNumber){
         for(Player player : players){
-            if(player.getId() == id) return player;
+            if(player.getPlayerNumber() == playerNumber) return player;
         }
 
         return null;

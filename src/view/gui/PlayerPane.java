@@ -71,6 +71,7 @@ public class PlayerPane extends HBox {
         this.setPadding(new Insets(3));
         this.setSpacing(3);
 
+
         imageBox.getChildren().add(imageView);
         imageBox.setAlignment(Pos.CENTER);
         imageBox.setPrefSize(80, 300);

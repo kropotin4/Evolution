@@ -1,6 +1,8 @@
 package view.gui;
 
 import control.Controller;
+import control.ControllerGUI;
+import control.ControllerServer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,11 +13,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Properties;
 
 public class StartPane extends VBox {
 
     @FXML Button play_yourself;
+    @FXML Button play_server;
+    @FXML Button play_client;
+    @FXML Button play_server_client;
 
     Stage primaryStage;
 
@@ -44,12 +52,47 @@ public class StartPane extends VBox {
         Controller controller = new Controller(2, 2);
 
 
-        play_yourself.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                MainPane mainPane = new MainPane(primaryStage, controller);
-                mainPane.show();
+        play_yourself.setOnMouseClicked(event -> {
+            ControllerGUI controllerGUI = new ControllerGUI(primaryStage, controller, 0);
+            controllerGUI.startGame();
+        });
+
+        play_server.setOnMouseClicked(event -> {
+            Properties properties = new Properties();
+            FileInputStream propertiesFile = null;
+            int port = 0;
+            try {
+                propertiesFile = new FileInputStream("server.properties");
+                properties.load(propertiesFile);
+
+                port = Integer.parseInt(properties.getProperty("PORT"));
+
+
+            } catch (FileNotFoundException ex) {
+                System.err.println("Properties config file not found");
+            } catch (IOException ex) {
+                System.err.println("Error while reading file");
+            } finally {
+                try {
+                    propertiesFile.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
+
+            ControllerServer controllerServer = new ControllerServer(controller, port);
+            controllerServer.start();
+
+        });
+
+        play_client.setOnMouseClicked(event -> {
+            ControllerGUI controllerGUI = new ControllerGUI(primaryStage, controller, 0);
+            controllerGUI.startGame();
+        });
+
+        play_server_client.setOnMouseClicked(event -> {
+            //MainPane mainPane = new MainPane(primaryStage, controller, GameType.SERVER_CLIENT);
+            //mainPane.show();
         });
     }
 

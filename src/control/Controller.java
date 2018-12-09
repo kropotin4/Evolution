@@ -31,14 +31,6 @@ public class Controller {
             e.printStackTrace();
         }
 
-        /*
-        if(table.step > 15){
-            try {
-                table = loader.loadTable("dump" + (table.step - 10));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
 
         return table.getPlayerTurn();
     }

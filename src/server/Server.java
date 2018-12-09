@@ -1,6 +1,7 @@
 package server;
 
 import control.Controller;
+import control.ControllerServer;
 import server.message.EatingMessage;
 import server.message.Message;
 import server.message.MessageType;
@@ -17,24 +18,25 @@ import java.util.Properties;
 public class Server extends Thread{
 
 
-    Controller controller;
+    ControllerServer controller;
 
     ServerSocket serverSocket;
 
     ArrayList<OS> playersStream = new ArrayList<>();
 
-    Properties properties;
 
     Message recievedMessage;
     EatingMessage eatingMessage;
 
-    Server(Controller controller) throws IOException {
+    public Server(ControllerServer controller, int port) {
         this.controller = controller;
 
-        properties = new Properties();
-        properties.load(new FileInputStream("server_properties"));
-
-        serverSocket = new ServerSocket(Integer.parseInt(properties.getProperty("SERVER_PORT")));
+        try {
+            serverSocket = new ServerSocket(port);
+        } catch (IOException e) {
+            System.err.println("Server: ServerSocket not open (port = " + port + ")");
+            throw new RuntimeException("Server caput", e.getCause());
+        }
     }
 
 
@@ -53,8 +55,8 @@ public class Server extends Thread{
 
             try {
                 Socket newPlayer = serverSocket.accept();
-                PlayerListener playerListener = new PlayerListener(this, newPlayer, controller);
-                playerListener.start();
+                PlayerThread playerThread = new PlayerThread(this, newPlayer, i);
+                playerThread.start();
 
             } catch (IOException e) {
                 System.out.println("Connect with player has failed");
@@ -63,7 +65,7 @@ public class Server extends Thread{
         }
     }
 
-    public boolean middlePlay(){ // Забавное название ?
+    public boolean middlePlay(){
 
         boolean end = false;
         while (!end){
@@ -115,6 +117,7 @@ public class Server extends Thread{
 
             if(controller.getPlayerCardsNumber(playerNumber) <= 0){
                 //TODO: Он пас
+                controller.doNextMove();
             }
             else{
                 //TODO: Отправляем запрос
@@ -131,13 +134,13 @@ public class Server extends Thread{
             } catch (InterruptedException e) {
                 System.out.println("Server: Problems with wait");
             }
-
+            controller.doNextMove();
             sendingAllResults();// Массовая рассылка результата
         }
     }
 
     private void cfbPhaseHandler(){
-        controller.setFodder();
+        controller.doNextMove();
         sendingAllResults();
     }
 
@@ -158,6 +161,8 @@ public class Server extends Thread{
                 System.out.println("Server: wait() has interrupted");
             }
 
+            controller.doNextMove();
+
             if(eatingMessage.getType() == 2){
 
                 try {
@@ -176,6 +181,8 @@ public class Server extends Thread{
     }
 
     private void extinctionPhaseHandler(){
+        controller.doNextMove();
+
         for (int playerNumber = 0; playerNumber < controller.getPlayersNumber(); ++playerNumber) { // Игроки
 
             //TODO: что-то им отправляем -> какие действия мы от игрока ждем

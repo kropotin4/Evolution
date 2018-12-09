@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -44,6 +45,10 @@ public class CreatureNode extends VBox {
     private int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack, 4 - poison
 
     public CreatureNode(PlayerPane playerPane, int creatureId, int creatureNumber){
+        this.number = creatureNumber;
+        this.playerPane = playerPane;
+        this.creatureId = creatureId;
+
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/CreatureNode.fxml")
         );
@@ -57,9 +62,6 @@ public class CreatureNode extends VBox {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-        this.number = creatureNumber;
-        this.playerPane = playerPane;
-        this.creatureId = creatureId;
     }
 
     @FXML
@@ -68,6 +70,7 @@ public class CreatureNode extends VBox {
         this.setPrefHeight(190);
         this.setMaxWidth(110);
         this.setMinWidth(110);
+        this.setPrefWidth(this.getMinWidth());
         this.setAlignment(Pos.BOTTOM_CENTER);
         this.setPadding(new Insets(2));
         this.setSpacing(1);
@@ -104,26 +107,39 @@ public class CreatureNode extends VBox {
         for(int i = cards.size() - 1; i >= 0; --i){ // Перечисление trait-ов
             Trait trait = cards.get(i).getTrait();
 
-            Label label;
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setPrefWidth(this.getPrefWidth());
+
+            Label label = null;
             if(trait == Trait.FAT_TISSUE){
                 if(cards.get(i).isFat())
                     label = new Label(trait.toString() + " (*)");
                 else
                     label = new Label(trait.toString() + " ( )");
+                hBox.getChildren().add(label);
             }
-            else
+            else if(trait == Trait.GRAZING){
+                CheckBox checkBox = new CheckBox();
+                checkBox.setSelected(false);
                 label = new Label(trait.toString());
+                hBox.getChildren().addAll(checkBox, label);
+            }
+            else {
+                label = new Label(trait.toString());
+                hBox.getChildren().add(label);
+            }
 
             label.setWrapText(true);
             label.setAlignment(Pos.CENTER);
             label.setTextAlignment(TextAlignment.CENTER);
-            label.setPrefWidth(500);
+            label.setPrefWidth(hBox.getPrefWidth());
 
             label.setFont(new Font(11));
 
             switchTraitStyle(label, trait);
 
-            this.getChildren().add(label);
+            this.getChildren().add(hBox);
         }
 
 

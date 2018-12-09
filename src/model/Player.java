@@ -27,11 +27,10 @@ import java.util.UUID;
 
 public class Player implements Serializable {
 
-    public final UUID id = UUID.randomUUID();
-
     Table table;
 
     String login;
+    int playerNumber;
 
     boolean isPass = false;
 
@@ -45,9 +44,10 @@ public class Player implements Serializable {
     ArrayList<SymbiosisPair> symbiosisCreatures = new ArrayList<>();
 
 
-    public Player(Table table, String login){
+    public Player(Table table, String login, int playerNumber){
         this.table = table;
         this.login = login;
+        this.playerNumber = playerNumber;
     }
 
     public ArrayList<Creature> getCreatures() {
@@ -265,16 +265,18 @@ public class Player implements Serializable {
     public String getLogin(){
         return login;
     }
+    public void setPlayerNumber(int playerNumber){
+        this.playerNumber = playerNumber;
+    }
 
-    public Creature findCreature(int id){
+    public Creature findCreature(int CreatureId){
         for(Creature creature : creatures){
-            if(creature.getId() == id) return creature;
+            if(creature.getId() == CreatureId) return creature;
         }
 
         return null;
     }
-
-    public UUID getId(){
-        return id;
+    public int getPlayerNumber(){
+        return playerNumber;
     }
 }

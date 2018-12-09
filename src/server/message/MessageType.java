@@ -6,4 +6,5 @@ public enum MessageType {
     GROWTH,
     SPECIAL,
     ERROR,
+    PING;
 }

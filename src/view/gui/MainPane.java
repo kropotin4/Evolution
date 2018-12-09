@@ -29,8 +29,6 @@ import java.util.ArrayList;
 public class MainPane extends BorderPane {
 
     ///region field
-    MainPane self = this;
-
     Image cancel1 = new Image("/images/cancel1.png");
     Image cancel2 = new Image("/images/cancel2.png");
     Image cancel3 = new Image("/images/cancel3.png");
@@ -91,9 +89,17 @@ public class MainPane extends BorderPane {
     boolean isCreatureAdding = false; // Нажали на большой зеленый плюс
     ///endregion
 
-    public MainPane(Stage primaryStage, Controller controller){
+    public MainPane(Stage primaryStage, ControllerGUI controller){
         this.primaryStage = primaryStage;
-        this.controler = new ControllerGUI(controller, this, 0);
+        this.controler = controller;
+
+        //Scene scene = new Scene(this, Color.TRANSPARENT);
+
+        //primaryStage.setMinWidth(this.getPrefWidth() + 20);
+        //primaryStage.setMinHeight(this.getPrefHeight() + 40);
+        //primaryStage.setTitle("Эволюция");
+
+        //primaryStage.setScene(scene);
 
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/MainPane.fxml")
@@ -109,13 +115,7 @@ public class MainPane extends BorderPane {
             throw new RuntimeException(exception);
         }
 
-        Scene scene = new Scene(this, Color.TRANSPARENT);
 
-        primaryStage.setMinWidth(this.getPrefWidth() + 20);
-        primaryStage.setMinHeight(this.getPrefHeight() + 40);
-        primaryStage.setTitle("Эволюция");
-
-        primaryStage.setScene(scene);
     }
 
     @FXML
@@ -155,18 +155,18 @@ public class MainPane extends BorderPane {
         info_pane.setSpacing(10);
         info_pane.setAlignment(Pos.CENTER);
 
-        controler.startGame();
+        //controler.startGame();
         setPhaseElement(Phase.GROWTH);
 
         ///temp
-        DefenseOrderPane defenseOrderPane = new DefenseOrderPane();
-        ArrayList<Trait> traits = new ArrayList<>();
-        traits.add(Trait.FAT_TISSUE);
-        traits.add(Trait.CAMOUFLAGE);
-        traits.add(Trait.PARASITE);
-        traits.add(Trait.SYMBIOSIS);
-        defenseOrderPane.setDefenseTraits(traits);
-        defenseOrderPane.show();
+        //DefenseOrderPane defenseOrderPane = new DefenseOrderPane(controler);
+        //ArrayList<Trait> traits = new ArrayList<>();
+        //traits.add(Trait.FAT_TISSUE);
+        //traits.add(Trait.CAMOUFLAGE);
+        //traits.add(Trait.PARASITE);
+        //traits.add(Trait.SYMBIOSIS);
+        //defenseOrderPane.setDefenseTraits(traits);
+        //defenseOrderPane.show();
     }
 
     private void initButton(){
@@ -208,6 +208,7 @@ public class MainPane extends BorderPane {
                     eatButtonBox.getChildren().add(cancelEatImage);
             }
         });
+        cancelEatImage.setCache(true);
         cancelEatImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -251,6 +252,7 @@ public class MainPane extends BorderPane {
                     attackButtonBox.getChildren().add(cancelAttackImage);
             }
         });
+        cancelAttackImage.setCache(true);
         cancelAttackImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -304,6 +306,7 @@ public class MainPane extends BorderPane {
         ///endregion
 
         ///region cancelImage init
+        cancelImage.setCache(true);
         cancelImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -327,7 +330,7 @@ public class MainPane extends BorderPane {
         ///endregion
     }
 
-    // Заплатка -> Phase = GROWTH;
+    //
     public void setPhaseElement(Phase phase) {
         top_action_box.getChildren().clear();
 
@@ -611,7 +614,7 @@ public class MainPane extends BorderPane {
     * + обработка нажатия на него*/
     private void checkAddImage(){
         if(controler.getCurrentPhase() == Phase.GROWTH
-                && controler.getPlayerCardNumber() > 0){
+                && controler.getPlayerCardsNumber() > 0){
 
             playerPane.showAddIcon(true);
             ImageView addIcon = playerPane.getAddIcon();
@@ -647,6 +650,13 @@ public class MainPane extends BorderPane {
     }
 
     public void show(){
+        Scene scene = new Scene(this, Color.TRANSPARENT);
+
+        primaryStage.setMinWidth(this.getPrefWidth() + 20);
+        primaryStage.setMinHeight(this.getPrefHeight() + 40);
+        primaryStage.setTitle("Эволюция");
+
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
     public void close(){

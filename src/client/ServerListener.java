@@ -1,6 +1,7 @@
 package client;
 
 import control.Controller;
+import control.ControllerClient;
 import model.Table;
 import server.message.Message;
 import server.message.RequestMessage;
@@ -13,32 +14,25 @@ import java.net.Socket;
 
 public class ServerListener extends Thread {
 
-    Socket server;
+    //Socket server;
     Client client;
-    Controller controller;
+    ControllerClient controller;
 
-    ObjectOutputStream os;
-    ObjectInputStream is;
+    private ObjectInputStream is;
 
     Object mesObject = null;
 
-    ServerListener(Socket server, Client client, Controller controller) throws IOException {
-        this.server = server;
+    ServerListener(ControllerClient controller, Client client, ObjectInputStream is) {
+        //this.server = server;
         this.client = client;
         this.controller = controller;
 
-        os = new ObjectOutputStream(server.getOutputStream());
-        is = new ObjectInputStream(server.getInputStream());
+        this.is = is;
     }
 
     @Override
     public void run() {
 
-        try {
-            os.writeObject(new StartMessage(client.login));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         try {
             mesObject = is.readObject();
