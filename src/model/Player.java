@@ -222,8 +222,13 @@ public class Player implements Serializable {
     public boolean getFoodFromFodder(int creatureID){
         //TODO: Проработать механику взятия еда на всех уровнях
         if(!table.isFodderBaseEmpty()) {
-            this.findCreature(creatureID).addFood();
-            table.getFood(1);
+            Creature creature = this.findCreature(creatureID);
+            creature.addFood();
+            if(creature.isGrazingActive())
+                table.getFood(2);
+            else
+                table.getFood(1);
+
             return true;
         }
         return false;

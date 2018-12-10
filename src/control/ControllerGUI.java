@@ -100,6 +100,13 @@ public class ControllerGUI {
         return controller.isCreatureSatisfied(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
 
+    public void setGrazingActive(CreatureNode creatureNode, boolean isActive){
+        controller.setGrazingActive(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), isActive);
+    }
+    public boolean isPoisoned(CreatureNode creatureNode){
+        return controller.isPoisoned(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+    }
+
     public void addCreature(CardNode cardNode){
         controller.addCreature(playerNumber, cardNode.getCard());
         mainPane.showSelectedCard(false);

@@ -153,6 +153,16 @@ public class Controller {
         return player.findCreature(creatureID).isSatisfied();
     }
 
+    public void setGrazingActive(int playerNumber, int creatureID, boolean isActive){
+        System.out.println("Controller: setGrazingActive: " + creatureID + " " +isActive);
+        player = findPlayer(playerNumber);
+        player.findCreature(creatureID).setGrazingActive(isActive);
+    }
+    public boolean isPoisoned(int playerNumber, int creatureID){
+        player = findPlayer(playerNumber);
+        return player.findCreature(creatureID).isPoisoned();
+    }
+
     public Phase getCurrentPhase(){
         return table.getCurrentPhase();
     }

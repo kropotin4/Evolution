@@ -34,11 +34,13 @@ public class Table implements Serializable {
             addPlayer("");
         }
 
-        for(int i = 0; i < initCardsNumber; ++i){
-            for(Player player : players) {
-                player.getCard();
+        if(commonDeck.getCardCount() > 0)
+            for(int i = 0; i < initCardsNumber; ++i){
+                for(Player player : players) {
+                    if(commonDeck.getCardCount() <= 0) break;
+                    player.getCard();
+                }
             }
-        }
 
         curPhase = Phase.GROWTH;
 
@@ -113,9 +115,14 @@ public class Table implements Serializable {
                     for (int g = 0; g < player.getCreatures().size(); ++g) {
                         creature = player.getCreatures().get(g);
 
-                        if (creature.isFed()) {
+                        if(creature.isPoisoned()){
+                            player.killCreature(creature);
+                            g--;
+                        }
+                        else if (creature.isFed()) {
                             creature.setHunger();
-                        } else {
+                        }
+                        else {
                             player.killCreature(creature);
                             g--;
                         }
@@ -143,6 +150,7 @@ public class Table implements Serializable {
         return commonDeck;
     }
     public Card getCard(){
+
         return commonDeck.getCard();
     }
 

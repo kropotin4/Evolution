@@ -8,8 +8,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import model.Card;
@@ -25,6 +25,13 @@ public class CreatureNode extends VBox {
     private int creatureId;
     private int number;
 
+    Image poisoned  = new Image("/images/skull.png");
+
+    BackgroundSize backgroundSize;
+    // new BackgroundImage(image, repeatX, repeatY, position, size)
+    BackgroundImage backgroundImage;
+    // new Background(images...)
+    Background background;
 
     private HBox bottomBox = new HBox();
 
@@ -98,10 +105,20 @@ public class CreatureNode extends VBox {
         rightBox.getChildren().addAll(commBox, coopBox);
 
         bottomBox.getChildren().addAll(leftBox, eatButton, rightBox);
+
+        backgroundSize = new BackgroundSize(this.getMinWidth() - 20, this.getPrefHeight(), false, false, true, false);
+        // new BackgroundImage(image, repeatX, repeatY, position, size)
+        backgroundImage = new BackgroundImage(poisoned, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        // new Background(images...)
+        background = new Background(backgroundImage);
     }
 
     public void update(){
         this.getChildren().clear();
+
+        if(playerPane.controller.isPoisoned(this)){
+            setPoisonedStyle();
+        }
 
         ArrayList<Card> cards = playerPane.controller.getCreatureCards(this);
         for(int i = cards.size() - 1; i >= 0; --i){ // Перечисление trait-ов
@@ -122,6 +139,12 @@ public class CreatureNode extends VBox {
             else if(trait == Trait.GRAZING){
                 CheckBox checkBox = new CheckBox();
                 checkBox.setSelected(false);
+                checkBox.setOnMouseClicked(e -> {
+                    if(checkBox.isSelected())
+                        playerPane.controller.setGrazingActive(this, true);
+                    else
+                        playerPane.controller.setGrazingActive(this, false);
+                });
                 label = new Label(trait.toString());
                 hBox.getChildren().addAll(checkBox, label);
             }
@@ -247,7 +270,7 @@ public class CreatureNode extends VBox {
                 setAttackStyle();
                 break;
             case 4:
-                setPoisonStyle();
+                setParasiteStyle();
                 break;
             default:
                 this.setStyle("");
@@ -257,7 +280,13 @@ public class CreatureNode extends VBox {
         }
     }
 
-    private void setPoisonStyle(){
+    private void setPoisonedStyle(){
+        this.setStyle("");
+        setBorder("violet", 2.5);
+
+        setBackground(background);
+    }
+    private void setParasiteStyle(){
         this.setStyle("");
         setBorder("violet", 2.5);
         this.setStyle(this.getStyle() + "-fx-background-color: rgba(238,130,238,0.3);");

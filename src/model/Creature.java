@@ -31,6 +31,7 @@ public class Creature implements Serializable {
     private boolean isRunning = false;
     private boolean isMimetic = false;
     private boolean isGrazing = false;
+    private boolean isGrazingActive = false;
     private boolean isPoisonous = false;
     private boolean isTailLossable = false;
     private boolean isHibernatable = false;
@@ -297,6 +298,19 @@ public class Creature implements Serializable {
     }
     public boolean isSatisfied(){
         return (fatCapacity == fatQuantity) && isFed();
+    }
+
+    public boolean setGrazingActive(boolean isActive){
+        if(!isGrazing) return false;
+        isGrazingActive = isActive;
+        return true;
+    }
+    public boolean isGrazingActive(){
+        return isGrazingActive;
+    }
+
+    public boolean isPoisoned(){
+        return isPoisoned;
     }
 
     void attack(Creature creature){
