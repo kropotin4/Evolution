@@ -41,7 +41,7 @@ public class Controller {
         player = findPlayer(playerNumber);
         player.addCreature(card);
     }
-    // +? проверку на return
+
     public void addTraitToCreature(int playerNumber, int creatureID, Card card, boolean isUp){
         System.out.println("Controller: addTraitToCreature: " + playerNumber + " " + creatureID + " " + card + " " + isUp);
 
@@ -53,12 +53,12 @@ public class Controller {
                 isUp
         );
     }
-    public void addTraitToCreature(int puttingPlayerNumber, int OwnerPlayerNumber, int creatureID, Card card, boolean isUp){
-        System.out.println("Controller: addTraitToCreature: " + puttingPlayerNumber + " " + OwnerPlayerNumber + " " + creatureID + " " + card + " " + isUp);
+    public void addTraitToCreature(int puttingPlayerNumber, int ownerPlayerNumber, int creatureID, Card card, boolean isUp){
+        System.out.println("Controller: addTraitToCreature: " + puttingPlayerNumber + " " + ownerPlayerNumber + " " + creatureID + " " + card + " " + isUp);
 
         player.addTraitToCreature(
                 findPlayer(puttingPlayerNumber),
-                findPlayer(OwnerPlayerNumber).findCreature(creatureID),
+                findPlayer(ownerPlayerNumber).findCreature(creatureID),
                 card,
                 isUp
         );
@@ -162,6 +162,22 @@ public class Controller {
         player = findPlayer(playerNumber);
         return player.findCreature(creatureID).isPoisoned();
     }
+    public boolean havePiracyCreatures(int playerNumber){
+        player = findPlayer(playerNumber);
+        for(Creature creature : player.getCreatures()){
+            if(creature.isPirate())
+                return true;
+        }
+        return false;
+    }
+    public boolean haveCanPiracyCreatures(int playerNumber){
+        player = findPlayer(playerNumber);
+        for(Creature creature : player.getCreatures()){
+            if(creature.isPirate() && !creature.isPirated() && !creature.isSatisfied())
+                return true;
+        }
+        return false;
+    }
 
     public Phase getCurrentPhase(){
         return table.getCurrentPhase();
@@ -215,6 +231,18 @@ public class Controller {
     }
     public int getPlayersNumber(){
         return table.getPlayerNumber();
+    }
+
+    public void pirateCreature(int piratePlayer, int victimPlayer, int pirateCreatureID, int victimCreatureID){
+        Player pPlayer = findPlayer(piratePlayer);
+        Player vPlayer = findPlayer(victimPlayer);
+
+        Creature pirate = pPlayer.findCreature(pirateCreatureID);
+        Creature victim = vPlayer.findCreature(victimCreatureID);
+
+        System.out.println("Controller: pirateCreature: " + pPlayer  + " (" + pirate + ") " + vPlayer + " (" + victim + ")");
+
+        pPlayer.pirateCreature(pirate, victim);
     }
 
     public boolean isAttackPossible(int attackerPlayer, int defenderPlayer, int attackerCreatureID, int defenderCreatureID){

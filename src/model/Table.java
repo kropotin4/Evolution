@@ -115,6 +115,9 @@ public class Table implements Serializable {
                     for (int g = 0; g < player.getCreatures().size(); ++g) {
                         creature = player.getCreatures().get(g);
 
+                        if(creature.isPirated())
+                            creature.setPirated(false);
+
                         if(creature.isPoisoned()){
                             player.killCreature(creature);
                             g--;
@@ -150,7 +153,6 @@ public class Table implements Serializable {
         return commonDeck;
     }
     public Card getCard(){
-
         return commonDeck.getCard();
     }
 

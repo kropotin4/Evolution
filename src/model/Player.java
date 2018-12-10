@@ -72,18 +72,12 @@ public class Player implements Serializable {
         if(!attacker.isAttackPossible(defender))
             return false;
 
-        if(attacker.isAbsoluteAttackPossible(defender)) {
+        if(defendTrait.length == 0 || attacker.isAbsoluteAttackPossible(defender)) {
             attacker.attack(defender);
             return true;
         }
 
-        if(defendTrait.length == 0){
-            attacker.attack(defender);
-            return true;
-        }
 
-        //Правило постановки trait: первый всегда running
-        //Больше 3 trait быть (???) не должно
 
         if(defendTrait[0].getTrait() == Trait.RUNNING){
             if(Dice.rollOneDice() > 3)
@@ -107,9 +101,18 @@ public class Player implements Serializable {
 
         return true;
     }
-
     public boolean defendCreature(Creature defending, Trait  trait){
         //TODO:
+        return true;
+    }
+    public boolean pirateCreature(Creature pirate, Creature victim){
+        if(pirate.isPirated() || victim.isHungry() || victim.isFed()) return false;
+
+        pirate.setPirated(true);
+
+        pirate.addFood();
+        victim.reduceFood();
+
         return true;
     }
 

@@ -106,6 +106,12 @@ public class ControllerGUI {
     public boolean isPoisoned(CreatureNode creatureNode){
         return controller.isPoisoned(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
+    public boolean havePiracyCreatures(){
+        return controller.havePiracyCreatures(playerNumber);
+    }
+    public boolean haveCanPiracyCreatures(){
+        return controller.haveCanPiracyCreatures(playerNumber);
+    }
 
     public void addCreature(CardNode cardNode){
         controller.addCreature(playerNumber, cardNode.getCard());
@@ -212,6 +218,95 @@ public class ControllerGUI {
     }
 
 
+    public void selectCreature(CreatureNode creatureNode){
+        mainPane.setSelectedCreature(creatureNode);
+    }
+    public ArrayList<Creature> getCreatures(int playerNumber){
+        return controller.getCreatures(playerNumber);
+    }
+
+    //public boolean findCard(CreatureNode creatureNode, CardNode cardNode){
+    //   return controller.findCard(playerNumber, creatureNode.getCreatureId(), cardNode.getCard());
+    //}
+    public void selectCard(CardNode cardNode){
+        mainPane.setSelectedCard(cardNode);
+        mainPane.showSelectedCard(true);
+    }
+    public CardNode getSelectedCard(){
+        return mainPane.getSelectedCard();
+    }
+    public PlayerCardDeck getPlayerCardDeck(){
+        return controller.getPlayers().get(playerNumber).getPlayerCardDeck();
+    }
+    public boolean isCardSelecting(){
+        return mainPane.isCardSelecting();
+    }
+    public boolean isCardSelected(){
+        return mainPane.isCardSelected();
+    }
+    public void setIsCreatureAdding(boolean isCreatureAdding){
+        mainPane.setIsCreatureAdding(isCreatureAdding);
+    }
+    public boolean isCreatureAdding(){
+        return mainPane.isCreatureAdding();
+    }
+
+    ///region pirate
+    public boolean isPirateSelecting() {
+        return mainPane.isPirateSelecting();
+    }
+    public void setPirateSelecting(boolean isPirateSelecting) {
+        mainPane.setPirateSelecting(isPirateSelecting);
+    }
+    public boolean isPirateVictimSelecting() {
+        return mainPane.isPirateVictimSelecting();
+    }
+    public void setPirateVictimSelecting(boolean isPirateVictimSelecting) {
+        mainPane.setPirateVictimSelecting(isPirateVictimSelecting);
+    }
+
+    public void showPirateVictimCreatures(CreatureNode creatureNode){
+        for (Node node : mainPane.getPlayersPane()) {
+            PlayerPane playerPane = (PlayerPane) node;
+            playerPane.setPiracyAvailableCreaturesTrue(creatureNode);
+        }
+        mainPane.getCurrentPlayerPane().setPiracyAvailableCreaturesTrue(creatureNode);
+    }
+    public void setPirateCreature(CreatureNode creatureNode){
+        System.out.println("ControllerGUI: setPirateCreature: " + creatureNode);
+        setPirateSelecting(false);
+        setPirateVictimSelecting(true);
+        showPirateVictimCreatures(creatureNode);
+        mainPane.setPirateCreature(creatureNode);
+    }
+
+    public void pirateCreature(CreatureNode pirateVictimCreature){
+
+        controller.pirateCreature(
+                mainPane.getPirateCreature().getPlayerPane().getPlayerNumber(),
+                pirateVictimCreature.getPlayerPane().getPlayerNumber(),
+                mainPane.getPirateCreature().getCreatureId(),
+                pirateVictimCreature.getCreatureId()
+        );
+
+        mainPane.update(playerNumber);
+    }
+    ///endregion
+
+    //region attack
+    public boolean isAttackerSelecting(){
+        return mainPane.isAttackerSelecting();
+    }
+    public void setIsAttackerSelecting(boolean isAttackerSelecting){
+        mainPane.setIsAttackerSelecting(isAttackerSelecting);
+    }
+    public boolean isDefenderSelecting(){
+        return mainPane.isDefenderSelecting();
+    }
+    public void setIsDefenderSelecting(boolean isAttackedSelecting){
+        mainPane.setIsDefenderSelecting(isAttackedSelecting);
+    }
+
     public void showDefenderSelecting(CreatureNode creatureNode) {
         int attackerPlayer = creatureNode.getPlayerPane().getPlayerNumber();
         int attackerCreature = creatureNode.getCreatureId();
@@ -263,53 +358,7 @@ public class ControllerGUI {
         mainPane.getAttackerCreature().setStyleType(0);
         mainPane.update(playerNumber);
     }
-
-
-    public void selectCreature(CreatureNode creatureNode){
-        mainPane.setSelectedCreature(creatureNode);
-    }
-    public ArrayList<Creature> getCreatures(int playerNumber){
-        return controller.getCreatures(playerNumber);
-    }
-
-    //public boolean findCard(CreatureNode creatureNode, CardNode cardNode){
-    //   return controller.findCard(playerNumber, creatureNode.getCreatureId(), cardNode.getCard());
-    //}
-    public void selectCard(CardNode cardNode){
-        mainPane.setSelectedCard(cardNode);
-        mainPane.showSelectedCard(true);
-    }
-    public CardNode getSelectedCard(){
-        return mainPane.getSelectedCard();
-    }
-    public PlayerCardDeck getPlayerCardDeck(){
-        return controller.getPlayers().get(playerNumber).getPlayerCardDeck();
-    }
-    public boolean isCardSelecting(){
-        return mainPane.isCardSelecting();
-    }
-    public boolean isCardSelected(){
-        return mainPane.isCardSelected();
-    }
-    public void setIsCreatureAdding(boolean isCreatureAdding){
-        mainPane.setIsCreatureAdding(isCreatureAdding);
-    }
-    public boolean isCreatureAdding(){
-        return mainPane.isCreatureAdding();
-    }
-
-    public boolean isAttackerSelecting(){
-        return mainPane.isAttackerSelecting();
-    }
-    public void setIsAttackerSelecting(boolean isAttackerSelecting){
-        mainPane.setIsAttackerSelecting(isAttackerSelecting);
-    }
-    public boolean isDefenderSelecting(){
-        return mainPane.isDefenderSelecting();
-    }
-    public void setIsDefenderSelecting(boolean isAttackedSelecting){
-        mainPane.setIsDefenderSelecting(isAttackedSelecting);
-    }
+    //endregion
 
     public void setDeckPaneTop(){
         mainPane.deckPane.setTop();

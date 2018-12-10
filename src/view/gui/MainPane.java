@@ -1,7 +1,6 @@
 package view.gui;
 
 import com.jfoenix.controls.JFXRadioButton;
-import control.Controller;
 import control.ControllerGUI;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -24,7 +23,6 @@ import javafx.stage.WindowEvent;
 import model.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainPane extends BorderPane {
 
@@ -55,6 +53,9 @@ public class MainPane extends BorderPane {
     Button attackButton = new Button();
     ImageView cancelAttackImage = new ImageView(cancel3);
     Button passButton = new Button();
+    HBox piracyButtonBox = new HBox();
+    Button piracyButton = new Button();
+    ImageView cancelPiracyImage = new ImageView(cancel3);
 
     Label foodLabel = new Label();
     Label phaseLabel = new Label();
@@ -76,8 +77,11 @@ public class MainPane extends BorderPane {
 
     CreatureNode selectedCreature;
     CreatureNode attackerCreature;
+    CreatureNode pirateCreature;
     CardNode selectedCard;
 
+    boolean isPirateSelecting = false; // Выбираем пирата
+    boolean isPirateVictimSelecting = false; // Выбираем жертву пирата
     boolean isFoodGetting = false; // Нажали на "Взять еду из кормовой базы"
     boolean isAttackerSelecting = false; // Нажали на "Атака" и выбирают атакующее существо
     boolean isDefenderSelecting = false; // Выбирают кого атаковать
@@ -276,6 +280,49 @@ public class MainPane extends BorderPane {
         });
         ///endregion
 
+        ///region piracyButton + cancelPiracyImage + piracyButtonBox init
+        piracyButtonBox.getChildren().add(piracyButton);
+        piracyButtonBox.setPrefWidth(500);
+        piracyButtonBox.setPrefHeight(25);
+        piracyButtonBox.setMinHeight(25);
+        piracyButtonBox.setAlignment(Pos.CENTER);
+
+        piracyButton.setText("Взять этих сухопутных крыс на абардаж");
+        piracyButton.setPrefWidth(500);
+
+        piracyButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                isPirateSelecting = true;
+                playerPane.setCreaturesWithTraitTrue(Trait.PIRACY);
+                if(piracyButtonBox.getChildren().size() < 2)
+                    piracyButtonBox.getChildren().add(cancelPiracyImage);
+            }
+        });
+        cancelPiracyImage.setCache(true);
+        cancelPiracyImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                isPirateSelecting = false;
+                setAllCreaturesDefault();
+                piracyButtonBox.getChildren().remove(1);
+            }
+        });
+
+        cancelPiracyImage.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                cancelPiracyImage.setImage(cancel4);
+            }
+        });
+        cancelPiracyImage.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                cancelPiracyImage.setImage(cancel3);
+            }
+        });
+        ///endregion
+
         ///region showCards init
         showCardsButton.setText("Показать свои карты");
         showCardsButton.setPrefWidth(500);
@@ -330,12 +377,13 @@ public class MainPane extends BorderPane {
         ///endregion
     }
 
-    //
+    // Здесь формируется нижняя-правая панель с кнопками действий
     public void setPhaseElement(Phase phase) {
         top_action_box.getChildren().clear();
 
         getEatButton.setDisable(false);
         attackButton.setDisable(false);
+        piracyButton.setDisable(false);
 
         switch (phase){
             case GROWTH:
@@ -349,9 +397,18 @@ public class MainPane extends BorderPane {
                     eatButtonBox.getChildren().remove(1);
                 if(attackButtonBox.getChildren().size() == 2)
                     attackButtonBox.getChildren().remove(1);
+                if(piracyButtonBox.getChildren().size() == 2)
+                    piracyButtonBox.getChildren().remove(1);
 
                 playerPane.showAddIcon(false);
+
                 top_action_box.getChildren().addAll(eatButtonBox, attackButtonBox);
+
+                if(controler.havePiracyCreatures())
+                    top_action_box.getChildren().add(piracyButtonBox);
+
+                if(!controler.haveCanPiracyCreatures())
+                    piracyButton.setDisable(true);
 
                 if(controler.getFoodNumber() <= 0 || !controler.haveHungryCreature())
                     getEatButton.setDisable(true);
@@ -377,6 +434,9 @@ public class MainPane extends BorderPane {
     public void setAttackerCreature(CreatureNode creatureNode){
         this.attackerCreature = creatureNode;
     }
+    public void setPirateCreature(CreatureNode creatureNode){
+        this.pirateCreature = creatureNode;
+    }
     public void setSelectedCard(CardNode cardNode){
         selectedCard = cardNode;
     }
@@ -386,6 +446,9 @@ public class MainPane extends BorderPane {
     }
     public CreatureNode getAttackerCreature(){
         return attackerCreature;
+    }
+    public CreatureNode getPirateCreature(){
+        return pirateCreature;
     }
     public CardNode getSelectedCard(){
         return selectedCard;
@@ -533,6 +596,18 @@ public class MainPane extends BorderPane {
         return isPairTraitSelected;
     }
 
+    public boolean isPirateSelecting() {
+        return isPirateSelecting;
+    }
+    public void setPirateSelecting(boolean isPirateSelecting) {
+        this.isPirateSelecting = isPirateSelecting;
+    }
+    public boolean isPirateVictimSelecting() {
+        return isPirateVictimSelecting;
+    }
+    public void setPirateVictimSelecting(boolean isPirateVictimSelecting) {
+        this.isPirateVictimSelecting = isPirateVictimSelecting;
+    }
     public boolean isFoodGetting(){
         return isFoodGetting;
     }

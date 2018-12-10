@@ -1,6 +1,7 @@
 package view.gui;
 
 import control.ControllerGUI;
+import javafx.beans.NamedArg;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -124,10 +125,11 @@ public class PlayerPane extends HBox {
             @Override
             public void handle(MouseEvent event) {
                 controller.selectCreature(creatureNode);
-                System.out.println("Select creature: " + creatureNode.getCreatureId());
+                //System.out.println("Select creature: " + creatureNode.getCreatureId());
 
                 if(event.getClickCount() == 1){
                     startTime = System.nanoTime();
+                    System.out.println("Select creature: " + creatureNode.getCreatureId());
                 }
                 else{
                     endTime = System.nanoTime();
@@ -172,7 +174,21 @@ public class PlayerPane extends HBox {
                         }
                         else if(creatureNode.isGreenStyle() && controller.isDefenderSelecting()){
                             //Выбор жертвы хищника
+                            setAllCreaturesDefault();
                             controller.attackCreature(creatureNode);
+                        }
+                        else if(creatureNode.isGreenStyle() && controller.isPirateSelecting()){
+                            //Выбор пирата
+                            setAllCreaturesDefault();
+                            creatureNode.setStyleType(3);
+
+                            controller.setPirateCreature(creatureNode);
+                        }
+                        else if(creatureNode.isGreenStyle() && controller.isPirateVictimSelecting()){
+                            //Выбор жертвы абардажа
+                            setAllCreaturesDefault();
+
+                            controller.pirateCreature(creatureNode);
                         }
 
                     }
@@ -258,6 +274,18 @@ public class PlayerPane extends HBox {
 
     ///Различные стили CreatureNode под разные задачи
     ///Стили служать одним из параметров при обработке нажатия
+    public void setPiracyAvailableCreaturesTrue(@NamedArg("exceptCreature") CreatureNode exceptCreature){
+        int hunger, satiety;
+        for(CreatureNode creatureNode : creatureNodes){
+            if(creatureNode == exceptCreature) continue;
+
+            hunger = controller.getCreauterHunger(creatureNode);
+            satiety = controller.getCreauterSatiety(creatureNode);
+            if(satiety < hunger && satiety > 0){
+                creatureNode.setStyleType(1);
+            }
+        }
+    }
     public void setCanGettingTraitCreaturesPoison(Trait trait){
         for(CreatureNode creatureNode : creatureNodes){
             if(controller.canAddTrait(creatureNode, trait)){
@@ -300,7 +328,11 @@ public class PlayerPane extends HBox {
     }
     public void setAllCreaturesDefault(){
         for(CreatureNode creatureNode : creatureNodes){
-            creatureNode.setStyleType(0);
+            if(controller.isPoisoned(creatureNode))
+                //Отравленный стиль сохраняется
+                creatureNode.setStyleType(5);
+            else
+                creatureNode.setStyleType(0);
         }
     }
     public void setHungerCreaturesTrue(){

@@ -271,6 +271,10 @@ public class Creature implements Serializable {
         if(totalSatiety < totalHunger)
             ++totalSatiety;
     }
+    public void reduceFood(){
+        if(totalSatiety > 0)
+            --totalSatiety;
+    }
     public void addFat(){
         if(fatQuantity < fatCapacity){
             ++fatQuantity;
@@ -284,11 +288,12 @@ public class Creature implements Serializable {
            }
         }
     }
-    public boolean isFed(){
-        return totalSatiety == totalHunger;
-    }
+
     public void setHunger(){
         totalSatiety = 0;
+    }
+    public boolean isHungry(){
+        return totalSatiety == 0;
     }
     public int getTotalHunger(){
         return totalHunger;
@@ -299,6 +304,9 @@ public class Creature implements Serializable {
     public boolean isSatisfied(){
         return (fatCapacity == fatQuantity) && isFed();
     }
+    public boolean isFed(){
+        return totalSatiety == totalHunger;
+    }
 
     public boolean setGrazingActive(boolean isActive){
         if(!isGrazing) return false;
@@ -308,9 +316,17 @@ public class Creature implements Serializable {
     public boolean isGrazingActive(){
         return isGrazingActive;
     }
-
     public boolean isPoisoned(){
         return isPoisoned;
+    }
+    public boolean isPirate() {
+        return isPirate;
+    }
+    public void setPirated(boolean isPirated){
+        this.isPirated = isPirated;
+    }
+    public boolean isPirated(){
+        return isPirated;
     }
 
     void attack(Creature creature){

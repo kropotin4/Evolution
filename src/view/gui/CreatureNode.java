@@ -49,7 +49,7 @@ public class CreatureNode extends VBox {
     private static final String coopStyleFull = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: rgba(0,0,255,0.4); -fx-background-radius: 30;";
 
     //boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack, 4 - poison
+    private int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack, 4 - parasite, 5 - poisoned
 
     public CreatureNode(PlayerPane playerPane, int creatureId, int creatureNumber){
         this.number = creatureNumber;
@@ -117,7 +117,8 @@ public class CreatureNode extends VBox {
         this.getChildren().clear();
 
         if(playerPane.controller.isPoisoned(this)){
-            setPoisonedStyle();
+            //setPoisonedStyle();
+            setStyleType(5);
         }
 
         ArrayList<Card> cards = playerPane.controller.getCreatureCards(this);
@@ -131,7 +132,7 @@ public class CreatureNode extends VBox {
             Label label = null;
             if(trait == Trait.FAT_TISSUE){
                 if(cards.get(i).isFat())
-                    label = new Label(trait.toString() + " (*)");
+                    label = new Label(trait.toString() + " (#)");
                 else
                     label = new Label(trait.toString() + " ( )");
                 hBox.getChildren().add(label);
@@ -272,12 +273,18 @@ public class CreatureNode extends VBox {
             case 4:
                 setParasiteStyle();
                 break;
+            case 5:
+                setPoisonedStyle();
+                break;
             default:
                 this.setStyle("");
                 setBorder("hotpink", 2.5);
                 System.out.println("CreatureNode: setStyleType: Error -> styleType: " + styleType);
                 break;
         }
+    }
+    public int getStyleType(){
+        return styleType;
     }
 
     private void setPoisonedStyle(){
