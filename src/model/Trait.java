@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public enum Trait implements Serializable {
 
-    PREDATOR{
+    PREDATOR{ //Ok
         @Override
         public int getHunger() {
             return 1;
@@ -21,7 +21,7 @@ public enum Trait implements Serializable {
             return "Хищник";
         }
     },
-    HIGH_BODY {
+    HIGH_BODY { //Ok
         @Override
         public int getHunger() {
             return 1;
@@ -44,13 +44,13 @@ public enum Trait implements Serializable {
             return "Мимикрия";
         }
     },
-    GRAZING {
+    GRAZING { //Ok (одиночный)
         @Override
         public String toString() {
             return "Топотун";
         }
     },
-    POISONOUS {
+    POISONOUS { //Ok
         @Override
         public String toString() {
             return "Ядовитый";
@@ -74,7 +74,7 @@ public enum Trait implements Serializable {
             return "Спячка";
         }
     },
-    SCAVENGER {
+    SCAVENGER { //Ok
         @Override
         public String toString() {
             return "Падальщик";
@@ -86,7 +86,7 @@ public enum Trait implements Serializable {
             return "Симбиоз";
         }
     },
-    PIRACY {
+    PIRACY { //Ok
         @Override
         public String toString() {
             return "Пиратство";
@@ -98,25 +98,25 @@ public enum Trait implements Serializable {
             return "Сотрудничество";
         }
     },
-    BURROWING {
+    BURROWING { // Ok
         @Override
         public String toString() {
             return "Норное";
         }
     },
-    CAMOUFLAGE {
+    CAMOUFLAGE { //Ok
         @Override
         public String toString() {
             return "Камуфляж";
         }
     },
-    SHARP_VISION {
+    SHARP_VISION { //Ok
         @Override
         public String toString() {
             return "Острое зрение";
         }
     },
-    PARASITE {
+    PARASITE { //Ok
         @Override
         public int getHunger() {
             return 2;
@@ -127,13 +127,13 @@ public enum Trait implements Serializable {
             return "Паразит";
         }
     },
-    SWIMMING {
+    SWIMMING { //Ok
         @Override
         public String toString() {
             return "Водоплавающее";
         }
     },
-    FAT_TISSUE{
+    FAT_TISSUE{ //Ok
         @Override
         public String toString() {
             return "Жировой запас";

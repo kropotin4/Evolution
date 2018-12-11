@@ -115,12 +115,19 @@ public class Table implements Serializable {
                     for (int g = 0; g < player.getCreatures().size(); ++g) {
                         creature = player.getCreatures().get(g);
 
-                        if(creature.isPirated())
-                            creature.setPirated(false);
-
+                        //Сначала ставь убивающее!
                         if(creature.isPoisoned()){
                             player.killCreature(creature);
                             g--;
+                        }
+
+                        if(creature.isPirated())
+                            creature.setPirated(false);
+
+                        if(creature.isHibernating()){
+                            creature.reduceHibernatingTime();
+                            creature.setHibernating(false);
+                            creature.setHunger();
                         }
                         else if (creature.isFed()) {
                             creature.setHunger();
@@ -132,12 +139,24 @@ public class Table implements Serializable {
                     }
                 }
 
+                ///region Раздача карт
                 for(Player player : players){
-                    for(int g = 0; g < player.getCreatures().size(); ++g)
-                        player.getCard();
                     player.getCard();
                     player.setPass(false);
                 }
+
+                int max = 0;
+                for(Player player : players)
+                    if(max < player.getCreatures().size())
+                        max = player.getCreatures().size();
+
+                 for(int g = 0; g < max; ++g){
+                     for(Player player : players){
+                         if(player.getCreatures().size() > g)
+                             player.getCard();
+                     }
+                 }
+                 ///endregion
 
                 curPhase = Phase.GROWTH;
                 break;
@@ -165,6 +184,36 @@ public class Table implements Serializable {
 
     public Phase getCurrentPhase(){
         return curPhase;
+    }
+
+    public void setPlayerScavanger(int playerNumber, int creatureID){
+        for(Creature creature : findPlayer(playerNumber).getCreatures()){
+            if(creature.getId() == creatureID)
+                creature.setActiveScavenger(true);
+            else
+                creature.setActiveScavenger(false);
+        }
+    }
+    public void useScavenger(int ownerAttatckCreature){
+
+        for(int i = ownerAttatckCreature; i < players.size(); ++i) {
+            for (Creature creature : players.get(i).getCreatures()) {
+                if(creature.isActiveScavenger() && !creature.isSatisfied()){
+                    creature.addFood();
+                    return;
+                }
+            }
+        }
+
+        for(int i = 0; i < ownerAttatckCreature; ++i){
+            for (Creature creature : players.get(i).getCreatures()) {
+                if(creature.isActiveScavenger() && !creature.isSatisfied()){
+                    creature.addFood();
+                    return;
+                }
+            }
+        }
+
     }
 
     public void setFodder(){

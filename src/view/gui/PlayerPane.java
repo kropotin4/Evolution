@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,6 +34,8 @@ public class PlayerPane extends HBox {
     boolean imageIsShow = false;
 
     ArrayList<CreatureNode> creatureNodes = new ArrayList<>(8);
+
+    ArrayList<CheckBox> scavengerCheckBoxs = new ArrayList<>();
 
     int coopNumber = 0;
     int comNumber = 0;
@@ -100,6 +103,8 @@ public class PlayerPane extends HBox {
         if(controller.getCreatures(playerNumber).size() == 0)
             return;
 
+        scavengerCheckBoxs.clear();
+
         int num = 0;
         this.getChildren().clear();
         creatureNodes.clear();
@@ -155,15 +160,10 @@ public class PlayerPane extends HBox {
                                 controller.addTraitToCreature(controller.getPlayerTurn(), creatureNode, controller.getSelectedCard(), controller.isUpTrait());
                             }
                         }
-                        else if(creatureNode.isGreenStyle() && controller.isFoodGetting() && !controller.isCreatureFed(creatureNode)){
-                            //Взятие еды из кормовой базы
+                        else if(creatureNode.isGreenStyle() && controller.isFoodGetting() && !controller.isCreatureSatisfied(creatureNode)){
+                            //Взятие еды из кормовой базы + Заполнение жирового запаса//!controller.isCreatureFed(creatureNode)
                             setAllCreaturesDefault();
                             controller.getFoodFromFodder(creatureNode);
-                        }
-                        else if(creatureNode.isGreenStyle() && controller.isFoodGetting() && !controller.isCreatureSatisfied(creatureNode)){
-                            //Заполнение жирового запаса
-                            setAllCreaturesDefault();
-                            controller.getFoodFromFodderToFat(creatureNode);
                         }
                         else if(creatureNode.isGreenStyle() && controller.isAttackerSelecting()){
                             //Выбор атакующего существа

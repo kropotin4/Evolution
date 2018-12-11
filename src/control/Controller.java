@@ -123,9 +123,29 @@ public class Controller {
         player = findPlayer(playerNumber);
         player.getFoodFromFodder(creatureID);
     }
-    public void getFoodFromFodderToFat(int playerNumber, int creatureID){
-        player = findPlayer(playerNumber);
-        player.getFoodFromFodderToFat(creatureID);
+
+    public void useFatTissue(int playerNumber, int creatureID, int cardNumber){
+        findPlayer(playerNumber).findCreature(creatureID).useFatTissue(cardNumber);
+    }
+    public void setPlayerScavanger(int playerNumber, int creatureID){
+        System.out.println("Controller: setPlayerScavanger: " + playerNumber + " " + creatureID);
+        table.setPlayerScavanger(playerNumber, creatureID);
+    }
+    public boolean isActiveScavanger(int playerNumber, int creatureID){
+        return findPlayer(playerNumber).findCreature(creatureID).isActiveScavenger();
+    }
+    public int getScavengerNumber(int playerNumber){
+        return findPlayer(playerNumber).getScavengerNumber();
+    }
+
+    public void setCreatureHibernating(int playerNumber, int creatureID, boolean isHibernating){
+        findPlayer(playerNumber).findCreature(creatureID).setHibernating(isHibernating);
+    }
+    public boolean isHibernating(int playerNumber, int creatureID){
+        return findPlayer(playerNumber).findCreature(creatureID).isHibernating();
+    }
+    public int getHibernatingTime(int playerNumber, int creatureID){
+        return findPlayer(playerNumber).findCreature(creatureID).getHibernatingTime();
     }
 
     public boolean haveHungryCreature(int playerNumber){
@@ -163,17 +183,12 @@ public class Controller {
         return player.findCreature(creatureID).isPoisoned();
     }
     public boolean havePiracyCreatures(int playerNumber){
-        player = findPlayer(playerNumber);
-        for(Creature creature : player.getCreatures()){
-            if(creature.isPirate())
-                return true;
-        }
-        return false;
+        return findPlayer(playerNumber).haveCreaturesWithTrait(Trait.PIRACY);
     }
     public boolean haveCanPiracyCreatures(int playerNumber){
         player = findPlayer(playerNumber);
         for(Creature creature : player.getCreatures()){
-            if(creature.isPirate() && !creature.isPirated() && !creature.isSatisfied())
+            if(creature.findTrait(Trait.PIRACY) && !creature.isPirated() && !creature.isSatisfied())
                 return true;
         }
         return false;

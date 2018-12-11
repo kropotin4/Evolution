@@ -5,7 +5,6 @@ import model.decks.PlayerCardDeck;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /*********************
  * Что может игрок:
@@ -74,6 +73,7 @@ public class Player implements Serializable {
 
         if(defendTrait.length == 0 || attacker.isAbsoluteAttackPossible(defender)) {
             attacker.attack(defender);
+            table.useScavenger(attacker.getPlayer().playerNumber);
             return true;
         }
 
@@ -223,31 +223,55 @@ public class Player implements Serializable {
     }
 
     public boolean getFoodFromFodder(int creatureID){
-        //TODO: Проработать механику взятия еда на всех уровнях
-        if(!table.isFodderBaseEmpty()) {
-            Creature creature = this.findCreature(creatureID);
+        Creature creature = findCreature(creatureID);
+        if(!table.isFodderBaseEmpty() && !creature.isSatisfied()) {
             creature.addFood();
-            if(creature.isGrazingActive())
-                table.getFood(2);
-            else
-                table.getFood(1);
+
+            //if(creature.isGrazingActive())
+            //    table.getFood(2);
+            //else
+            table.getFood(1 + getGrazingActiveNumber());
 
             return true;
         }
         return false;
     }
-    public boolean getFoodFromFodderToFat(int creatureID){
-        Creature creature = findCreature(creatureID);
-        if(!table.isFodderBaseEmpty() && !creature.isSatisfied()) {
-            this.findCreature(creatureID).addFat();
-            table.getFood(1);
-            return true;
+
+    public boolean haveCreaturesWithTrait(Trait trait){
+        for(Creature creature : creatures){
+            if(creature.findTrait(trait))
+                return true;
         }
         return false;
+    }
+    public boolean haveCreaturesWithActiveScavenger(){
+        for(Creature creature : creatures){
+            if(creature.isActiveScavenger())
+                return true;
+        }
+        return false;
+    }
+
+    public int getGrazingActiveNumber(){
+        int res = 0;
+        for(Creature creature : creatures){
+            if(creature.isGrazingActive())
+                ++res;
+        }
+        return res;
+    }
+    public int getScavengerNumber(){
+        int res = 0;
+        for(Creature creature : creatures){
+            if(creature.findTrait(Trait.SCAVENGER))
+                ++res;
+        }
+        return res;
     }
 
     public void getCard(){
-        playerDeck.addCard(table.getCard());
+        if(table.commonDeck.getCardCount() > 0)
+            playerDeck.addCard(table.getCard());
     }
     public ArrayList<CreaturesPair> getCommunicationCreatures(){
         return communicationCreatures;

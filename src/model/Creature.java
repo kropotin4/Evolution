@@ -21,10 +21,11 @@ public class Creature implements Serializable {
     private int fatQuantity = 0;
 
     private boolean isHibernating = false;
-    private boolean wasHibernating = false;
+    private int wasHibernating = 0;
     private boolean isAttacked = false;
     private boolean isPoisoned = false;
     private boolean isPirated = false;
+    private boolean isActiveScavenger = false;
 
     private boolean isPredator = false;
     private boolean isBig = false;
@@ -85,6 +86,11 @@ public class Creature implements Serializable {
         the last card should be removed from the animal*/
         if ((isScavenger && (card.getTrait() == Trait.PREDATOR)) || (isPredator && (card.getTrait() == Trait.SCAVENGER)))
             return true; //actually has not added any traits
+
+        if(card.getTrait() == Trait.SCAVENGER){
+            if(!player.haveCreaturesWithActiveScavenger())
+                isActiveScavenger = true;
+        }
 
         cards.add(card);
         totalHunger += card.getTrait().getHunger();
@@ -270,23 +276,32 @@ public class Creature implements Serializable {
     public void addFood(){
         if(totalSatiety < totalHunger)
             ++totalSatiety;
+        else if(fatQuantity < fatCapacity){
+            ++fatQuantity;
+            for(Card card : cards){
+                if(card.getTrait() == Trait.FAT_TISSUE){
+                    if(!card.isFat()) {
+                        card.setFat(true);
+                        break;
+                    }
+                }
+            }
+        }
     }
     public void reduceFood(){
         if(totalSatiety > 0)
             --totalSatiety;
     }
-    public void addFat(){
-        if(fatQuantity < fatCapacity){
-            ++fatQuantity;
-           for(Card card : cards){
-               if(card.getTrait() == Trait.FAT_TISSUE){
-                   if(!card.isFat()) {
-                       card.setFat(true);
-                       break;
-                   }
-               }
-           }
-        }
+
+    //Подаем номер карты с жировым запасом -> используем его
+    public void useFatTissue(int cardNumber){
+        if(player.table.getPlayerTurn() != player.playerNumber) return;
+        if(cards.get(cardNumber).getTrait() != Trait.FAT_TISSUE || !cards.get(cardNumber).isFat() || isFed())
+            return;
+
+        cards.get(cardNumber).setFat(false);
+        --fatQuantity;
+        addFood();
     }
 
     public void setHunger(){
@@ -302,7 +317,7 @@ public class Creature implements Serializable {
         return totalSatiety;
     }
     public boolean isSatisfied(){
-        return (fatCapacity == fatQuantity) && isFed();
+        return ((fatCapacity == fatQuantity) && isFed()) || isHibernating;
     }
     public boolean isFed(){
         return totalSatiety == totalHunger;
@@ -319,14 +334,31 @@ public class Creature implements Serializable {
     public boolean isPoisoned(){
         return isPoisoned;
     }
-    public boolean isPirate() {
-        return isPirate;
-    }
     public void setPirated(boolean isPirated){
         this.isPirated = isPirated;
     }
     public boolean isPirated(){
         return isPirated;
+    }
+    public void setActiveScavenger(boolean isActiveScavenger){
+        this.isActiveScavenger = isActiveScavenger;
+    }
+    public boolean isActiveScavenger(){
+        return isActiveScavenger;
+    }
+    public void setHibernating(boolean isHibernating){
+        this.isHibernating = isHibernating;
+        if(isHibernating)
+            wasHibernating = 2;
+    }
+    public boolean isHibernating(){
+        return isHibernating;
+    }
+    public int getHibernatingTime(){
+        return wasHibernating;
+    }
+    public void reduceHibernatingTime(){
+        --wasHibernating;
     }
 
     void attack(Creature creature){

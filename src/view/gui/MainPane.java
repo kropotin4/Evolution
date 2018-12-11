@@ -330,7 +330,7 @@ public class MainPane extends BorderPane {
         showCardsButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-
+                isCardSelecting = false;
                 if(!deckPane.isShow)
                     showDeckPane();
 

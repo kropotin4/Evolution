@@ -70,6 +70,18 @@ public class ControllerGUI {
         return controller.getFoodNumber();
     }
 
+    //Сделать передачу хода
+    public void useFatTissue(CreatureNode creatureNode, int cardNumber){
+        controller.useFatTissue(
+                creatureNode.getPlayerPane().getPlayerNumber(),
+                creatureNode.getCreatureId(),
+                cardNumber
+        );
+        mainPane.updateCurrentPlayer();
+    }
+
+
+
     public ArrayList<CreaturesPair> getCommunicationCreatures(int playerNumber){
         return controller.getCommunicationCreatures(playerNumber);
     }
@@ -208,11 +220,6 @@ public class ControllerGUI {
         controller.getFoodFromFodder(playerNumber, creatureNode.getCreatureId());
         mainPane.updateCurrentPlayer();
     }
-    public void getFoodFromFodderToFat(CreatureNode creatureNode){
-        mainPane.setIsFoodGetting(false);
-        controller.getFoodFromFodderToFat(playerNumber, creatureNode.getCreatureId());
-        mainPane.updateCurrentPlayer();
-    }
     public boolean isFoodGetting(){
         return mainPane.isFoodGetting();
     }
@@ -249,6 +256,43 @@ public class ControllerGUI {
     }
     public boolean isCreatureAdding(){
         return mainPane.isCreatureAdding();
+    }
+
+    public void setPlayerScavanger(CreatureNode scavanger){
+        controller.setPlayerScavanger(
+                scavanger.getPlayerPane().getPlayerNumber(),
+                scavanger.getCreatureId()
+        );
+    }
+    public boolean isActiveScavanger(CreatureNode scavenger){
+        return controller.isActiveScavanger(
+                scavenger.getPlayerPane().getPlayerNumber(),
+                scavenger.getCreatureId()
+        );
+    }
+    public int getScavengerNumber(CreatureNode creatureNode){
+        return controller.getScavengerNumber(creatureNode.getPlayerPane().getPlayerNumber());
+    }
+
+    public void setCreatureHibernating(CreatureNode creatureHibernating){
+        controller.setCreatureHibernating(
+                creatureHibernating.getPlayerPane().getPlayerNumber(),
+                creatureHibernating.getCreatureId(),
+                true
+        );
+        mainPane.updateCurrentPlayer();
+    }
+    public boolean isHibernating(CreatureNode creatureNode){
+        return controller.isHibernating(
+                creatureNode.getPlayerPane().getPlayerNumber(),
+                creatureNode.getCreatureId()
+        );
+    }
+    public int getHibernatingTime(CreatureNode creatureNode){
+        return controller.getHibernatingTime(
+                creatureNode.getPlayerPane().getPlayerNumber(),
+                creatureNode.getCreatureId()
+        );
     }
 
     ///region pirate

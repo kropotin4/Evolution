@@ -9,10 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import model.Card;
+import model.Phase;
 import model.Trait;
 
 import java.io.IOException;
@@ -26,6 +28,8 @@ public class CreatureNode extends VBox {
     private int number;
 
     Image poisoned  = new Image("/images/skull.png");
+    Image dreamB = new Image("/images/dream_17b.png");
+    Image dreamW = new Image("/images/dream_17w.png");
 
     BackgroundSize backgroundSize;
     // new BackgroundImage(image, repeatX, repeatY, position, size)
@@ -129,25 +133,144 @@ public class CreatureNode extends VBox {
             hBox.setAlignment(Pos.CENTER);
             hBox.setPrefWidth(this.getPrefWidth());
 
-            Label label = null;
+            Label label = new Label(trait.toString());;
             if(trait == Trait.FAT_TISSUE){
-                if(cards.get(i).isFat())
-                    label = new Label(trait.toString() + " (#)");
-                else
-                    label = new Label(trait.toString() + " ( )");
-                hBox.getChildren().add(label);
+                //region FAT_TISSUE
+                if(cards.get(i).isFat()) {
+                    Button fat = new Button();
+                    fat.setMinSize(15, 15);
+                    fat.setPrefSize(15, 15);
+                    fat.setMaxSize(15, 15);
+                    fat.setFont(new Font(11));
+                    fat.setStyle("-fx-border-width: 0.5; -fx-border-color: black; -fx-border-radius: 40; -fx-background-color: orange; -fx-background-radius: 40");
+
+                    int finalI = i;
+                    fat.setOnMouseClicked(e ->{
+                        System.out.println("CreatureNode: fat clicked " + finalI);
+                        if(playerPane.controller.getCurrentPhase() == Phase.EATING){
+                            playerPane.controller.useFatTissue(this, finalI);
+                        }
+                    });
+
+
+                    fat.setVisible(true);
+                    fat.setDisable(false);
+                    //label = new Label(trait.toString());
+                    hBox.getChildren().addAll(fat, label);
+                }
+                else {
+                    //label = new Label(trait.toString());
+                    hBox.getChildren().addAll(label);
+                }
+                //label.setPrefWidth(hBox.getPrefWidth() - 5);
+                //endregion
             }
             else if(trait == Trait.GRAZING){
-                CheckBox checkBox = new CheckBox();
-                checkBox.setSelected(false);
-                checkBox.setOnMouseClicked(e -> {
-                    if(checkBox.isSelected())
-                        playerPane.controller.setGrazingActive(this, true);
+                //region GRAZING
+                if(playerPane.getPlayerNumber() == playerPane.controller.getPlayerTurn()) {
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.setSelected(false);
+                    checkBox.setOnMouseClicked(e -> {
+                        if (checkBox.isSelected())
+                            playerPane.controller.setGrazingActive(this, true);
+                        else
+                            playerPane.controller.setGrazingActive(this, false);
+                    });
+                    //label = new Label(trait.toString());
+                    hBox.getChildren().addAll(checkBox, label);
+                }
+                else
+                    hBox.getChildren().addAll(label);
+                //endregion
+            }
+            else if(trait == Trait.SCAVENGER){
+                //region SCAVENGER
+
+                //label = new Label(trait.toString());
+
+                if(playerPane.controller.getScavengerNumber(this) > 1
+                && playerPane.getPlayerNumber() == playerPane.controller.getPlayerTurn()){
+                    CheckBox checkBox = new CheckBox();
+                    playerPane.scavengerCheckBoxs.add(checkBox);
+
+                    if(playerPane.controller.isActiveScavanger(this))
+                        checkBox.setSelected(true);
                     else
-                        playerPane.controller.setGrazingActive(this, false);
-                });
+                        checkBox.setSelected(false);
+
+                    checkBox.setOnMouseClicked(e -> {
+                        playerPane.controller.setPlayerScavanger(this);
+                        for(CheckBox checkBox1 : playerPane.scavengerCheckBoxs){
+                            checkBox1.setSelected(false);
+                        }
+                        checkBox.setSelected(true);
+                    });
+
+                    hBox.getChildren().addAll(checkBox, label);
+                }
+                else
+                    hBox.getChildren().addAll(label);
+
+                //endregion
+            }
+            else if(trait == Trait.PREDATOR){
+                //region PREDATOR
+                Label plusOne = new Label("+1");
+                plusOne.setMinSize(15, 15);
+                plusOne.setMaxSize(15, 15);
+                plusOne.setPrefSize(15, 15);
+                plusOne.setFont(new Font("Arial Bold", 11));
+
                 label = new Label(trait.toString());
-                hBox.getChildren().addAll(checkBox, label);
+
+                hBox.getChildren().addAll(plusOne, label);
+                //endregion
+            }
+            else if(trait == Trait.PARASITE){
+                //region PARASITE
+                Label plusTwo = new Label("+2");
+                plusTwo.setMinSize(15, 15);
+                plusTwo.setMaxSize(15, 15);
+                plusTwo.setPrefSize(15, 15);
+                plusTwo.setFont(new Font("Arial Bold", 11));
+
+                label = new Label(trait.toString());
+
+                hBox.getChildren().addAll(plusTwo, label);
+                //endregion
+            }
+            else if(trait == Trait.HIBERNATION){
+                ///region HIBERNATION
+                //label = new Label(trait.toString());
+
+                if(playerPane.controller.getCurrentPhase() == Phase.EATING
+                && playerPane.controller.getHibernatingTime(this) == 0
+                && playerPane.getPlayerNumber() == playerPane.controller.getPlayerTurn()){
+
+                    ImageView dreamImage = new ImageView(dreamB);
+
+                    StackPane stackPane = new StackPane();
+                    stackPane.getChildren().add(dreamImage);
+                    stackPane.setStyle("-fx-border-width: 1; -fx-border-color: blue;");
+
+                    stackPane.setOnMousePressed(e -> {
+                        dreamImage.setImage(dreamW);
+                    });
+                    stackPane.setOnMouseReleased(e -> {
+                        dreamImage.setImage(dreamB);
+                    });
+
+                    stackPane.setOnMouseClicked(e -> {
+                        playerPane.controller.setCreatureHibernating(this);
+                    });
+
+                    hBox.setPadding(new Insets(0, 0, 0, 5));
+
+                    hBox.getChildren().addAll(stackPane, label);
+                }
+                else
+                    hBox.getChildren().addAll(label);
+                ///endregion
             }
             else {
                 label = new Label(trait.toString());
@@ -170,7 +293,9 @@ public class CreatureNode extends VBox {
         int satiety = playerPane.controller.getCreauterSatiety(this);
         int hunger = playerPane.controller.getCreauterHunger(this);
         eatButton.setText(satiety + "/" + hunger);
-        if(satiety == hunger)
+        if(playerPane.controller.isHibernating(this))
+            eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,0,255,0.2); -fx-background-radius: 30;");
+        else if(satiety == hunger)
             eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,255,127,0.2); -fx-background-radius: 30;");
         else
             eatButton.setStyle(eatButtonStyle);
