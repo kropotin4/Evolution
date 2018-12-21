@@ -361,7 +361,7 @@ public class Creature implements Serializable {
         --wasHibernating;
     }
 
-    void attack(Creature creature){
+    public void attack(Creature creature){
 
         if (creature.isPoisonous) isPoisoned = true;
 
@@ -376,7 +376,8 @@ public class Creature implements Serializable {
     }
 
     public boolean isAttackPossible(Creature creature){
-        if ((creature.isCamouflaged && !this.isSharp)
+        if (!this.isPredator
+        || (creature.isCamouflaged && !this.isSharp)
         || (creature.isBurrowing && creature.isFed())
         || (!creature.crocodileList.isEmpty())
         || (this.isSwimming != creature.isSwimming)
@@ -412,7 +413,7 @@ public class Creature implements Serializable {
         return true;
     }
 
-    boolean getFood (){
+    public boolean getFood (){
         if (player.table.isFodderBaseEmpty()) return false;
         else if (this.isSatisfied()) return false;
         if (isFed()) {
@@ -422,7 +423,7 @@ public class Creature implements Serializable {
         }
         return true;
     }
-    boolean stealFood(Creature creature){
+    public boolean stealFood(Creature creature){
         if (this.isSatisfied()) return false;
         if (creature.isFed() || creature.totalSatiety == 0) return false;
         --creature.totalSatiety;

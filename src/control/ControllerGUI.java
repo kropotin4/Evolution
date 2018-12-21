@@ -17,7 +17,7 @@ public class ControllerGUI {
 
     GameType type;
 
-    int playerNumber; // Меняется в doNextMove()
+    int playerNumber; // doNextMove()
 
     public ControllerGUI(Stage primaryStage, Controller controller, int playerNumber){
         this.controller = controller;
@@ -391,7 +391,7 @@ public class ControllerGUI {
         showDefenderSelecting(creatureNode);
         mainPane.setAttackerCreature(creatureNode);
     }
-    /// Не передает ход
+    /// �� �������� ���
     public void attackCreature(CreatureNode defender){
         controller.attackCreature(
                 mainPane.getAttackerCreature().getPlayerPane().getPlayerNumber(),
