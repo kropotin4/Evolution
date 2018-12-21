@@ -168,6 +168,7 @@ public class Table implements Serializable {
         }
     }
 
+
     public CommonCardDeck getCommonDeck() {
         return commonDeck;
     }

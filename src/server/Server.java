@@ -1,11 +1,11 @@
 package server;
 
+import client.Client;
 import control.Controller;
 import control.ControllerServer;
-import server.message.EatingMessage;
-import server.message.Message;
-import server.message.MessageType;
-import server.message.RequestMessage;
+import model.Player;
+import model.Table;
+import server.message.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,6 +24,7 @@ public class Server extends Thread{
 
     ArrayList<OS> playersStream = new ArrayList<>();
 
+    ArrayList<PlayerThread> playerThreads = new ArrayList<>();
 
     Message recievedMessage;
     EatingMessage eatingMessage;
@@ -44,19 +45,28 @@ public class Server extends Thread{
     public void run() {
         beginPlay();
 
-        middlePlay();
+        //middlePlay();
 
-        endPlay();
+        //endPlay();
     }
 
     public void beginPlay(){
+
+        System.out.println("Server start (player num: " + controller.getPlayersNumber() + ")");
 
         for(int i = 0; i < controller.getPlayersNumber(); ++i) {
 
             try {
                 Socket newPlayer = serverSocket.accept();
+
                 PlayerThread playerThread = new PlayerThread(this, newPlayer, i);
+                playerThreads.add(playerThread);
+
                 playerThread.start();
+
+                System.out.println("Player connected");
+                controller.playerConnect();
+
 
             } catch (IOException e) {
                 System.out.println("Connect with player has failed");
@@ -108,6 +118,21 @@ public class Server extends Thread{
 
     }
 
+    //////////
+
+    public void startGameDistribution(Table table) throws IOException {
+        for(int i = 0; i < playerThreads.size(); ++i){
+            playerThreads.get(i).sendMessage(new StartMessage(table, i));
+        }
+    }
+
+    public synchronized void distribution(Message message) throws IOException {
+        for(PlayerThread playerThread : playerThreads){
+            playerThread.sendMessage(message);
+        }
+    }
+
+    //////////
 
     private void growthPhaseHandler(){
 

@@ -5,9 +5,10 @@ import model.Creature;
 import model.Phase;
 import model.Trait;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Message {
+public abstract class Message implements Serializable {
 
     //TODO: Через этот класс будут передоваться действия игроков + сообщения сервера => сделать это
     //Можно сделать несколько server.message.Message разных типов под разные действия
@@ -39,7 +40,7 @@ public abstract class Message {
      *
      ************************/
 
-
+    public Message(){}
     public Message(Phase phase, MessageType messageType){
         this.phase = phase;
         this.messageType = messageType;

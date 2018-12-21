@@ -20,7 +20,9 @@ public class ServerListener extends Thread {
 
     private ObjectInputStream is;
 
-    Object mesObject = null;
+
+
+    boolean isGameOn = false;
 
     ServerListener(ControllerClient controller, Client client, ObjectInputStream is) {
         //this.server = server;
@@ -32,18 +34,9 @@ public class ServerListener extends Thread {
 
     @Override
     public void run() {
+        System.out.println("ServerListener start");
 
-
-        try {
-            mesObject = is.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            //TODO: что-то сделать
-        }
-
-        if(!(mesObject instanceof Table))
-            throw new RuntimeException("...");
-
-        //controller.initialize((Table) mesObject);
+        Object mesObject = null;
 
         while(true){
 
@@ -54,29 +47,11 @@ public class ServerListener extends Thread {
                 continue;
             }
 
-            if(mesObject instanceof Message){
-
-                Message message = (Message) mesObject;
-
-                if(message instanceof RequestMessage){
-
-                    RequestMessage requestMessage = (RequestMessage) message;
-
-                    switch (requestMessage.getMessageType()){
-                        case GROWTH:
-
-                            //TODO: Выбор игроком что делать. Передача управления интерфейсу.
-
-                            break;
-                        case EATING:
-
-                            //TODO: Выбор игроком что делать. Передача управления интерфейсу.
-
-                            break;
-                    }
-
+            if(!isGameOn){
+                if(mesObject instanceof StartMessage){
+                    System.out.println("ServerListener: received StartMessage");
+                    controller.startGame((StartMessage) mesObject);
                 }
-
             }
         }
 

@@ -1,16 +1,25 @@
 package server.message;
 
-public class StartMessage {
+import model.Table;
 
-    //Стартовое сообщение, его передает игрок, когда подключается к серверу.
+import java.io.Serializable;
 
-    String login;
+public class StartMessage extends Message {
 
-    public StartMessage(String login){
-        this.login = login;
+    // Начало игры - сервер передаёт сформированный стол.
+
+    Table table;
+    int playerNumber;
+
+    public StartMessage(Table table, int playerNumber){
+        this.table = table;
+        this.playerNumber = playerNumber;
     }
 
-    public String getLogin(){
-        return login;
+    public Table getTable(){
+        return table;
+    }
+    public int getPlayerNumber() {
+        return playerNumber;
     }
 }

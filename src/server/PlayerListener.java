@@ -19,9 +19,6 @@ public class PlayerListener extends Thread {
 
     PlayerThread playerThread;
 
-    String login;
-    int playerNumber;
-
     ObjectInputStream is;
     ObjectOutputStream os;
 
@@ -39,6 +36,25 @@ public class PlayerListener extends Thread {
     public void run() {
 
         Object mesObject = null;
+
+        try {
+            mesObject = is.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(getName() + " stop.");
+            return;
+        }
+
+        if(mesObject instanceof ConnectMessage){
+            ConnectMessage connectMessage = (ConnectMessage) mesObject;
+            System.out.println(getName() + ": received ConnectMessage (login: " + connectMessage.getLogin() + ")");
+            playerThread.setLogin(connectMessage.getLogin());
+        }
+        else{
+            System.out.println(getName() + " stop (ConnectMessage not received).");
+            return;
+        }
+
+
         while(true){
 
             try {

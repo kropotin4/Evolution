@@ -2,6 +2,8 @@ package client;
 
 import control.Controller;
 import control.ControllerClient;
+import server.message.ConnectMessage;
+import server.message.Message;
 import server.message.StartMessage;
 
 import java.io.IOException;
@@ -11,24 +13,26 @@ import java.net.Socket;
 
 public class Client extends Thread{
 
+    ControllerClient controller;
+
     private Socket server;
+
+    String login;
     String ip;
     int port;
 
-    String login;
+
 
     private ObjectOutputStream os;
     private ObjectInputStream is;
 
     ServerListener serverListener;
 
-    public Client(ControllerClient controller, String ip, int port) {
-        //this.login = login;
-        login = "test";
-
+    public Client(ControllerClient controller, String login, String ip, int port) {
+        this.controller = controller;
+        this.login = login;
         this.ip = ip;
         this.port = port;
-
 
         try {
             server = new Socket(ip, port);
@@ -41,7 +45,7 @@ public class Client extends Thread{
             os = new ObjectOutputStream(server.getOutputStream());
             is = new ObjectInputStream(server.getInputStream());
         } catch (IOException e) {
-            System.err.println("is or os not open");
+            System.err.println("input or output stream not open");
             throw new RuntimeException("Client caput", e.getCause());
         }
 
@@ -51,24 +55,20 @@ public class Client extends Thread{
 
     @Override
     public void run() {
+        serverListener.start();
+
+        System.out.println("Client start (ip = " + ip + " port = " + port + ")");
 
         try {
-            os.writeObject(new StartMessage(login));
+            os.writeObject(new ConnectMessage(login)); // Отправляем первое сообщение серверу
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        while (true){
 
-            //TODO: Получение команды -> отправка сообщения серверу
+    }
 
-
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
+    public void sendMessage(Message message) throws IOException {
+        os.writeObject(message); // Отправляем сообщение серверу
     }
 }

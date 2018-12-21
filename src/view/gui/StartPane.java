@@ -1,6 +1,7 @@
 package view.gui;
 
 import control.Controller;
+import control.ControllerClient;
 import control.ControllerGUI;
 import control.ControllerServer;
 import javafx.event.EventHandler;
@@ -49,50 +50,50 @@ public class StartPane extends VBox {
     private void initialize(){
         this.setPrefSize(500, 300);
 
-        Controller controller = new Controller(2, 2);
+        //Controller controller = new Controller(2, 2);
 
 
         play_yourself.setOnMouseClicked(event -> {
+            Controller controller = new Controller(2, 2);
             ControllerGUI controllerGUI = new ControllerGUI(primaryStage, controller, 0);
             controllerGUI.startGame();
         });
 
         play_server.setOnMouseClicked(event -> {
-            Properties properties = new Properties();
-            FileInputStream propertiesFile = null;
-            int port = 0;
-            try {
-                propertiesFile = new FileInputStream("server.properties");
-                properties.load(propertiesFile);
-
-                port = Integer.parseInt(properties.getProperty("PORT"));
-
-
-            } catch (FileNotFoundException ex) {
-                System.err.println("Properties config file not found");
-            } catch (IOException ex) {
-                System.err.println("Error while reading file");
-            } finally {
-                try {
-                    propertiesFile.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
-            ControllerServer controllerServer = new ControllerServer(controller, port);
-            controllerServer.start();
+//            Properties properties = new Properties();
+//            FileInputStream propertiesFile = null;
+//            int port = 0;
+//            try {
+//                propertiesFile = new FileInputStream("server.properties");
+//                properties.load(propertiesFile);
+//
+//                port = Integer.parseInt(properties.getProperty("PORT"));
+//
+//
+//            } catch (FileNotFoundException ex) {
+//                System.err.println("Properties config file not found");
+//            } catch (IOException ex) {
+//                System.err.println("Error while reading file");
+//            } finally {
+//                try {
+//                    propertiesFile.close();
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+            ControllerServer controllerServer = new ControllerServer(primaryStage,true);
+            controllerServer.startServerSetting();
 
         });
 
         play_client.setOnMouseClicked(event -> {
-            ControllerGUI controllerGUI = new ControllerGUI(primaryStage, controller, 0);
-            controllerGUI.startGame();
+            ControllerClient controllerClient = new ControllerClient(primaryStage);
+            controllerClient.startClientSetting();
         });
 
         play_server_client.setOnMouseClicked(event -> {
-            //MainPane mainPane = new MainPane(primaryStage, controller, GameType.SERVER_CLIENT);
-            //mainPane.show();
+            ControllerServer controllerServer = new ControllerServer(primaryStage,false);
+            controllerServer.startServerSetting();
         });
     }
 

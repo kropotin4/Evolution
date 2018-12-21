@@ -20,6 +20,10 @@ public class Controller {
     public Controller(int quarterCardCount, int playerCount){
         table = new Table(quarterCardCount, playerCount);
     }
+    public Controller(Table table){
+        this.table = table;
+    }
+
 
 
     public int doNextMove(){
@@ -33,6 +37,11 @@ public class Controller {
 
 
         return table.getPlayerTurn();
+    }
+
+    // Опасность!!!!!!
+    public Table getTable() {
+        return table;
     }
 
 

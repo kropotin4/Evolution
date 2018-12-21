@@ -25,6 +25,8 @@ public class PlayerThread extends Thread {
     ObjectInputStream is;
     ObjectOutputStream os;
 
+    String login;
+
     final int playerNumber;
 
     public PlayerThread(Server server, Socket socket, int playerNumber) throws IOException{
@@ -39,6 +41,16 @@ public class PlayerThread extends Thread {
         os = new ObjectOutputStream(socket.getOutputStream());
 
         playerListener = new PlayerListener(server, this, is);
+    }
+
+    @Override
+    public void run() {
+        playerListener.start();
+    }
+
+    // Отправляем сообщение клиенту
+    public void sendMessage(Message message) throws IOException {
+        os.writeObject(message); // Отправляем сообщение серверу
     }
 
     public void messageHandler(Message message){
@@ -194,5 +206,13 @@ public class PlayerThread extends Thread {
         }
 
         server.recievedMessage = eatingMessage;
+    }
+
+    /////////////
+
+
+    public void setLogin(String login) {
+        this.login = login;
+        controller.setLogin(login, playerNumber);
     }
 }
