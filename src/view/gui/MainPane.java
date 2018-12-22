@@ -34,8 +34,10 @@ public class MainPane extends BorderPane {
 
     @FXML private AnchorPane pane;
     @FXML private VBox players_pane;
+
     @FXML private TextArea text_chat;
     @FXML private TextField text_input;
+    @FXML private Button send_button_chat;
 
     @FXML private AnchorPane playing_pane;
     PlayerPane playerPane;
@@ -43,6 +45,8 @@ public class MainPane extends BorderPane {
     @FXML private HBox info_pane;
     @FXML private VBox bottom_action_box;
     @FXML private VBox top_action_box;
+
+
 
     Button showCardsButton = new Button();
     Button addTraitButton = new Button();
@@ -127,7 +131,7 @@ public class MainPane extends BorderPane {
 
         addTraitPane = new AddTraitPane(controler);
         deckPane = new DeckPane(controler);
-        chat = new Chat(text_chat);
+        chat = new Chat(controler, text_chat, text_input, send_button_chat);
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -380,6 +384,8 @@ public class MainPane extends BorderPane {
     // Здесь формируется нижняя-правая панель с кнопками действий
     public void setPhaseElement(Phase phase) {
         top_action_box.getChildren().clear();
+
+        top_action_box.setDisable(controler.isBlockActions()); // Блокируем действия если не твой ход
 
         getEatButton.setDisable(false);
         attackButton.setDisable(false);
@@ -722,6 +728,10 @@ public class MainPane extends BorderPane {
             foodLabel.setText("Еды: " + controler.getFoodNumber());
             info_pane.getChildren().add(foodLabel);
         }
+    }
+
+    public Chat getChat(){
+        return chat;
     }
 
     public void show(){

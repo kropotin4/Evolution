@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CreatureNode extends VBox {
-
+    ///region fields
     private PlayerPane playerPane;
 
     private int creatureId;
@@ -54,6 +54,7 @@ public class CreatureNode extends VBox {
 
     //boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack, 4 - parasite, 5 - poisoned
+    ///endregion
 
     public CreatureNode(PlayerPane playerPane, int creatureId, int creatureNumber){
         this.number = creatureNumber;

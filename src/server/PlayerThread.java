@@ -50,34 +50,40 @@ public class PlayerThread extends Thread {
 
     // Отправляем сообщение клиенту
     public void sendMessage(Message message) throws IOException {
+        System.out.println(getName() + ": sendMessage " + message.getMessageType());
         os.writeObject(message); // Отправляем сообщение серверу
     }
 
     public void messageHandler(Message message){
 
-        if(controller.isPlayersTurn(playerNumber)){
+        if(message.getMessageType() == MessageType.CHAT){
+            try {
+                server.distribution(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(controller.isPlayersTurn(playerNumber)){
+
+            System.out.println("Current player: " + message.getTable().getPlayerTurn());
 
             switch (controller.getCurrentPhase()){
                 case GROWTH:
-                    if(message.getMessageType() != MessageType.GROWTH){
-                        // Надо еще что-то сделать!
+
+                    try {
+                        server.distribution(new ServerMessage(message.getTable(), "Игрок что-то сделал в фазу роста"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-
-                    growthMessageHandler((GrowthMessage) message);
-
-                    server.notify();
 
                     break;
                 case EATING:
-                    if(message.getMessageType() != MessageType.EATING){
-                        // Надо еще что-то сделать!
+
+                    try {
+                        server.distribution(new ServerMessage(message.getTable(), "Игрок что-то сделал в фазу еды"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-
-                    server.eatingMessage = (EatingMessage) message;
-
-                    eatingMessageHandler((EatingMessage) message); // Здесь будет обработка, дабы не нагромождать
-
-                    server.notify();
 
                     break;
                 default:
@@ -85,128 +91,8 @@ public class PlayerThread extends Thread {
                     break;
             }
         }
-        else {
-
-            if (message.getMessageType() == MessageType.SPECIAL) {
-
-                try {
-                    os.writeObject(new ErrorMessage(1)); // Не твоя очередь
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                //TODO: обработка действия игрока вне хода (Пиратство и т.д.)
-            }
-        }
     }
 
-    private void growthMessageHandler(GrowthMessage growthMessage){
-        switch (growthMessage.getType()){
-            case 0: //GrowthMessage(UUID creature, Card card, boolean isUp)
-
-                /*controller.addTraitToCreature(playerNumber,
-                        growthMessage.getFirstCreatureId(),
-                        growthMessage.getCard(),
-                        growthMessage.isUp()
-                );*/
-
-                break;
-
-            case 1: //GrowthMessage(UUID creature1,UUID creature2, Card card, boolean isUp)
-
-                if(growthMessage.getCard().getTrait(growthMessage.isUp()) == Trait.SYMBIOSIS){
-                    //TODO: Работа с симбионтом
-                }
-                else{
-                    /*controller.addPairTraitToCreature(
-                            playerNumber,
-                            growthMessage.getFirstCreatureId(),
-                            growthMessage.getSecondCreatureId(),
-                            growthMessage.getCard(),
-                            growthMessage.isUp()
-                    );*/
-                }
-
-                break;
-        }
-
-        server.recievedMessage = growthMessage;
-    }
-
-    private void eatingMessageHandler(EatingMessage eatingMessage){
-        switch (eatingMessage.getType()){
-
-            case 0: //Взятие еды из К.Б. (Существо)
-                //EatingMessage(int eatingCreature, boolean haveAction)
-
-                //controller.getFoodFromFodder(eatingMessage.getEatingCreautureId());
-
-                ///region haveAction handle
-                if(eatingMessage.isHaveAction()){
-                    Object mesObject = null;
-                    try {
-                        mesObject = is.readObject();
-                    } catch (IOException | ClassNotFoundException e) {
-                        System.out.println(getName() + ": mesObject is strange");
-                    }
-
-                    if(!(mesObject instanceof ActionMessage)){
-                        //TODO: Придумай что-нибудь
-                    }
-
-                    switch (((ActionMessage) mesObject).getTrait()){
-                        case GRAZING:
-
-                            GrazingAction grazingAction = (GrazingAction) mesObject;
-
-                            //TODO: Обработка
-
-                            break;
-
-                        case PIRACY:
-
-                            PirateAction pirateAction = (PirateAction) mesObject;
-
-                            //TODO: Обработка
-
-                            break;
-                    }
-                }
-                ///endregion
-
-                break;
-            case 1: //Атака существа (Существо + Свойства, Существо) Пока без свойств
-                //EatingMessage(UUID attackerCreature, int playerDefending, UUID defendingCreature)
-
-                /*controller.attackCreature(
-                        playerNumber,
-                        eatingMessage.getDefendingPlayerNumber(),
-                        eatingMessage.getAttackerCreatureId(),
-                        eatingMessage.getDefendingCreatureId()
-                );*/
-
-            case 2: //Защита от атаки (Существо + Свойства)
-                //EatingMessage(int playerAttacker, UUID defendingCreature, Trait trait)
-
-
-                /*controller.attackCreature(
-                        eatingMessage.getAttackerPlayerNumber(),
-                        playerNumber,
-                        eatingMessage.getAttackerCreatureId(),
-                        eatingMessage.getDefendingCreatureId()
-                );*/
-
-
-                //player.defendCreature()
-
-                break;
-
-
-        }
-
-        server.recievedMessage = eatingMessage;
-    }
 
     /////////////
 

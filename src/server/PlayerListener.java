@@ -20,7 +20,6 @@ public class PlayerListener extends Thread {
     PlayerThread playerThread;
 
     ObjectInputStream is;
-    ObjectOutputStream os;
 
     Message message;
 
@@ -34,13 +33,14 @@ public class PlayerListener extends Thread {
 
     @Override
     public void run() {
+        System.out.println(getName() + " start");
 
         Object mesObject = null;
 
         try {
             mesObject = is.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println(getName() + " stop.");
+            System.out.println(getName() + " stop");
             return;
         }
 
@@ -50,12 +50,14 @@ public class PlayerListener extends Thread {
             playerThread.setLogin(connectMessage.getLogin());
         }
         else{
-            System.out.println(getName() + " stop (ConnectMessage not received).");
+            System.out.println(getName() + ": stop (ConnectMessage not received).");
             return;
         }
 
 
+        System.out.println(getName() + ": start message reception cycle");
         while(true){
+
 
             try {
                 mesObject = is.readObject();
@@ -69,7 +71,7 @@ public class PlayerListener extends Thread {
                 playerThread.messageHandler((Message) mesObject);
             }
             else {
-                System.out.println("");
+                System.out.println(getName() + ": Unknown message");
             }
 
         }

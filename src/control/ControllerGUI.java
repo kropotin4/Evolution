@@ -4,6 +4,9 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 import model.*;
 import model.decks.PlayerCardDeck;
+import server.message.ChatMessage;
+import server.message.EatingMessage;
+import server.message.GrowthMessage;
 import view.gui.*;
 
 import java.util.ArrayList;
@@ -17,6 +20,8 @@ public class ControllerGUI {
 
     GameType type;
 
+    boolean blockActions = false;
+
     int playerNumber; // doNextMove()
 
     public ControllerGUI(Stage primaryStage, Controller controller, int playerNumber){
@@ -28,12 +33,15 @@ public class ControllerGUI {
         //mainPane.setPhaseElement(Phase.GROWTH);
         //startGame();
     }
-    public ControllerGUI(Stage primaryStage, Controller controller, ControllerClient controllerClient, MainPane mainPane, int playerNumber){
+    public ControllerGUI(Stage primaryStage, Controller controller, ControllerClient controllerClient, int playerNumber){
         this.controller = controller;
         this.controllerClient = controllerClient;
         this.mainPane = new MainPane(primaryStage, this);
         this.playerNumber = playerNumber;
         type = GameType.CLIENT;
+
+        if(playerNumber != controller.getPlayerTurn())
+            blockActions = true;
     }
     /*public ControllerGUI(Controller controller, ControllerServer controllerServer, MainPane mainPane, int playerNumber){
         this.controllerServer = controllerServer;
@@ -44,13 +52,38 @@ public class ControllerGUI {
 
 
     public void startGame(){
+        System.out.println("ControllerGUI: start game (player number = " + playerNumber + ")");
         mainPane.show();
         mainPane.update(playerNumber);
     }
 
     public void doNextMove(){
-        playerNumber = controller.doNextMove();
-        mainPane.update(controller.getPlayerTurn());
+        if(type == GameType.ALONE)
+            playerNumber = controller.doNextMove();
+        else
+            controller.doNextMove();
+
+        blockActions = playerNumber != controller.getPlayerTurn();
+
+        mainPane.update(playerNumber);
+    }
+
+    public void update(){
+        blockActions = playerNumber != controller.getPlayerTurn();
+
+        mainPane.update(playerNumber);
+    }
+    public boolean isBlockActions(){
+        return blockActions;
+    }
+
+    public void sendChatMessage(String message){
+        if(type == GameType.CLIENT){
+            controllerClient.sendMessage(new ChatMessage(controllerClient.getLogin(), message));
+        }
+    }
+    public void addMessageToChat(String message){
+        mainPane.getChat().addMessage(message);
     }
 
     public void passPlayer(){
@@ -70,16 +103,22 @@ public class ControllerGUI {
         return controller.getFoodNumber();
     }
 
-    //Сделать передачу хода
+    // сделана блокировка
     public void useFatTissue(CreatureNode creatureNode, int cardNumber){
-        controller.useFatTissue(
-                creatureNode.getPlayerPane().getPlayerNumber(),
-                creatureNode.getCreatureId(),
-                cardNumber
-        );
-        mainPane.updateCurrentPlayer();
-    }
+        if(!blockActions) {
+            controller.useFatTissue(
+                    creatureNode.getPlayerPane().getPlayerNumber(),
+                    creatureNode.getCreatureId(),
+                    cardNumber
+            );
+            mainPane.updateCurrentPlayer();
 
+            if(type == GameType.CLIENT){
+                doNextMove();
+                controllerClient.sendMessage(new EatingMessage(controller.getTable()));
+            }
+        }
+    }
 
 
     public ArrayList<CreaturesPair> getCommunicationCreatures(int playerNumber){
@@ -95,7 +134,6 @@ public class ControllerGUI {
     public boolean havePlayerPredator(){
         return controller.havePlayerPredator(playerNumber);
     }
-
     public boolean haveHungryCreature(){
         return controller.haveHungryCreature(playerNumber);
     }
@@ -125,14 +163,23 @@ public class ControllerGUI {
         return controller.haveCanPiracyCreatures(playerNumber);
     }
 
+    //Сделана блокировка
     public void addCreature(CardNode cardNode){
-        controller.addCreature(playerNumber, cardNode.getCard());
-        mainPane.showSelectedCard(false);
-        mainPane.setIsCreatureAdding(false);
-        mainPane.setIsCardSelecting(false);
-        mainPane.updateCurrentPlayer();
+        if(!blockActions) {
+            controller.addCreature(playerNumber, cardNode.getCard());
+            mainPane.showSelectedCard(false);
+            mainPane.setIsCreatureAdding(false);
+            mainPane.setIsCardSelecting(false);
+            mainPane.updateCurrentPlayer();
+
+            if(type == GameType.CLIENT){
+                doNextMove();
+                controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
+            }
+        }
     }
 
+    ////////////////////
     public boolean findTrait(CreatureNode creatureNode, Trait trait){
         return controller.findTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), trait);
     }
@@ -160,6 +207,7 @@ public class ControllerGUI {
     public void showAddTraitPane(CreatureNode selectedCreature, double X, double Y){
         mainPane.showAddTraitPane(selectedCreature, X, Y);
     }
+
     public void addTraitToCreature(CreatureNode creatureNode, CardNode cardNode, boolean isUp){
         if(controller.canAddTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), cardNode.getCard().getTrait(isUp))) {
             controller.addTraitToCreature(
@@ -172,6 +220,11 @@ public class ControllerGUI {
             mainPane.setIsCreatureAdding(false);
             mainPane.setIsCardSelecting(false);
             mainPane.updateCurrentPlayer();
+
+            if(type == GameType.CLIENT){
+                doNextMove();
+                controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
+            }
         }
     }
     public void addTraitToCreature(int playerNumber, CreatureNode creatureNode, CardNode cardNode, boolean isUp){
@@ -187,9 +240,13 @@ public class ControllerGUI {
             mainPane.setIsCreatureAdding(false);
             mainPane.setIsCardSelecting(false);
             mainPane.update(this.playerNumber);
+
+            if(type == GameType.CLIENT){
+                doNextMove();
+                controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
+            }
         }
     }
-
     public void addPairTraitToCreature(CreatureNode creatureNode1, CreatureNode creatureNode2, CardNode cardNode, boolean isUp){
 
         controller.addPairTraitToCreature(
@@ -205,7 +262,13 @@ public class ControllerGUI {
         mainPane.setIsCardSelecting(false);
         mainPane.updateCurrentPlayer();
 
+        if(type == GameType.CLIENT){
+            doNextMove();
+            controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
+        }
+
     }
+    /////////////////////
 
     public ArrayList<Card> getCreatureCards(CreatureNode creatureNode){
         return controller.getCreatureCards(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
@@ -275,12 +338,14 @@ public class ControllerGUI {
     }
 
     public void setCreatureHibernating(CreatureNode creatureHibernating){
-        controller.setCreatureHibernating(
-                creatureHibernating.getPlayerPane().getPlayerNumber(),
-                creatureHibernating.getCreatureId(),
-                true
-        );
-        mainPane.updateCurrentPlayer();
+        if(!blockActions) {
+            controller.setCreatureHibernating(
+                    creatureHibernating.getPlayerPane().getPlayerNumber(),
+                    creatureHibernating.getCreatureId(),
+                    true
+            );
+            mainPane.updateCurrentPlayer();
+        }
     }
     public boolean isHibernating(CreatureNode creatureNode){
         return controller.isHibernating(
@@ -391,7 +456,7 @@ public class ControllerGUI {
         showDefenderSelecting(creatureNode);
         mainPane.setAttackerCreature(creatureNode);
     }
-    /// �� �������� ���
+    ///
     public void attackCreature(CreatureNode defender){
         controller.attackCreature(
                 mainPane.getAttackerCreature().getPlayerPane().getPlayerNumber(),
@@ -401,6 +466,11 @@ public class ControllerGUI {
         );
         mainPane.getAttackerCreature().setStyleType(0);
         mainPane.update(playerNumber);
+
+        if(type == GameType.CLIENT){
+            doNextMove();
+            controllerClient.sendMessage(new EatingMessage(controller.getTable()));
+        }
     }
     //endregion
 

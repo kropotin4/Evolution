@@ -26,7 +26,7 @@ public class ControllerServer {
 
     int playerNumber; // Меняется в doNextMove()
 
-    int playerNum = 1; // Количество игроков
+    int playerNum = 2; // Количество игроков
     InetAddress inetAddress;
     int port = 4444; //
     final int MIN_PORT_NUMBER = 1000;

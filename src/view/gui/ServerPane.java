@@ -30,6 +30,7 @@ public class ServerPane extends AnchorPane {
     @FXML Slider deck_size_slider;
     @FXML Button start_button;
     @FXML ImageView check_image;
+    @FXML Label cards_number_label_sp;
 
     Image checkOkImage = new Image("/images/checkOk_100.png");
     Image checkFalseImage = new Image("/images/checkFalse_100.png");
@@ -80,13 +81,13 @@ public class ServerPane extends AnchorPane {
             else port_text_field.setText(oldValue);
         });
 
-
         player_number_slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             controllerServer.setPlayerNum(newValue.intValue());
         });
 
         deck_size_slider.valueProperty().addListener((observable, oldValue, newValue) -> {
             controllerServer.setQuarterCardCount(newValue.intValue());
+            cards_number_label_sp.setText("Всего карт: " + (newValue.intValue() * 21));
         });
 
         start_button.setOnMouseClicked(event -> {

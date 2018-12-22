@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import model.Creature;
 import model.CreaturesPair;
 import model.Trait;
@@ -26,6 +27,8 @@ public class PlayerPane extends HBox {
     PlayerPane self = this;
     ControllerGUI controller;
     int playerNumber;
+
+    Label playerNumberLabel;
 
     HBox imageBox = new HBox();
     Image plus1 = new Image("/images/plus1.png");
@@ -70,11 +73,17 @@ public class PlayerPane extends HBox {
     @FXML
     private void initialize(){
         this.setStyle("-fx-border-width: 1; -fx-border-color: black;");
-        this.setMinHeight(100);
+        this.setMinHeight(190);
+        //this.setPrefHeight(100);
         this.setAlignment(Pos.CENTER_LEFT);
         this.setPadding(new Insets(3));
         this.setSpacing(3);
 
+        playerNumberLabel = new Label("Игрок " + playerNumber);
+        playerNumberLabel.setFont(new Font("Arial Bolt", 18));
+        playerNumberLabel.setRotate(90);
+        playerNumberLabel.setStyle("-fx-border-width: 1; -fx-border-color: red");
+        //playerNumberLabel.setPrefSize(100, 50);
 
         imageBox.getChildren().add(imageView);
         imageBox.setAlignment(Pos.CENTER);
@@ -106,8 +115,11 @@ public class PlayerPane extends HBox {
         scavengerCheckBoxs.clear();
 
         int num = 0;
-        this.getChildren().clear();
+        this.getChildren().clear(); // Очистка
         creatureNodes.clear();
+
+        this.getChildren().add(playerNumberLabel);
+
         for(Creature creature : controller.getCreatures(playerNumber)){
             CreatureNode creatureNode = new CreatureNode(this, creature.getId(), num++);
             creatureNode.update();
@@ -120,82 +132,80 @@ public class PlayerPane extends HBox {
 
         setPairTraits();
 
+
         if(imageIsShow)
             this.getChildren().add(imageBox);
     }
 
     //Обработка нажатий на существо при различных условиях (атакует, кормится и т.д.)
     private void setMouseClickedHandle(CreatureNode creatureNode){
-        creatureNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                controller.selectCreature(creatureNode);
-                //System.out.println("Select creature: " + creatureNode.getCreatureId());
+        creatureNode.setOnMouseClicked(event -> {
+            controller.selectCreature(creatureNode);
+            //System.out.println("Select creature: " + creatureNode.getCreatureId());
 
-                if(event.getClickCount() == 1){
-                    startTime = System.nanoTime();
-                    System.out.println("Select creature: " + creatureNode.getCreatureId());
-                }
-                else{
-                    endTime = System.nanoTime();
-                    if(endTime - startTime >= 250){ // Окончание выбора карты + закрытие DeckPane
-                        if((creatureNode.isGreenStyle() || creatureNode.isPoisonStyle()) && controller.isCardSelected()){
-                            //Добавление свойства
-                            if(controller.isPairTraitSelected()){
-                                if (isFirstSelected) { // Первое существо уже выбрано
-                                    secondCreature = creatureNode;
-                                    setAllCreaturesDefault();
-                                    isFirstSelected = false;
-                                    controller.addPairTraitToCreature(firstCreature, creatureNode, controller.getSelectedCard(), controller.isUpTrait());
-                                    firstCreature = null;
-                                } else { // Выбирается первое существо
-                                    firstCreature = creatureNode;
-                                    isFirstSelected = true;
-                                    setAllCreaturesDefault();
-                                    setCanGettingPairTraitCreaturesTrue(controller.getSelectedCard().getCard().getTrait(controller.isUpTrait()), firstCreature);
-                                    creatureNode.setStyleType(3);
-                                }
-                            }
-                            else {
-                                controller.addTraitToCreature(controller.getPlayerTurn(), creatureNode, controller.getSelectedCard(), controller.isUpTrait());
-                            }
-                        }
-                        else if(creatureNode.isGreenStyle() && controller.isFoodGetting() && !controller.isCreatureSatisfied(creatureNode)){
-                            //Взятие еды из кормовой базы + Заполнение жирового запаса//!controller.isCreatureFed(creatureNode)
-                            setAllCreaturesDefault();
-                            controller.getFoodFromFodder(creatureNode);
-                        }
-                        else if(creatureNode.isGreenStyle() && controller.isAttackerSelecting()){
-                            //Выбор атакующего существа
-                            setAllCreaturesDefault();
-                            creatureNode.setStyleType(3);
-
-                            controller.setAttackerCreature(creatureNode);
-                        }
-                        else if(creatureNode.isGreenStyle() && controller.isDefenderSelecting()){
-                            //Выбор жертвы хищника
-                            setAllCreaturesDefault();
-                            controller.attackCreature(creatureNode);
-                        }
-                        else if(creatureNode.isGreenStyle() && controller.isPirateSelecting()){
-                            //Выбор пирата
-                            setAllCreaturesDefault();
-                            creatureNode.setStyleType(3);
-
-                            controller.setPirateCreature(creatureNode);
-                        }
-                        else if(creatureNode.isGreenStyle() && controller.isPirateVictimSelecting()){
-                            //Выбор жертвы абардажа
-                            setAllCreaturesDefault();
-
-                            controller.pirateCreature(creatureNode);
-                        }
-
-                    }
-                }
-
-                //setFalseStyle(creatureNode);
+            if(event.getClickCount() == 1){
+                startTime = System.nanoTime();
+                System.out.println("Select creature: " + creatureNode.getCreatureId());
             }
+            else{
+                endTime = System.nanoTime();
+                if(endTime - startTime >= 250){ // Окончание выбора карты + закрытие DeckPane
+                    if((creatureNode.isGreenStyle() || creatureNode.isPoisonStyle()) && controller.isCardSelected()){
+                        //Добавление свойства
+                        if(controller.isPairTraitSelected()){
+                            if (isFirstSelected) { // Первое существо уже выбрано
+                                secondCreature = creatureNode;
+                                setAllCreaturesDefault();
+                                isFirstSelected = false;
+                                controller.addPairTraitToCreature(firstCreature, creatureNode, controller.getSelectedCard(), controller.isUpTrait());
+                                firstCreature = null;
+                            } else { // Выбирается первое существо
+                                firstCreature = creatureNode;
+                                isFirstSelected = true;
+                                setAllCreaturesDefault();
+                                setCanGettingPairTraitCreaturesTrue(controller.getSelectedCard().getCard().getTrait(controller.isUpTrait()), firstCreature);
+                                creatureNode.setStyleType(3);
+                            }
+                        }
+                        else {
+                            controller.addTraitToCreature(controller.getPlayerTurn(), creatureNode, controller.getSelectedCard(), controller.isUpTrait());
+                        }
+                    }
+                    else if(creatureNode.isGreenStyle() && controller.isFoodGetting() && !controller.isCreatureSatisfied(creatureNode)){
+                        //Взятие еды из кормовой базы + Заполнение жирового запаса//!controller.isCreatureFed(creatureNode)
+                        setAllCreaturesDefault();
+                        controller.getFoodFromFodder(creatureNode);
+                    }
+                    else if(creatureNode.isGreenStyle() && controller.isAttackerSelecting()){
+                        //Выбор атакующего существа
+                        setAllCreaturesDefault();
+                        creatureNode.setStyleType(3);
+
+                        controller.setAttackerCreature(creatureNode);
+                    }
+                    else if(creatureNode.isGreenStyle() && controller.isDefenderSelecting()){
+                        //Выбор жертвы хищника
+                        setAllCreaturesDefault();
+                        controller.attackCreature(creatureNode);
+                    }
+                    else if(creatureNode.isGreenStyle() && controller.isPirateSelecting()){
+                        //Выбор пирата
+                        setAllCreaturesDefault();
+                        creatureNode.setStyleType(3);
+
+                        controller.setPirateCreature(creatureNode);
+                    }
+                    else if(creatureNode.isGreenStyle() && controller.isPirateVictimSelecting()){
+                        //Выбор жертвы абардажа
+                        setAllCreaturesDefault();
+
+                        controller.pirateCreature(creatureNode);
+                    }
+
+                }
+            }
+
+            //setFalseStyle(creatureNode);
         });
     }
     //Добавление парных traits -> + обработка наведения

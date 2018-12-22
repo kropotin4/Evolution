@@ -198,6 +198,8 @@ public class ClientPane extends AnchorPane {
                 ip.append(ip3_text_field.getText() + ".");
                 ip.append(ip4_text_field.getText());
 
+                System.out.println("ClientPane: ip = " + ip.toString());
+
                 controller.connectToServer(controller.getLogin(), ip.toString(), Integer.parseInt(port2_text_field.getText()));
             }
         });

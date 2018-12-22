@@ -45,9 +45,7 @@ public class Server extends Thread{
     public void run() {
         beginPlay();
 
-        //middlePlay();
 
-        //endPlay();
     }
 
     public void beginPlay(){
@@ -75,48 +73,7 @@ public class Server extends Thread{
         }
     }
 
-    public boolean middlePlay(){
 
-        boolean end = false;
-        while (!end){
-
-            switch (controller.getCurrentPhase()) {
-                case GROWTH:
-
-                    growthPhaseHandler();
-
-                    break;
-
-                case CALC_FODDER_BASE:
-
-                    cfbPhaseHandler();
-
-                    break;
-
-                case EATING:
-
-                    eatingPhaseHandler();
-
-                    break;
-
-                case EXTINCTION:
-
-                    extinctionPhaseHandler();
-
-                    break;
-
-                    // Здесь же будет и раздача карт
-            }
-
-            //Вероятно, рассылка результата бедет здесь
-        }
-
-        return false;
-    }
-
-    public void endPlay(){
-
-    }
 
     //////////
 
@@ -134,93 +91,7 @@ public class Server extends Thread{
 
     //////////
 
-    private void growthPhaseHandler(){
 
-        //Игроки должны получить сообщения типа "положи карту, если можешь, или скажи пас"
-
-        for (int playerNumber = 0; playerNumber < controller.getPlayersNumber(); ++playerNumber) { // Игроки
-
-            if(controller.getPlayerCardsNumber(playerNumber) <= 0){
-                //TODO: Он пас
-                controller.doNextMove();
-            }
-            else{
-                //TODO: Отправляем запрос
-                try {
-                    findPlayerStream(playerNumber).writeObject(new RequestMessage(MessageType.GROWTH));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            try {
-                wait(); // Ждем пока не получим ответ
-            } catch (InterruptedException e) {
-                System.out.println("Server: Problems with wait");
-            }
-            controller.doNextMove();
-            sendingAllResults();// Массовая рассылка результата
-        }
-    }
-
-    private void cfbPhaseHandler(){
-        controller.doNextMove();
-        sendingAllResults();
-    }
-
-    private void eatingPhaseHandler() {
-        for (int playerNumber = 0; playerNumber < controller.getPlayersNumber(); ++playerNumber) { // Игроки
-
-            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
-
-            try {
-                findPlayerStream(playerNumber).writeObject(new RequestMessage(MessageType.EATING));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                wait(); // Ждем пока не получим ответ
-            } catch (InterruptedException e) {
-                System.out.println("Server: wait() has interrupted");
-            }
-
-            controller.doNextMove();
-
-            if(eatingMessage.getType() == 2){
-
-                try {
-                    findPlayerStream(eatingMessage.getDefendingPlayerNumber()).writeObject(eatingMessage);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
-
-            }
-
-
-            sendingAllResults();// Массовая рассылка результата
-        }
-    }
-
-    private void extinctionPhaseHandler(){
-        controller.doNextMove();
-
-        for (int playerNumber = 0; playerNumber < controller.getPlayersNumber(); ++playerNumber) { // Игроки
-
-            //TODO: что-то им отправляем -> какие действия мы от игрока ждем
-
-            try {
-                wait(); // Ждем пока не получим ответ
-            } catch (InterruptedException e) {
-                System.out.println("Server: Problems with wait");
-            }
-
-            // Массовая рассылка результата
-        }
-    }
 
 
     ObjectOutputStream findPlayerStream(int playerNumber){

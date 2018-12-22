@@ -4,6 +4,7 @@ import control.Controller;
 import control.ControllerClient;
 import model.Table;
 import server.message.Message;
+import server.message.MessageType;
 import server.message.RequestMessage;
 import server.message.StartMessage;
 
@@ -44,13 +45,33 @@ public class ServerListener extends Thread {
                 mesObject = is.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 //TODO: что-то сделать
-                continue;
+                System.err.println("ServerListener stop");
+                return;
             }
 
             if(!isGameOn){
                 if(mesObject instanceof StartMessage){
                     System.out.println("ServerListener: received StartMessage");
                     controller.startGame((StartMessage) mesObject);
+                    isGameOn = true;
+                }
+            }
+            else{
+                if(mesObject instanceof Message){
+                    if(((Message) mesObject).getMessageType() == MessageType.CHAT){
+                        System.out.println("Received Chat message");
+                        controller.getControllerGUI().addMessageToChat(((Message) mesObject).getMes());
+                    }
+                    else if(((Message) mesObject).getMessageType() == MessageType.SERVER){
+                        System.out.println("Received Server message");
+
+                        System.out.println("Current player: " + ((Message) mesObject).getTable().getPlayerTurn());
+                        controller.setTable(((Message) mesObject).getTable());
+                        controller.getControllerGUI().addMessageToChat(((Message) mesObject).getMes());
+                    }
+                    else {
+                        System.out.println("ServerListener: received " + ((Message) mesObject).getMessageType() + " message (empty else)");
+                    }
                 }
             }
         }

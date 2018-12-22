@@ -8,7 +8,6 @@ public class StartMessage extends Message {
 
     // Начало игры - сервер передаёт сформированный стол.
 
-    Table table;
     int playerNumber;
 
     public StartMessage(Table table, int playerNumber){
@@ -16,9 +15,6 @@ public class StartMessage extends Message {
         this.playerNumber = playerNumber;
     }
 
-    public Table getTable(){
-        return table;
-    }
     public int getPlayerNumber() {
         return playerNumber;
     }

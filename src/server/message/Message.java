@@ -1,9 +1,6 @@
 package server.message;
 
-import model.Card;
-import model.Creature;
-import model.Phase;
-import model.Trait;
+import model.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +13,10 @@ public abstract class Message implements Serializable {
     Phase phase;
 
     MessageType messageType;
+
+    Table table;
+
+    String mes;
 
     /*******************
      * 4  фазы:
@@ -45,7 +46,6 @@ public abstract class Message implements Serializable {
         this.phase = phase;
         this.messageType = messageType;
     }
-
     public Message(MessageType messageType){
         this.messageType = messageType;
     }
@@ -54,4 +54,17 @@ public abstract class Message implements Serializable {
         return messageType;
     }
 
+    public void setTable(Table table){
+        this.table = table;
+    }
+    public Table getTable() {
+        return table;
+    }
+
+    public String getMes() {
+        return mes;
+    }
+    public void setMes(String mes) {
+        this.mes = mes;
+    }
 }

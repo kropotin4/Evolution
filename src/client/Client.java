@@ -69,6 +69,7 @@ public class Client extends Thread{
     }
 
     public void sendMessage(Message message) throws IOException {
+        System.out.println("Client: sendMessage " + message.getMessageType());
         os.writeObject(message); // Отправляем сообщение серверу
     }
 }

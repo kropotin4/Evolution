@@ -4,8 +4,11 @@ import client.Client;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import model.Table;
+import server.message.Message;
 import server.message.StartMessage;
 import view.gui.ClientPane;
+
+import java.io.IOException;
 
 public class ControllerClient {
 
@@ -33,6 +36,20 @@ public class ControllerClient {
         //this.client = new Client(this, ip, port);
     }
 
+    public void setTable(Table table){
+        controller.setTable(table);
+        Platform.runLater(() -> {
+            // Update UI here.
+            controllerGUI.update();
+        });
+    }
+
+    public ControllerGUI getControllerGUI(){
+        return controllerGUI;
+    }
+
+    ///////////////
+
     public void startClientSetting(){
         stage = 0;
         clientPane.show();
@@ -42,7 +59,7 @@ public class ControllerClient {
         controller = new Controller(startMessage.getTable());
         Platform.runLater(() -> {
             // Update UI here.
-            controllerGUI = new ControllerGUI(primaryStage, controller, startMessage.getPlayerNumber());
+            controllerGUI = new ControllerGUI(primaryStage, controller, this, startMessage.getPlayerNumber());
             controllerGUI.startGame();
         });
 
@@ -53,16 +70,26 @@ public class ControllerClient {
         client.start();
     }
 
+    //////////////////
+    // Посылаем сообщение
+    public void sendMessage(Message message){
+        System.out.println("ControllerClient: sendMessage: " + message.getMessageType());
+        try {
+            client.sendMessage(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //////////////////
+
     public void setLogin(String login){
         this.login = login;
     }
-
     public String getLogin() {
         return login;
     }
 
-    public void start(){
-        client.start();
-    }
+
 
 }

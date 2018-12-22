@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Controller {
 
     private Table table;
-    private Player player;
+    private Player player; // временная переменная
     private Creature creature;
 
     Saver saver = new Saver();
@@ -29,11 +29,11 @@ public class Controller {
     public int doNextMove(){
         table.doNextMove();
 
-        try {
-            saver.saveTable(table, "dump" + table.step);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            saver.saveTable(table, "dump" + table.step);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 
         return table.getPlayerTurn();
@@ -43,7 +43,9 @@ public class Controller {
     public Table getTable() {
         return table;
     }
-
+    public void setTable(Table table){
+        this.table = table;
+    }
 
     public void addCreature(int playerNumber, Card card){
         System.out.println("Controller: addCreature: " + playerNumber  + " " + card);
