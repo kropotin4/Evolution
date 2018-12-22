@@ -51,16 +51,11 @@ public class Table implements Serializable {
         int i = 0, oldTurn = playerTurn;
         step++;
         switch (curPhase){
-            case CALC_FODDER_BASE:
-                setFodder();
-                for(Player player : players){
-                    player.setPass(false);
-                }
-                curPhase = Phase.EATING;  /// !!!!!!!!!!!!!
-                break;
             case GROWTH:
                 if(passNumber == players.size()){
-                    curPhase = Phase.CALC_FODDER_BASE;
+                    curPhase = Phase.EATING;
+                    setFodder();
+
                     playerTurn = (playerTurn + 1) % players.size();
                     for(Player player : players)
                         player.setPass(false);
@@ -69,7 +64,7 @@ public class Table implements Serializable {
 
                 while(i++ <= players.size()){
                     playerTurn = (playerTurn + 1) % players.size();
-                    if(players.get(playerTurn).isPass) continue;
+                    if(!players.get(playerTurn).canMove()) continue;
                     else{
                         allPass = false;
                         break;
@@ -77,7 +72,9 @@ public class Table implements Serializable {
 
                 }
                 if(allPass){
-                    curPhase = Phase.CALC_FODDER_BASE;
+                    curPhase = Phase.EATING;
+                    setFodder();
+
                     playerTurn = (oldTurn + 1) % players.size();
                     for(Player player : players)
                         player.setPass(false);
@@ -86,7 +83,9 @@ public class Table implements Serializable {
                 break;
             case EATING:
                 if(passNumber == players.size()){
-                    curPhase = Phase.EXTINCTION;
+                    doExtinction();
+                    curPhase = Phase.GROWTH;
+
                     playerTurn = (playerTurn + 1) % players.size();
                     for(Player player : players)
                         player.setPass(false);
@@ -95,77 +94,72 @@ public class Table implements Serializable {
 
                 while(i++ <= players.size()){
                     playerTurn = (playerTurn + 1) % players.size();
-                    if(players.get(playerTurn).isPass) continue;
+                    if(!players.get(playerTurn).canMove()) continue;
                     else{
                         allPass = false;
                         break;
                     }
                 }
                 if(allPass){
-                    curPhase = Phase.EXTINCTION;
+                    doExtinction();
+                    curPhase = Phase.GROWTH;
+
                     playerTurn = (oldTurn + 1) % players.size();
                     for(Player player : players)
                         player.setPass(false);
                     break;
                 }
                 break;
-            case EXTINCTION: {
-                Creature creature = null;
-                for (Player player : players) {
-                    for (int g = 0; g < player.getCreatures().size(); ++g) {
-                        creature = player.getCreatures().get(g);
-
-                        //Сначала ставь убивающее!
-                        if(creature.isPoisoned()){
-                            player.killCreature(creature);
-                            g--;
-                        }
-
-                        if(creature.isPirated())
-                            creature.setPirated(false);
-
-                        if(creature.isHibernating()){
-                            creature.reduceHibernatingTime();
-                            creature.setHibernating(false);
-                            creature.setHunger();
-                        }
-                        else if (creature.isFed()) {
-                            creature.setHunger();
-                        }
-                        else {
-                            player.killCreature(creature);
-                            g--;
-                        }
-                    }
-                }
-
-                ///region Раздача карт
-                for(Player player : players){
-                    player.getCard();
-                    player.setPass(false);
-                }
-
-                int max = 0;
-                for(Player player : players)
-                    if(max < player.getCreatures().size())
-                        max = player.getCreatures().size();
-
-                 for(int g = 0; g < max; ++g){
-                     for(Player player : players){
-                         if(player.getCreatures().size() > g)
-                             player.getCard();
-                     }
-                 }
-                 ///endregion
-
-                curPhase = Phase.GROWTH;
-                break;
-            }
-            //case DEALING:
-            //   //TODO: Раздача карт
-            //    curPhase = Phase.GROWTH;
-            //    break;
         }
+    }
+    private void doExtinction(){
+        Creature creature = null;
+        for (Player player : players) {
+            for (int g = 0; g < player.getCreatures().size(); ++g) {
+                creature = player.getCreatures().get(g);
+
+                //Сначала ставь убивающее!
+                if(creature.isPoisoned()){
+                    player.killCreature(creature);
+                    g--;
+                }
+
+                if(creature.isPirated())
+                    creature.setPirated(false);
+
+                if(creature.isHibernating()){
+                    creature.reduceHibernatingTime();
+                    creature.setHibernating(false);
+                    creature.setHunger();
+                }
+                else if (creature.isFed()) {
+                    creature.setHunger();
+                }
+                else {
+                    player.killCreature(creature);
+                    g--;
+                }
+            }
+        }
+
+        ///region Раздача карт
+        for(Player player : players){
+            player.getCard();
+            player.setPass(false);
+        }
+
+        int max = 0;
+        for(Player player : players)
+            if(max < player.getCreatures().size())
+                max = player.getCreatures().size();
+
+        for(int g = 0; g < max; ++g){
+            for(Player player : players){
+                if(player.getCreatures().size() > g)
+                    player.getCard();
+            }
+        }
+        ///endregion
     }
 
 

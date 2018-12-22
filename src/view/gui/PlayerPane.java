@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -22,11 +23,13 @@ import model.Trait;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PlayerPane extends HBox {
+public class PlayerPane extends ScrollPane {
 
     PlayerPane self = this;
     ControllerGUI controller;
     int playerNumber;
+
+    @FXML HBox creatures_box_pp;
 
     Label playerNumberLabel;
 
@@ -59,7 +62,7 @@ public class PlayerPane extends HBox {
                 getClass().getResource("/PlayerPane.fxml")
         );
 
-        //fxmlLoader.setRoot(this);
+        fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
         try {
@@ -73,14 +76,14 @@ public class PlayerPane extends HBox {
     @FXML
     private void initialize(){
         this.setStyle("-fx-border-width: 1; -fx-border-color: black;");
-        this.setMinHeight(190);
+        this.setMinSize(600, 190);
         //this.setPrefHeight(100);
-        this.setAlignment(Pos.CENTER_LEFT);
-        this.setPadding(new Insets(3));
-        this.setSpacing(3);
+        creatures_box_pp.setAlignment(Pos.CENTER_LEFT);
+        creatures_box_pp.setPadding(new Insets(3));
+        creatures_box_pp.setSpacing(3);
 
         playerNumberLabel = new Label("Игрок " + playerNumber);
-        playerNumberLabel.setFont(new Font("Arial Bolt", 18));
+        playerNumberLabel.setFont(new Font("Arial Bolt", 16));
         playerNumberLabel.setRotate(90);
         playerNumberLabel.setStyle("-fx-border-width: 1; -fx-border-color: red");
         //playerNumberLabel.setPrefSize(100, 50);
@@ -105,6 +108,7 @@ public class PlayerPane extends HBox {
         });
 
         update();
+
     }
 
     ///Здесь добавляются все существа + навешиваются обработчики событий
@@ -115,26 +119,24 @@ public class PlayerPane extends HBox {
         scavengerCheckBoxs.clear();
 
         int num = 0;
-        this.getChildren().clear(); // Очистка
+        creatures_box_pp.getChildren().clear(); // Очистка
         creatureNodes.clear();
 
-        this.getChildren().add(playerNumberLabel);
+        creatures_box_pp.getChildren().add(playerNumberLabel);
 
         for(Creature creature : controller.getCreatures(playerNumber)){
             CreatureNode creatureNode = new CreatureNode(this, creature.getId(), num++);
             creatureNode.update();
-            this.getChildren().add(creatureNode);
+            creatures_box_pp.getChildren().add(creatureNode);
             creatureNodes.add(creatureNode);
 
             setMouseClickedHandle(creatureNode);
-
         }
 
         setPairTraits();
 
-
         if(imageIsShow)
-            this.getChildren().add(imageBox);
+            creatures_box_pp.getChildren().add(imageBox);
     }
 
     //Обработка нажатий на существо при различных условиях (атакует, кормится и т.д.)
@@ -368,11 +370,11 @@ public class PlayerPane extends HBox {
     }
     public void showAddIcon(boolean isShow){
         if(isShow && !imageIsShow) {
-            this.getChildren().add(imageBox);
+            creatures_box_pp.getChildren().add(imageBox);
             imageIsShow = true;
         }
         else if(!isShow) {
-            this.getChildren().remove(imageBox);
+            creatures_box_pp.getChildren().remove(imageBox);
             imageIsShow = false;
         }
     }
@@ -382,5 +384,9 @@ public class PlayerPane extends HBox {
     }
     public ArrayList<CreatureNode> getCreatureNodes(){
         return creatureNodes;
+    }
+
+    public void clear(){
+        creatures_box_pp.getChildren().clear();
     }
 }

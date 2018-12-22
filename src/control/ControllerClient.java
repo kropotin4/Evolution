@@ -70,9 +70,17 @@ public class ControllerClient {
 
     }
 
-    public void connectToServer(String login, String ip, int port){
-        client = new Client(this, login, ip, port);
-        client.start();
+    // true - соединился с сервером
+    public boolean connectToServer(String login, String ip, int port){
+        try {
+            client = new Client(this, login, ip, port);
+            client.start();
+            return true;
+        }
+        catch (Exception e){
+            System.out.println("ControllerClient: connect to server failed");
+            return false;
+        }
     }
 
     //////////////////

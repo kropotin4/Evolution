@@ -289,6 +289,13 @@ public class Player implements Serializable {
         return playerDeck;
     }
 
+    // TODO:Дописать
+    public boolean canMove(){
+        return !(isPass ||
+                ((table.getCurrentPhase() == Phase.GROWTH && playerDeck.getCardsNumber() == 0) ||
+                        (table.getCurrentPhase() == Phase.EATING && true)));
+    }
+
     public void setPass(boolean isPass){
         this.isPass = isPass;
         if(isPass) table.passNumber++;

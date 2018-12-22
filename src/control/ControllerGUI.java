@@ -66,6 +66,19 @@ public class ControllerGUI {
         blockActions = playerNumber != controller.getPlayerTurn();
 
         mainPane.update(playerNumber);
+
+        if(type == GameType.CLIENT){
+            switch (controller.getCurrentPhase()){
+                case EATING:
+                    controllerClient.sendMessage(new EatingMessage(controller.getTable()));
+                    break;
+                case GROWTH:
+                    controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public void update(){
@@ -115,7 +128,6 @@ public class ControllerGUI {
 
             if(type == GameType.CLIENT){
                 doNextMove();
-                controllerClient.sendMessage(new EatingMessage(controller.getTable()));
             }
         }
     }
@@ -174,7 +186,6 @@ public class ControllerGUI {
 
             if(type == GameType.CLIENT){
                 doNextMove();
-                controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
             }
         }
     }
@@ -223,7 +234,6 @@ public class ControllerGUI {
 
             if(type == GameType.CLIENT){
                 doNextMove();
-                controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
             }
         }
     }
@@ -243,7 +253,6 @@ public class ControllerGUI {
 
             if(type == GameType.CLIENT){
                 doNextMove();
-                controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
             }
         }
     }
@@ -264,7 +273,6 @@ public class ControllerGUI {
 
         if(type == GameType.CLIENT){
             doNextMove();
-            controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
         }
 
     }
@@ -282,6 +290,10 @@ public class ControllerGUI {
         mainPane.setIsFoodGetting(false);
         controller.getFoodFromFodder(playerNumber, creatureNode.getCreatureId());
         mainPane.updateCurrentPlayer();
+
+        if(type == GameType.CLIENT){
+            doNextMove();
+        }
     }
     public boolean isFoodGetting(){
         return mainPane.isFoodGetting();
@@ -389,6 +401,7 @@ public class ControllerGUI {
         mainPane.setPirateCreature(creatureNode);
     }
 
+    /// TODO: пиратсво клиента
     public void pirateCreature(CreatureNode pirateVictimCreature){
 
         controller.pirateCreature(
@@ -469,7 +482,6 @@ public class ControllerGUI {
 
         if(type == GameType.CLIENT){
             doNextMove();
-            controllerClient.sendMessage(new EatingMessage(controller.getTable()));
         }
     }
     //endregion

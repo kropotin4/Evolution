@@ -42,9 +42,7 @@ public class ClientPane extends AnchorPane {
     Image grass = new Image("/images/grass_960_640.jpg");
 
     BackgroundSize backgroundSize;
-    // new BackgroundImage(image, repeatX, repeatY, position, size)
     BackgroundImage backgroundImage;
-    // new Background(images...)
     Background background;
 
     public ClientPane(ControllerClient controller, Stage primaryStage){
@@ -198,7 +196,18 @@ public class ClientPane extends AnchorPane {
 
         connect_button.setOnMouseClicked(event -> {
             if(localhost_check_box.isSelected()){
-                controller.connectToServer(controller.getLogin(), "localhost", Integer.parseInt(port2_text_field.getText()));
+                if(controller.connectToServer(
+                        controller.getLogin(),
+                        "localhost",
+                        Integer.parseInt(port2_text_field.getText()))
+                ){
+                    connect_button.setText("Подключено");
+                    connect_button.setDisable(true);
+                }
+                else{
+                    connect_button.setText("Подключиться");
+                    connect_button.setDisable(false);
+                }
             }
             else{
                 StringBuilder ip = new StringBuilder();
@@ -209,7 +218,19 @@ public class ClientPane extends AnchorPane {
 
                 System.out.println("ClientPane: ip = " + ip.toString());
 
-                controller.connectToServer(controller.getLogin(), ip.toString(), Integer.parseInt(port2_text_field.getText()));
+
+                if(controller.connectToServer(
+                        controller.getLogin(),
+                        ip.toString(),
+                        Integer.parseInt(port2_text_field.getText()))
+                ){
+                    connect_button.setText("Подключено");
+                    connect_button.setDisable(true);
+                }
+                else{
+                    connect_button.setText("Подключиться");
+                    connect_button.setDisable(false);
+                }
             }
         });
 
