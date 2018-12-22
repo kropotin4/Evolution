@@ -3,6 +3,7 @@ package control;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import model.Phase;
+import server.PlayerThread;
 import server.Server;
 import server.message.Message;
 import server.message.StartMessage;
@@ -74,6 +75,10 @@ public class ControllerServer {
         stage = 2;
         controller = new Controller(quarterCardCount, playerNum);
 
+        for(int i = 0; i < server.getPlayerThreads().size(); ++i){
+            controller.setLogin(server.getPlayerThreads().get(i).getLogin(), i);
+        }
+
         try {
             server.startGameDistribution(controller.getTable());
         } catch (IOException e) {
@@ -126,6 +131,7 @@ public class ControllerServer {
             Platform.runLater(() -> {
                 // Update UI here.
                 connectionPane.setLogin(login, playerNumber);
+                //controller.setLogin(login, playerNumber);
             });
         }
     }

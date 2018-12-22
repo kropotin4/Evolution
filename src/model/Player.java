@@ -294,6 +294,9 @@ public class Player implements Serializable {
         if(isPass) table.passNumber++;
         else table.passNumber--;
     }
+    public void setLogin(String login) {
+        this.login = login;
+    }
     public String getLogin(){
         return login;
     }
@@ -310,5 +313,20 @@ public class Player implements Serializable {
     }
     public int getPlayerNumber(){
         return playerNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                ", login='" + login + '\'' +
+                ", playerNumber=" + playerNumber +
+                ", isPass=" + isPass +
+                ", playerDeck=" + playerDeck +
+                ", dropDeck=" + dropDeck +
+                ", creatures=" + creatures +
+                ", communicationCreatures=" + communicationCreatures +
+                ", cooperationCreatures=" + cooperationCreatures +
+                ", symbiosisCreatures=" + symbiosisCreatures +
+                '}';
     }
 }

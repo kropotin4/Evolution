@@ -21,8 +21,6 @@ public class PlayerListener extends Thread {
 
     ObjectInputStream is;
 
-    Message message;
-
     PlayerListener(Server server, PlayerThread playerThread, ObjectInputStream is) {
         super("PlayerListener " + playerThread.playerNumber);
         this.server = server;
@@ -66,6 +64,7 @@ public class PlayerListener extends Thread {
             }
 
             if(mesObject instanceof Message){
+                System.out.println(getName() + ": received " + ((Message) mesObject).getMessageType());
                 playerThread.messageHandler((Message) mesObject);
             }
             else {

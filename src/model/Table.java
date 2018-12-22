@@ -260,4 +260,19 @@ public class Table implements Serializable {
 
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "Table{" +
+                "curPhase=" + curPhase +
+                ", step=" + step +
+                ", playerTurn=" + playerTurn +
+                ", fodder=" + fodder +
+                ", commonDeck=" + commonDeck +
+                ", dice=" + dice +
+                ", initCardsNumber=" + initCardsNumber +
+                ", players=" + players +
+                ", passNumber=" + passNumber +
+                '}';
+    }
 }

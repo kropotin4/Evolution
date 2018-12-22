@@ -223,18 +223,18 @@ public class Controller {
     }
 
     public void setPlayerPass(int playerNumber){
-        player = findPlayer(playerNumber);
-        player.setPass(true);
+        findPlayer(playerNumber).setPass(true);
     }
     public int addPlayer(String login){
-
         //TODO: Нужна очередность ходов -> венуть номер в массиве.
         //
         return table.addPlayer(login);
     }
+    public void setLogin(String login, int playerNumber){
+        findPlayer(playerNumber).setLogin(login);
+    }
     public int getPlayerCardsNumber(int playerNumber){
-        player = findPlayer(playerNumber);
-        return player.getPlayerCardsNumber();
+        return findPlayer(playerNumber).getPlayerCardsNumber();
     }
     public boolean isPlayersTurn(int playerNumber){
         return playerNumber == table.getPlayerTurn();

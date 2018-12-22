@@ -43,6 +43,9 @@ public class ControllerClient {
             controllerGUI.update();
         });
     }
+    public Table getTable(){
+        return controller.getTable();
+    }
 
     public ControllerGUI getControllerGUI(){
         return controllerGUI;
@@ -76,6 +79,7 @@ public class ControllerClient {
     // Посылаем сообщение
     public void sendMessage(Message message){
         System.out.println("ControllerClient: sendMessage: " + message.getMessageType());
+        System.out.println("\n" + controller.getTable() + "\n");
         try {
             client.sendMessage(message);
         } catch (IOException e) {

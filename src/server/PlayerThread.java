@@ -63,7 +63,7 @@ public class PlayerThread extends Thread {
                 e.printStackTrace();
             }
         }
-        else if(controller.isPlayersTurn(playerNumber)){
+        else{
 
             System.out.println("Current player: " + message.getTable().getPlayerTurn());
 
@@ -97,8 +97,12 @@ public class PlayerThread extends Thread {
     /////////////
 
 
+    public String getLogin() {
+        return login;
+    }
     public void setLogin(String login) {
         this.login = login;
         controller.setLogin(login, playerNumber);
+
     }
 }

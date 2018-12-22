@@ -22,12 +22,8 @@ public class Server extends Thread{
 
     ServerSocket serverSocket;
 
-    ArrayList<OS> playersStream = new ArrayList<>();
-
     ArrayList<PlayerThread> playerThreads = new ArrayList<>();
 
-    Message recievedMessage;
-    EatingMessage eatingMessage;
 
     public Server(ControllerServer controller, int port) {
         this.controller = controller;
@@ -44,8 +40,6 @@ public class Server extends Thread{
     @Override
     public void run() {
         beginPlay();
-
-
     }
 
     public void beginPlay(){
@@ -92,29 +86,7 @@ public class Server extends Thread{
     //////////
 
 
-
-
-    ObjectOutputStream findPlayerStream(int playerNumber){
-        for(OS playerStream : playersStream){
-            if(playerStream.playerNumber == playerNumber) return playerStream.os;
-        }
-
-        return null;
-    }
-
-    private void sendingAllResults(){
-        for (OS playerStream : playersStream) { // Игроки
-
-            try {
-                playerStream.os.writeObject(recievedMessage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    synchronized public void addPlayerOS(OS os){
-        playersStream.add(os);
+    public ArrayList<PlayerThread> getPlayerThreads() {
+        return playerThreads;
     }
 }
