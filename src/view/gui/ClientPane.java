@@ -9,7 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -37,6 +38,14 @@ public class ClientPane extends AnchorPane {
 
     boolean portPass = false;
     boolean loginPass = false;
+
+    Image grass = new Image("/images/grass_960_640.jpg");
+
+    BackgroundSize backgroundSize;
+    // new BackgroundImage(image, repeatX, repeatY, position, size)
+    BackgroundImage backgroundImage;
+    // new Background(images...)
+    Background background;
 
     public ClientPane(ControllerClient controller, Stage primaryStage){
         this.controller = controller;
@@ -203,6 +212,14 @@ public class ClientPane extends AnchorPane {
                 controller.connectToServer(controller.getLogin(), ip.toString(), Integer.parseInt(port2_text_field.getText()));
             }
         });
+
+        backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, false);
+        // new BackgroundImage(image, repeatX, repeatY, position, size)
+        backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        // new Background(images...)
+        background = new Background(backgroundImage);
+
+        setBackground(background);
     }
 
     // Смотрим на правельность заполнения полей

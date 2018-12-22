@@ -661,6 +661,7 @@ public class MainPane extends BorderPane {
         }
     }
 
+    // playerNumber - main player
     public void update(int playerNumber){
         players_pane.getChildren().clear();
         playing_pane.getChildren().clear();

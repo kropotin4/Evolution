@@ -13,36 +13,45 @@
    <children>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-             <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="20.0">
-                 <children>
-                     <Label text="Login" textAlignment="CENTER" wrapText="true" />
-                     <TextField fx:id="login_text_field" promptText="Марк-дурак" />
-                 </children>
-             </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="10.0">
+            <VBox alignment="CENTER" maxWidth="-Infinity" prefHeight="200.0" prefWidth="333.0" spacing="10.0" style="-fx-background-color: rgb(255,255,255,0.5);">
                <children>
-                  <Label text="Server IP" textAlignment="CENTER" wrapText="true" />
-                  <HBox alignment="BOTTOM_CENTER" fillHeight="false" prefHeight="150.0" prefWidth="200.0">
+                   <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="20.0">
+                       <children>
+                           <Label text="Login" textAlignment="CENTER" wrapText="true">
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin></Label>
+                           <TextField fx:id="login_text_field" promptText="enter your login..." />
+                       </children>
+                   </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <TextField fx:id="ip1_text_field" />
-                        <Label text="." />
-                         <TextField fx:id="ip2_text_field" />
-                         <Label text="." />
-                         <TextField fx:id="ip3_text_field" />
-                         <Label text="." />
-                         <TextField fx:id="ip4_text_field" />
+                        <Label text="Server IP" textAlignment="CENTER" wrapText="true" />
+                        <HBox alignment="BOTTOM_CENTER" fillHeight="false" prefHeight="150.0" prefWidth="140.0">
+                           <children>
+                               <TextField fx:id="ip1_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
+                               <Label text="." />
+                               <TextField fx:id="ip2_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
+                               <Label text="." />
+                               <TextField fx:id="ip3_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
+                               <Label text="." />
+                               <TextField fx:id="ip4_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
+                           </children>
+                        </HBox>
+                        <CheckBox fx:id="localhost_check_box" mnemonicParsing="false" text="localhost" />
                      </children>
                   </HBox>
-                  <CheckBox fx:id="localhost_check_box" mnemonicParsing="false" text="localhost" />
+                   <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="20.0">
+                       <children>
+                           <Label text="Server Port" textAlignment="CENTER" wrapText="true" />
+                           <TextField fx:id="port2_text_field" promptText="4444" />
+                       </children>
+                   </HBox>
+                  <Button fx:id="connect_button" alignment="CENTER_RIGHT" disable="true" mnemonicParsing="false" text="Подключиться" textAlignment="CENTER" />
                </children>
-            </HBox>
-             <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="20.0">
-                 <children>
-                     <Label text="Server Port" textAlignment="CENTER" wrapText="true" />
-                     <TextField fx:id="port2_text_field" promptText="4444" />
-                 </children>
-             </HBox>
-            <Button fx:id="connect_button" disable="true" mnemonicParsing="false" text="Подключиться" />
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
+               </padding></VBox>
          </children>
          <padding>
             <Insets bottom="5.0" left="100.0" right="50.0" top="5.0" />
