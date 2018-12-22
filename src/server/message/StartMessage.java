@@ -10,9 +10,10 @@ public class StartMessage extends Message {
 
     int playerNumber;
 
-    public StartMessage(Table table, int playerNumber){
+    public StartMessage(Table table, int playerNumber, String message){
         this.table = table;
         this.playerNumber = playerNumber;
+        setMes(message);
     }
 
     public int getPlayerNumber() {

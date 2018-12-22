@@ -79,7 +79,7 @@ public class Server extends Thread{
 
     public void startGameDistribution(Table table) throws IOException {
         for(int i = 0; i < playerThreads.size(); ++i){
-            playerThreads.get(i).sendMessage(new StartMessage(table, i));
+            playerThreads.get(i).sendMessage(new StartMessage(table, i, "Игра началось (вы - " + (i + 1) + ")"));
         }
     }
 

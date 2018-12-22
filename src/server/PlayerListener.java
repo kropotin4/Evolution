@@ -58,12 +58,10 @@ public class PlayerListener extends Thread {
         System.out.println(getName() + ": start message reception cycle");
         while(true){
 
-
             try {
                 mesObject = is.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println(getName() + " stop.");
-
                 return;
             }
 

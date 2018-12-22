@@ -44,6 +44,8 @@ public class Chat {
             chat.setText(chat.getText() + "\n" + login + ": " + message);
         else
             chat.setText(login + ": " + message);
+
+        chat.positionCaret(chat.getText().length());
     }
     public void addMessage(String message){
         if(!chat.getText().isEmpty())
@@ -54,7 +56,4 @@ public class Chat {
         chat.positionCaret(chat.getText().length());
     }
 
-    public void sendMessage(String message){
-
-    }
 }

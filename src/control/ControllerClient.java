@@ -61,6 +61,8 @@ public class ControllerClient {
             // Update UI here.
             controllerGUI = new ControllerGUI(primaryStage, controller, this, startMessage.getPlayerNumber());
             controllerGUI.startGame();
+
+            controllerGUI.addMessageToChat(startMessage.getMes());
         });
 
     }
