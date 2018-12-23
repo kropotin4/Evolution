@@ -7,10 +7,12 @@ import control.ControllerServer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -27,6 +29,14 @@ public class StartPane extends VBox {
     @FXML Button play_server_client;
 
     Stage primaryStage;
+
+    Image lizard = new Image("/images/lizard_596_380.png");
+
+    BackgroundSize backgroundSize;
+    // new BackgroundImage(image, repeatX, repeatY, position, size)
+    BackgroundImage backgroundImage;
+    // new Background(images...)
+    Background background;
 
     public StartPane(Stage primaryStage){
         FXMLLoader fxmlLoader = new FXMLLoader(
@@ -95,6 +105,18 @@ public class StartPane extends VBox {
             ControllerServer controllerServer = new ControllerServer(primaryStage,false);
             controllerServer.startServerSetting();
         });
+
+        backgroundSize = new BackgroundSize(lizard.getWidth(), lizard.getHeight(), false, false, true, true);
+        // new BackgroundImage(image, repeatX, repeatY, position, size)
+        backgroundImage = new BackgroundImage(lizard, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        // new Background(images...)
+        background = new Background(backgroundImage);
+        setBackground(background);
+
+        Image cursor = new Image("/images/lizard_cursor.png");
+        setCursor(new ImageCursor(cursor,
+                cursor.getWidth() / 2,
+                cursor.getHeight() /2));
     }
 
 

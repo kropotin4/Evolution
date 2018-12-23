@@ -234,7 +234,7 @@ public class ClientPane extends AnchorPane {
             }
         });
 
-        backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, false);
+        backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
         // new BackgroundImage(image, repeatX, repeatY, position, size)
         backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         // new Background(images...)
@@ -257,7 +257,7 @@ public class ClientPane extends AnchorPane {
         primaryStage.setMinWidth(this.getPrefWidth() + 20);
         primaryStage.setMinHeight(this.getPrefHeight() + 40);
 
-        primaryStage.setTitle("Эволюция: слиент");
+        primaryStage.setTitle("Эволюция: клиент");
 
         primaryStage.setScene(scene);
         primaryStage.show();
