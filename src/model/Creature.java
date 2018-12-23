@@ -363,6 +363,18 @@ public class Creature implements Serializable {
     public void reduceHibernatingTime(){
         --wasHibernating;
     }
+    public boolean isPiratingPossible(Creature victim) {
+        if (!findTrait(Trait.PIRACY) || isPirated()) return false;
+        if ((victim.totalSatiety == 0) || victim.isFed()) return false;
+        return true;
+    }
+
+    public boolean pirate(Creature victim){
+        setPirated(true);
+        addFood();
+        victim.reduceFood();
+        return true;
+    }
 
     public void attack(Creature creature){
 

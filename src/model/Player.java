@@ -252,6 +252,27 @@ public class Player implements Serializable {
         return false;
     }
 
+    public boolean haveActiveCreatures() {
+        /*for (Creature creature : creatures){
+            if (creature.findTrait(Trait.GRAZING)) return true;
+        }*/
+        for (Creature creature : creatures){
+            if (!creature.isSatisfied()){
+                if (table.getFodder() > 0) return true;
+                if (creature.getFatQuantity() > 0) return true;
+                for (Player player : table.getPlayers()) {
+                    for (Creature victim : player.getCreatures()) {
+                        if (creature.isAttackPossible(victim) ||
+                            creature.isPiratingPossible(victim)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public int getGrazingActiveNumber(){
         int res = 0;
         for(Creature creature : creatures){
@@ -289,27 +310,11 @@ public class Player implements Serializable {
         return playerDeck;
     }
 
-    // TODO:Дописать
+    // TODO:Дописать //на мой взгляд, всё нормально
     public boolean canMove(){
         return !(isPass ||
                 ((table.getCurrentPhase() == Phase.GROWTH && playerDeck.getCardsNumber() == 0) ||
                         (table.getCurrentPhase() == Phase.EATING && !haveActiveCreatures())));
-    }
-    public boolean haveActiveCreatures() {
-        for (Creature creature : creatures){
-            if (!creature.isSatisfied()){
-                if (table.getFodder() > 0) return true;
-                if (creature.getFatQuantity() > 0) return true;
-                for (Player player : table.getPlayers()) {
-                    for (Creature victim : player.getCreatures()) {
-                        if (creature.isAttackPossible(victim)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     public void setPass(boolean isPass){
