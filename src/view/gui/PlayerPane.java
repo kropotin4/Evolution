@@ -180,6 +180,7 @@ public class PlayerPane extends ScrollPane {
                     }
                     else if(creatureNode.isGreenStyle() && controller.isAttackerSelecting()){
                         //Выбор атакующего существа
+                        System.out.println("Выбор атакующего существа");
                         setAllCreaturesDefault();
                         creatureNode.setStyleType(3);
 
@@ -187,11 +188,13 @@ public class PlayerPane extends ScrollPane {
                     }
                     else if(creatureNode.isGreenStyle() && controller.isDefenderSelecting()){
                         //Выбор жертвы хищника
+                        System.out.println("Выбор жертвы хищника");
                         setAllCreaturesDefault();
                         controller.attackCreature(creatureNode);
                     }
                     else if(creatureNode.isGreenStyle() && controller.isPirateSelecting()){
                         //Выбор пирата
+                        System.out.println("Выбор пирата");
                         setAllCreaturesDefault();
                         creatureNode.setStyleType(3);
 
@@ -199,6 +202,7 @@ public class PlayerPane extends ScrollPane {
                     }
                     else if(creatureNode.isGreenStyle() && controller.isPirateVictimSelecting()){
                         //Выбор жертвы абардажа
+                        System.out.println("Выбор жертвы абардажа");
                         setAllCreaturesDefault();
 
                         controller.pirateCreature(creatureNode);

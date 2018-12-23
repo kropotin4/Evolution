@@ -106,7 +106,7 @@ public class Player implements Serializable {
         return true;
     }
     public boolean pirateCreature(Creature pirate, Creature victim){
-        if(pirate.isPirated() || victim.isHungry() || victim.isFed()) return false;
+        if(pirate.isPirated() || victim.getTotalSatiety() == 0 || victim.isFed()) return false;
 
         pirate.setPirated(true);
 
@@ -293,7 +293,23 @@ public class Player implements Serializable {
     public boolean canMove(){
         return !(isPass ||
                 ((table.getCurrentPhase() == Phase.GROWTH && playerDeck.getCardsNumber() == 0) ||
-                        (table.getCurrentPhase() == Phase.EATING && true)));
+                        (table.getCurrentPhase() == Phase.EATING && !haveActiveCreatures())));
+    }
+    public boolean haveActiveCreatures() {
+        for (Creature creature : creatures){
+            if (!creature.isSatisfied()){
+                if (table.getFodder() > 0) return true;
+                if (creature.getFatQuantity() > 0) return true;
+                for (Player player : table.getPlayers()) {
+                    for (Creature victim : player.getCreatures()) {
+                        if (creature.isAttackPossible(victim)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public void setPass(boolean isPass){

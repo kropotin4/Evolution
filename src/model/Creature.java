@@ -15,10 +15,10 @@ public class Creature implements Serializable {
 
     private Player player;
 
-    private int totalHunger = 1;
-    private int totalSatiety = 0;
-    private int fatCapacity = 0;
-    private int fatQuantity = 0;
+    private int totalHunger = 1; // Потребность в еде
+    private int totalSatiety = 0; // Накормленность
+    private int fatCapacity = 0; // Max жировой запас
+    private int fatQuantity = 0; // Текущий жировой запас
 
     private boolean isHibernating = false;
     private int wasHibernating = 0;
@@ -308,13 +308,16 @@ public class Creature implements Serializable {
         totalSatiety = 0;
     }
     public boolean isHungry(){
-        return totalSatiety == 0;
+        return totalHunger < totalSatiety;
     }
     public int getTotalHunger(){
         return totalHunger;
     }
     public int getTotalSatiety(){
         return totalSatiety;
+    }
+    public int getFatQuantity() {
+        return fatQuantity;
     }
     public boolean isSatisfied(){
         return ((fatCapacity == fatQuantity) && isFed()) || isHibernating;

@@ -101,11 +101,11 @@ public class ClientPane extends AnchorPane {
             if(newValue.matches("[0-9]*") && newValue.length() <= 3){
 
                 if(!newValue.isEmpty()) {
+                    ip1Pass = true;
                     if(Integer.parseInt(newValue) > 255){
                         ip1_text_field.setText(String.valueOf(255));
                         return;
                     }
-                    ip1Pass = true;
                 }
                 else
                     ip1Pass = false;
@@ -120,11 +120,11 @@ public class ClientPane extends AnchorPane {
             if(newValue.matches("[0-9]*") && newValue.length() <= 3){
 
                 if(!newValue.isEmpty()) {
+                    ip2Pass = true;
                     if(Integer.parseInt(newValue) > 255){
                         ip2_text_field.setText(String.valueOf(255));
                         return;
                     }
-                    ip2Pass = true;
                 }
                 else
                     ip2Pass = false;
@@ -139,11 +139,11 @@ public class ClientPane extends AnchorPane {
             if(newValue.matches("[0-9]*") && newValue.length() <= 3){
 
                 if(!newValue.isEmpty()) {
+                    ip3Pass = true;
                     if(Integer.parseInt(newValue) > 255){
                         ip3_text_field.setText(String.valueOf(255));
                         return;
                     }
-                    ip3Pass = true;
                 }
                 else
                     ip3Pass = false;
@@ -158,11 +158,11 @@ public class ClientPane extends AnchorPane {
             if(newValue.matches("[0-9]*") && newValue.length() <= 3){
 
                 if(!newValue.isEmpty()) {
+                    ip4Pass = true;
                     if(Integer.parseInt(newValue) > 255){
                         ip4_text_field.setText(String.valueOf(255));
                         return;
                     }
-                    ip4Pass = true;
                 }
                 else
                     ip4Pass = false;

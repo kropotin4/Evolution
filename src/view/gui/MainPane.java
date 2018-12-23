@@ -101,6 +101,8 @@ public class MainPane extends BorderPane {
         this.primaryStage = primaryStage;
         this.controler = controller;
 
+
+
         //Scene scene = new Scene(this, Color.TRANSPARENT);
 
         //primaryStage.setMinWidth(this.getPrefWidth() + 20);
@@ -253,6 +255,7 @@ public class MainPane extends BorderPane {
         attackButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                System.out.println("Нажата атака");
                 isAttackerSelecting = true;
                 playerPane.setAttackerCreaturesTrue();
                 //playerPane.setCreaturesWithTraitTrue(Trait.PREDATOR);
@@ -297,6 +300,7 @@ public class MainPane extends BorderPane {
         piracyButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                System.out.println("Нажато пиратсво.");
                 isPirateSelecting = true;
                 playerPane.setCreaturesWithTraitTrue(Trait.PIRACY);
                 if(piracyButtonBox.getChildren().size() < 2)

@@ -44,7 +44,7 @@ public enum Trait implements Serializable {
             return "Мимикрия";
         }
     },
-    GRAZING { //Ok (одиночный)
+    GRAZING { //Ok (Только при взятии еды из кормовой базы)
         @Override
         public String toString() {
             return "Топотун";
@@ -68,7 +68,7 @@ public enum Trait implements Serializable {
             return "Взаимодействие";
         }
     },
-    HIBERNATION {
+    HIBERNATION { // Ok
         @Override
         public String toString() {
             return "Спячка";

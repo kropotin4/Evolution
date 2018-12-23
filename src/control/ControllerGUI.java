@@ -480,6 +480,9 @@ public class ControllerGUI {
         mainPane.getAttackerCreature().setStyleType(0);
         mainPane.update(playerNumber);
 
+        setIsDefenderSelecting(false);
+        setIsAttackerSelecting(false);
+
         if(type == GameType.CLIENT){
             doNextMove();
         }
