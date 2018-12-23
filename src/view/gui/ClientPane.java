@@ -5,6 +5,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -30,6 +32,7 @@ public class ClientPane extends AnchorPane {
     @FXML CheckBox localhost_check_box;
     @FXML TextField port2_text_field;
     @FXML Button connect_button;
+    @FXML VBox box;
 
     boolean ip1Pass = false;
     boolean ip2Pass = false;
@@ -40,6 +43,8 @@ public class ClientPane extends AnchorPane {
     boolean loginPass = false;
 
     Image grass = new Image("/images/grass_960_640.jpg");
+    Image cursorOnButton = new Image("/images/lizard_tail.png");
+    Image cursor = new Image("/images/lizard_cursor.png");
 
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
@@ -66,6 +71,12 @@ public class ClientPane extends AnchorPane {
 
     @FXML
     private void initialize(){
+
+        box.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        box.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+
+        localhost_check_box.setOnMouseEntered(event -> setCursor(Cursor.HAND));
+        localhost_check_box.setOnMouseExited(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
 
         // Обработка ввода логина (до 15 символов)
         login_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
