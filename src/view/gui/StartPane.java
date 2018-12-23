@@ -7,6 +7,7 @@ import control.ControllerServer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -62,6 +63,8 @@ public class StartPane extends VBox {
 
         //Controller controller = new Controller(2, 2);
 
+        Image cursorOnButton = new Image("/images/lizard_tail.png");
+        Image cursor = new Image("/images/lizard_cursor.png");
 
         play_yourself.setOnMouseClicked(event -> {
             Controller controller = new Controller(2, 2);
@@ -106,6 +109,16 @@ public class StartPane extends VBox {
             controllerServer.startServerSetting();
         });
 
+        play_yourself.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        play_server.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        play_client.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        play_server_client.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+
+        play_yourself.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+        play_server.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+        play_client.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+        play_server_client.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+
         backgroundSize = new BackgroundSize(lizard.getWidth(), lizard.getHeight(), false, false, true, true);
         // new BackgroundImage(image, repeatX, repeatY, position, size)
         backgroundImage = new BackgroundImage(lizard, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
@@ -113,10 +126,11 @@ public class StartPane extends VBox {
         background = new Background(backgroundImage);
         setBackground(background);
 
-        Image cursor = new Image("/images/lizard_cursor.png");
         setCursor(new ImageCursor(cursor,
                 cursor.getWidth() / 2,
                 cursor.getHeight() /2));
+
+
     }
 
 
