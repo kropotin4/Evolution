@@ -91,6 +91,13 @@ public enum Trait implements Serializable {
         public String toString() {
             return "Пиратство";
         }
+
+        @Override
+        public String getDescription() {
+            return "Использовать это свойство в свою фазу питания. Получить" +
+                    "единицу еды, забрав её у другого существа на столе, которое уже получало еду в этот ход, " +
+                    "но еще не НАКОРМЛЕНО. Существо может использовать это свойсво только раз в ход.";
+        }
     },
     COOPERATION {
         @Override
@@ -142,4 +149,7 @@ public enum Trait implements Serializable {
 
     int getHunger(){return 0;}
 
+    public String getDescription(){
+        return "Нет описания";
+    }
 }

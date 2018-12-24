@@ -67,11 +67,17 @@ public class PlayerThread extends Thread {
 
             System.out.println("Current player: " + message.getTable().getPlayerTurn());
 
+            String serverMessege = message.getMes();
+
             switch (controller.getCurrentPhase()){
                 case GROWTH:
 
+                    if(message.getTable().isEndMove())
+                        serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
+
+
                     try {
-                        server.distribution(new ServerMessage(message.getTable(), message.getMes()));
+                        server.distribution(new ServerMessage(message.getTable(), serverMessege));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -79,8 +85,11 @@ public class PlayerThread extends Thread {
                     break;
                 case EATING:
 
+                    if(message.getTable().isEndMove())
+                        serverMessege.concat("\nПосле этой фазы будет определяться победитель");
+
                     try {
-                        server.distribution(new ServerMessage(message.getTable(), message.getMes()));
+                        server.distribution(new ServerMessage(message.getTable(), serverMessege));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

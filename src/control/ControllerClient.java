@@ -7,12 +7,14 @@ import model.Table;
 import server.message.Message;
 import server.message.StartMessage;
 import view.gui.ClientPane;
+import view.gui.StartPane;
 
 import java.io.IOException;
 
 public class ControllerClient {
 
     Stage primaryStage;
+    StartPane startPane;
 
     int stage;
 
@@ -25,9 +27,10 @@ public class ControllerClient {
 
     String login;
 
-    public ControllerClient(Stage primaryStage){
+    public ControllerClient(Stage primaryStage, StartPane startPane){
         this.primaryStage = primaryStage;
         this.controller = controller;
+        this.startPane = startPane;
         stage = -1;
         //System.out.println("ControllerClient: ip = " + ip + " port = " + port);
 
@@ -50,7 +53,9 @@ public class ControllerClient {
     public ControllerGUI getControllerGUI(){
         return controllerGUI;
     }
-
+    public StartPane getStartPane(){
+        return startPane;
+    }
     ///////////////
 
     public void startClientSetting(){

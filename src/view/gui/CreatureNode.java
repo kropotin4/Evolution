@@ -5,9 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -32,9 +30,7 @@ public class CreatureNode extends VBox {
     Image dreamW = new Image("/images/dream_17w.png");
 
     BackgroundSize backgroundSize;
-    // new BackgroundImage(image, repeatX, repeatY, position, size)
     BackgroundImage backgroundImage;
-    // new Background(images...)
     Background background;
 
     private HBox bottomBox = new HBox();
@@ -52,7 +48,8 @@ public class CreatureNode extends VBox {
     private static final String coopStyle = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: transparent;";
     private static final String coopStyleFull = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: rgba(0,0,255,0.4); -fx-background-radius: 30;";
 
-    //boolean isFalse = false; // Изменить !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ContextMenu traitContextMenu = new ContextMenu();
+
     private int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack, 4 - parasite, 5 - poisoned
     ///endregion
 
@@ -112,10 +109,10 @@ public class CreatureNode extends VBox {
         bottomBox.getChildren().addAll(leftBox, eatButton, rightBox);
 
         backgroundSize = new BackgroundSize(this.getMinWidth() - 20, this.getPrefHeight(), false, false, true, false);
-        // new BackgroundImage(image, repeatX, repeatY, position, size)
         backgroundImage = new BackgroundImage(poisoned, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        // new Background(images...)
         background = new Background(backgroundImage);
+
+        traitContextMenu.getItems().add(new MenuItem());
     }
 
     public void update(){
@@ -134,7 +131,7 @@ public class CreatureNode extends VBox {
             hBox.setAlignment(Pos.CENTER);
             hBox.setPrefWidth(this.getPrefWidth());
 
-            Label label = new Label(trait.toString());;
+            Label label = new Label(trait.toString());
             if(trait == Trait.FAT_TISSUE){
                 //region FAT_TISSUE
                 if(cards.get(i).isFat()) {
@@ -286,6 +283,12 @@ public class CreatureNode extends VBox {
             label.setFont(new Font(11));
 
             switchTraitStyle(label, trait);
+
+            Label finalLabel = label;
+            label.setOnContextMenuRequested(event -> {
+                traitContextMenu.getItems().get(0).setText(trait.getDescription());
+                traitContextMenu.show(finalLabel, event.getScreenX(), event.getScreenY());
+            });
 
             this.getChildren().add(hBox);
         }

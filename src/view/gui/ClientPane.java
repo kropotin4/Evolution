@@ -32,6 +32,7 @@ public class ClientPane extends AnchorPane {
     @FXML CheckBox localhost_check_box;
     @FXML TextField port2_text_field;
     @FXML Button connect_button;
+    @FXML Button  back_button_cp;
     @FXML VBox box;
 
     boolean ip1Pass = false;
@@ -72,11 +73,13 @@ public class ClientPane extends AnchorPane {
     @FXML
     private void initialize(){
 
+        ///region Cursor
         box.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
         box.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
 
         localhost_check_box.setOnMouseEntered(event -> setCursor(Cursor.HAND));
         localhost_check_box.setOnMouseExited(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        ///endregion
 
         // Обработка ввода логина (до 15 символов)
         login_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -245,12 +248,13 @@ public class ClientPane extends AnchorPane {
             }
         });
 
-        backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
-        // new BackgroundImage(image, repeatX, repeatY, position, size)
-        backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        // new Background(images...)
-        background = new Background(backgroundImage);
+        back_button_cp.setOnMouseClicked(event -> {
+            controller.getStartPane().show();
+        });
 
+        backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
+        backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        background = new Background(backgroundImage);
         setBackground(background);
     }
 
