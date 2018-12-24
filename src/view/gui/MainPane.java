@@ -131,6 +131,8 @@ public class MainPane extends BorderPane {
     @FXML
     private void initialize(){
 
+
+
         addTraitPane = new AddTraitPane(controler);
         deckPane = new DeckPane(controler);
         chat = new Chat(controler, text_chat, text_input, send_button_chat);
@@ -675,6 +677,7 @@ public class MainPane extends BorderPane {
 
             PlayerPane playerPane = new PlayerPane(controler, i);
             players_pane.getChildren().add(playerPane);
+
         }
 
         PlayerPane playerPane = new PlayerPane(controler, playerNumber);
@@ -689,12 +692,14 @@ public class MainPane extends BorderPane {
         setPhaseElement(controler.getCurrentPhase());
         checkAddImage();
         checkInfoPane();
+        checkShowCardsButton();
     }
     public void updateCurrentPlayer(){
         playerPane.update();
         setPhaseElement(controler.getCurrentPhase());
         checkAddImage();
         checkInfoPane();
+        checkShowCardsButton();
     }
     /*Плюсик в фазе GROWTH для удобного добавления существа
     * + обработка нажатия на него*/
@@ -732,6 +737,16 @@ public class MainPane extends BorderPane {
         if(controler.getCurrentPhase() == Phase.EATING){
             foodLabel.setText("Еды: " + controler.getFoodNumber());
             info_pane.getChildren().add(foodLabel);
+        }
+    }
+    private void checkShowCardsButton(){
+        if(controler.getPlayerCardsNumber() == 0){
+            showCardsButton.setText("Нет карт");
+            showCardsButton.setDisable(true);
+        }
+        else{
+            showCardsButton.setText("Показать свои карты");
+            showCardsButton.setDisable(false);
         }
     }
 

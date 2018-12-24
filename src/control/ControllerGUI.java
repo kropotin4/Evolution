@@ -5,8 +5,8 @@ import javafx.stage.Stage;
 import model.*;
 import model.decks.PlayerCardDeck;
 import server.message.ChatMessage;
-import server.message.EatingMessage;
-import server.message.GrowthMessage;
+import server.message.ClientMessage;
+
 import view.gui.*;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class ControllerGUI {
         mainPane.update(playerNumber);
     }
 
-    public void doNextMove(){
+    public void doNextMove(String message){
         if(type == GameType.ALONE)
             playerNumber = controller.doNextMove();
         else
@@ -70,10 +70,10 @@ public class ControllerGUI {
         if(type == GameType.CLIENT){
             switch (controller.getCurrentPhase()){
                 case EATING:
-                    controllerClient.sendMessage(new EatingMessage(controller.getTable()));
+                    controllerClient.sendMessage(new ClientMessage(controller.getTable(), message));
                     break;
                 case GROWTH:
-                    controllerClient.sendMessage(new GrowthMessage(controller.getTable()));
+                    controllerClient.sendMessage(new ClientMessage(controller.getTable(), message));
                     break;
                 default:
                     break;
@@ -101,7 +101,7 @@ public class ControllerGUI {
 
     public void passPlayer(){
         controller.setPlayerPass(playerNumber);
-        doNextMove();
+        doNextMove("Игрок спасовал");
     }
     public int getPlayersNumber(){
         return controller.getPlayersNumber();
@@ -127,7 +127,7 @@ public class ControllerGUI {
             mainPane.updateCurrentPlayer();
 
             if(type == GameType.CLIENT){
-                doNextMove();
+                doNextMove("Использован жировой запас");
             }
         }
     }
@@ -185,7 +185,7 @@ public class ControllerGUI {
             mainPane.updateCurrentPlayer();
 
             if(type == GameType.CLIENT){
-                doNextMove();
+                doNextMove("Добавили существо");
             }
         }
     }
@@ -233,7 +233,7 @@ public class ControllerGUI {
             mainPane.updateCurrentPlayer();
 
             if(type == GameType.CLIENT){
-                doNextMove();
+                doNextMove("К существу добавлено свойство");
             }
         }
     }
@@ -252,7 +252,7 @@ public class ControllerGUI {
             mainPane.update(this.playerNumber);
 
             if(type == GameType.CLIENT){
-                doNextMove();
+                doNextMove("К чужому существу добавлено свойство");
             }
         }
     }
@@ -272,7 +272,7 @@ public class ControllerGUI {
         mainPane.updateCurrentPlayer();
 
         if(type == GameType.CLIENT){
-            doNextMove();
+            doNextMove("К существам добавлено парное свойство");
         }
 
     }
@@ -292,7 +292,7 @@ public class ControllerGUI {
         mainPane.updateCurrentPlayer();
 
         if(type == GameType.CLIENT){
-            doNextMove();
+            doNextMove("Из кормовой базы взята еда");
         }
     }
     public boolean isFoodGetting(){
@@ -484,7 +484,7 @@ public class ControllerGUI {
         setIsAttackerSelecting(false);
 
         if(type == GameType.CLIENT){
-            doNextMove();
+            doNextMove("Атаковано существо");
         }
     }
     //endregion

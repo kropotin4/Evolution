@@ -71,7 +71,7 @@ public class PlayerThread extends Thread {
                 case GROWTH:
 
                     try {
-                        server.distribution(new ServerMessage(message.getTable(), "Игрок что-то сделал в фазу роста"));
+                        server.distribution(new ServerMessage(message.getTable(), message.getMes()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -80,7 +80,7 @@ public class PlayerThread extends Thread {
                 case EATING:
 
                     try {
-                        server.distribution(new ServerMessage(message.getTable(), "Игрок что-то сделал в фазу еды"));
+                        server.distribution(new ServerMessage(message.getTable(), message.getMes()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

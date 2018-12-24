@@ -13,8 +13,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import model.Creature;
 import model.CreaturesPair;
 import model.Trait;
@@ -77,12 +79,19 @@ public class PlayerPane extends ScrollPane {
     private void initialize(){
         this.setStyle("-fx-border-width: 1; -fx-border-color: black;");
         this.setMinSize(600, 190);
-        //this.setPrefHeight(100);
+        this.setMaxWidth(USE_COMPUTED_SIZE);
+        //this.setPrefHeight(USE_COMPUTED_SIZE);
+        this.setPrefWidth(USE_COMPUTED_SIZE);
         creatures_box_pp.setAlignment(Pos.CENTER_LEFT);
         creatures_box_pp.setPadding(new Insets(3));
         creatures_box_pp.setSpacing(3);
 
-        playerNumberLabel = new Label("Игрок " + playerNumber);
+        playerNumberLabel = new Label(" P" + playerNumber + " ");
+        playerNumberLabel.setTextAlignment(TextAlignment.CENTER);
+        playerNumberLabel.setMinSize(30, 30);
+        playerNumberLabel.setMaxSize(30, 30);
+        playerNumberLabel.setPrefSize(30, 30);
+
         playerNumberLabel.setFont(new Font("Arial Bolt", 16));
         playerNumberLabel.setRotate(90);
         playerNumberLabel.setStyle("-fx-border-width: 1; -fx-border-color: red");
@@ -108,13 +117,15 @@ public class PlayerPane extends ScrollPane {
         });
 
         update();
-
     }
 
     ///Здесь добавляются все существа + навешиваются обработчики событий
     public void update(){
-        if(controller.getCreatures(playerNumber).size() == 0)
+        if(controller.getCreatures(playerNumber).size() == 0) {
+            creatures_box_pp.getChildren().clear();
+            creatures_box_pp.getChildren().add(playerNumberLabel);
             return;
+        }
 
         scavengerCheckBoxs.clear();
 

@@ -69,8 +69,8 @@ public class Table implements Serializable {
                         allPass = false;
                         break;
                     }
-
                 }
+
                 if(allPass){
                     curPhase = Phase.EATING;
                     setFodder();
@@ -161,7 +161,9 @@ public class Table implements Serializable {
         }
         ///endregion
     }
-
+    public boolean isEndMove(){
+        return commonDeck.getCardCount() == 0;
+    }
 
     public CommonCardDeck getCommonDeck() {
         return commonDeck;
