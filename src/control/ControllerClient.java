@@ -4,12 +4,15 @@ import client.Client;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import model.Table;
-import server.message.Message;
-import server.message.StartMessage;
+import server.GamingRoomInfo;
+import server.message.*;
+import view.gui.ClientEnterPane;
 import view.gui.ClientPane;
+import view.gui.RoomPane;
 import view.gui.StartPane;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ControllerClient {
 
@@ -23,9 +26,16 @@ public class ControllerClient {
 
     Client client;
 
+    ClientEnterPane clientEnterPane;
     ClientPane clientPane;
+    RoomPane roomPane;
 
     String login;
+
+    String serverIP;
+    int serverPort;
+    int roomCapacity;
+    ArrayList<GamingRoomInfo> gamingRoomInfo;
 
     public ControllerClient(Stage primaryStage, StartPane startPane){
         this.primaryStage = primaryStage;
@@ -34,8 +44,9 @@ public class ControllerClient {
         stage = -1;
         //System.out.println("ControllerClient: ip = " + ip + " port = " + port);
 
+        clientEnterPane = new ClientEnterPane(this, primaryStage);
         clientPane = new ClientPane(this, primaryStage);
-
+        roomPane = new RoomPane(this, primaryStage);
         //this.client = new Client(this, ip, port);
     }
 
@@ -60,7 +71,15 @@ public class ControllerClient {
 
     public void startClientSetting(){
         stage = 0;
+        clientEnterPane.show();
+    }
+    public void startClient(){
         clientPane.show();
+    }
+    public void startRoom(){
+        Platform.runLater(() -> {
+            roomPane.show();
+        });
     }
     public void startGame(StartMessage startMessage){
 
@@ -75,6 +94,22 @@ public class ControllerClient {
 
     }
 
+    public void updateClient(ClientInfoMessage clientInfoMessage){
+        serverIP = clientInfoMessage.getServerIP();
+        serverPort = clientInfoMessage.getServerPort();
+        roomCapacity = clientInfoMessage.getRoomCapacity();
+        gamingRoomInfo = clientInfoMessage.getGamingRoomInfo();
+
+        Platform.runLater(() ->{
+            clientPane.update();
+        });
+
+    }
+    public void updateRoom(RoomInfoMessage roomInfoMessage){
+        Platform.runLater(() -> {
+            roomPane.update(roomInfoMessage);
+        });
+    }
     // true - соединился с сервером
     public boolean connectToServer(String login, String ip, int port){
         try {
@@ -88,11 +123,15 @@ public class ControllerClient {
         }
     }
 
+    public void enterTheRoom(int roomId){
+        sendMessage(new EnterTheRoomMessage(roomId));
+        startRoom();
+    }
     //////////////////
     // Посылаем сообщение
     public void sendMessage(Message message){
         System.out.println("ControllerClient: sendMessage: " + message.getMessageType());
-        System.out.println("\n" + controller.getTable() + "\n");
+        //System.out.println("\n" + controller.getTable() + "\n");
         try {
             client.sendMessage(message);
         } catch (IOException e) {
@@ -109,6 +148,16 @@ public class ControllerClient {
         return login;
     }
 
-
-
+    public String getServerIP() {
+        return serverIP;
+    }
+    public int getServerPort() {
+        return serverPort;
+    }
+    public int getRoomCapacity() {
+        return roomCapacity;
+    }
+    public ArrayList<GamingRoomInfo> getGamingRoomInfo() {
+        return gamingRoomInfo;
+    }
 }

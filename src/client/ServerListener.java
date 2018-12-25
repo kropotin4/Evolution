@@ -3,10 +3,7 @@ package client;
 import control.Controller;
 import control.ControllerClient;
 import model.Table;
-import server.message.Message;
-import server.message.MessageType;
-import server.message.RequestMessage;
-import server.message.StartMessage;
+import server.message.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -50,7 +47,16 @@ public class ServerListener extends Thread {
             }
 
             if(!isGameOn){
-                if(mesObject instanceof StartMessage){
+
+                if(mesObject instanceof ClientInfoMessage){
+                    System.out.println("ServerListener: received ClientInfoMessage");
+                    controller.updateClient((ClientInfoMessage) mesObject);
+                }
+                else if(mesObject instanceof RoomInfoMessage){
+                    System.out.println("ServerListener: received RoomInfoMessage");
+                    controller.updateRoom((RoomInfoMessage) mesObject);
+                }
+                else if(mesObject instanceof StartMessage){
                     System.out.println("ServerListener: received StartMessage");
                     controller.startGame((StartMessage) mesObject);
                     isGameOn = true;

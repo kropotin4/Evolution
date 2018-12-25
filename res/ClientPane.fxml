@@ -2,65 +2,104 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <fx:root prefHeight="400.0" prefWidth="600.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox fx:id="box" alignment="CENTER" maxWidth="-Infinity" prefHeight="200.0" prefWidth="333.0" spacing="10.0" style="-fx-background-color: rgb(255,255,255,0.5);">
-               <children>
-                   <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="20.0">
-                       <children>
-                           <Label text="Login" textAlignment="CENTER" wrapText="true">
-                           <HBox.margin>
-                              <Insets top="10.0" />
-                           </HBox.margin></Label>
-                           <TextField fx:id="login_text_field" promptText="enter your login..." />
-                       </children>
-                   </HBox>
-                  <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="10.0">
-                     <children>
-                        <Label text="Server IP" textAlignment="CENTER" wrapText="true" />
-                        <HBox alignment="BOTTOM_CENTER" fillHeight="false" prefHeight="150.0" prefWidth="140.0">
-                           <children>
-                               <TextField fx:id="ip1_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
-                               <Label text="." />
-                               <TextField fx:id="ip2_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
-                               <Label text="." />
-                               <TextField fx:id="ip3_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
-                               <Label text="." />
-                               <TextField fx:id="ip4_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
-                           </children>
-                        </HBox>
-                        <CheckBox fx:id="localhost_check_box" mnemonicParsing="false" text="localhost" />
-                     </children>
-                  </HBox>
-                   <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="20.0">
-                       <children>
-                           <Label text="Server Port" textAlignment="CENTER" wrapText="true" />
-                           <TextField fx:id="port2_text_field" promptText="4444" />
-                       </children>
-                   </HBox>
-                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
-                     <children>
-                        <Button fx:id="back_button_cp" mnemonicParsing="false" text="Назад" />
-                        <Button fx:id="connect_button" alignment="CENTER_RIGHT" disable="true" mnemonicParsing="false" text="Подключиться" textAlignment="CENTER" />
-                     </children>
-                  </HBox>
-               </children>
+            <Label text="Список комнат">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <VBox fx:id="room_sheet_cp" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
-               </padding></VBox>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </VBox>
          </children>
          <padding>
-            <Insets bottom="5.0" left="100.0" right="50.0" top="5.0" />
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
          </padding>
       </VBox>
+      <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="100.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="252.0" AnchorPane.topAnchor="0.0">
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
+         <children>
+            <Label text="Параметры сервера">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <GridPane alignment="CENTER" hgap="5.0" vgap="10.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" text="Server IP" GridPane.halignment="CENTER" />
+                  <Label text="Server Port" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label text="Макимальное число комнат" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                  <Label fx:id="server_ip_label_cp" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                  <Label fx:id="server_port_label_cp" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label fx:id="max_room_label_cp" text="Label" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </GridPane>
+         </children>
+      </VBox>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" style="-fx-border-width: 1; -fx-border-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="252.0" AnchorPane.topAnchor="182.0">
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
+         <children>
+            <Label text="Создание комнаты">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+               <children>
+                  <Label text="Название комнаты" />
+                  <TextField fx:id="room_name_text_field_cp" />
+               </children>
+            </HBox>
+             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                 <children>
+                     <Label text="Количество игроков: " textAlignment="CENTER" wrapText="true" />
+                     <Slider fx:id="player_count_slider_cp" blockIncrement="1.0" majorTickUnit="1.0" max="4.0" min="2.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                 </children>
+             </HBox>
+             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                 <children>
+                     <Label alignment="CENTER" text="Количество карт" textAlignment="CENTER" wrapText="true" />
+                     <Slider fx:id="card_count_slider_cp" blockIncrement="1.0" majorTickUnit="1.0" max="8.0" min="1.0" minorTickCount="0" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                     <Label prefHeight="55.0" prefWidth="80.0" text="Всего карт: 21" textAlignment="CENTER" wrapText="true" />
+                 </children>
+             </HBox>
+            <Button fx:id="create_room_button_cp" mnemonicParsing="false" text="Создать" />
+         </children>
+      </VBox>
    </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
 </fx:root>

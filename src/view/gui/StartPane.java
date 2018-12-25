@@ -1,26 +1,17 @@
 package view.gui;
 
-import control.Controller;
-import control.ControllerClient;
-import control.ControllerGUI;
-import control.ControllerServer;
-import javafx.event.EventHandler;
+import control.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
 
 public class StartPane extends VBox {
 
@@ -66,7 +57,7 @@ public class StartPane extends VBox {
     private void initialize(){
         this.setPrefSize(500, 300);
 
-        //Controller controller = new Controller(2, 2);
+
 
         Image cursorOnButton = new Image("/images/lizard_tail.png");
         Image cursor = new Image("/images/lizard_cursor.png");
@@ -78,30 +69,8 @@ public class StartPane extends VBox {
         });
 
         play_server.setOnMouseClicked(event -> {
-//            Properties properties = new Properties();
-//            FileInputStream propertiesFile = null;
-//            int port = 0;
-//            try {
-//                propertiesFile = new FileInputStream("server.properties");
-//                properties.load(propertiesFile);
-//
-//                port = Integer.parseInt(properties.getProperty("PORT"));
-//
-//
-//            } catch (FileNotFoundException ex) {
-//                System.err.println("Properties config file not found");
-//            } catch (IOException ex) {
-//                System.err.println("Error while reading file");
-//            } finally {
-//                try {
-//                    propertiesFile.close();
-//                } catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-            ControllerServer controllerServer = new ControllerServer(primaryStage,true);
+            ControllerServer controllerServer = new ControllerServer(primaryStage);
             controllerServer.startServerSetting();
-
         });
 
         play_client.setOnMouseClicked(event -> {
@@ -110,8 +79,8 @@ public class StartPane extends VBox {
         });
 
         play_server_client.setOnMouseClicked(event -> {
-            ControllerServer controllerServer = new ControllerServer(primaryStage,false);
-            controllerServer.startServerSetting();
+//            ControllerGameRoom controllerGameRoom = new ControllerGameRoom(primaryStage,false);
+//            controllerGameRoom.startServerSetting();
         });
 
         play_yourself.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));

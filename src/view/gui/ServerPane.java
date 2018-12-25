@@ -1,20 +1,18 @@
 package view.gui;
 
 import control.ControllerServer;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import server.GamingRoomInfo;
 
 import java.io.IOException;
 
@@ -22,21 +20,19 @@ public class ServerPane extends AnchorPane {
 
     Stage primaryStage;
 
-    ControllerServer controllerServer;
+    ControllerServer controller;
 
-    @FXML Label ip_label;
-    @FXML TextField port_text_field;
-    @FXML Slider player_number_slider;
-    @FXML Slider deck_size_slider;
-    @FXML Button start_button;
-    @FXML ImageView check_image;
-    @FXML Label cards_number_label_sp;
+    @FXML VBox room_sheet_sp;
 
-    Image checkOkImage = new Image("/images/checkOk_100.png");
-    Image checkFalseImage = new Image("/images/checkFalse_100.png");
+    @FXML Label server_ip_label_sp;
+    @FXML Label server_port_label_sp;
+    @FXML Label max_room_label_sp;
+    @FXML Label player_count_label_sp;
 
-    public ServerPane(ControllerServer controllerServer, Stage primaryStage){
-        this.controllerServer = controllerServer;
+    @FXML Button stop_server_button_sp;
+
+    public ServerPane(ControllerServer controller, Stage primaryStage){
+        this.controller = controller;
         this.primaryStage = primaryStage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
@@ -56,46 +52,36 @@ public class ServerPane extends AnchorPane {
 
     @FXML
     private void initialize(){
-        this.setPrefSize(600, 400);
 
-        ip_label.setText(controllerServer.getInetAddress().getHostAddress());
-        check_image.setImage(checkFalseImage);
-
-        port_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.matches("[0-9]*") && newValue.length() < 10){
-                port_text_field.setText(newValue);
-
-                if(!newValue.isEmpty()) {
-                    if (controllerServer.availablePort(Integer.parseInt(newValue))) {
-                        controllerServer.setPort(Integer.parseInt(newValue));
-                        port_text_field.setPromptText(newValue);
-                        check_image.setImage(checkOkImage);
-                        start_button.setDisable(false);
-                    } else {
-                        check_image.setImage(checkFalseImage);
-                        start_button.setDisable(true);
-                    }
-                }
-
-            }
-            else port_text_field.setText(oldValue);
-        });
-
-        player_number_slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            controllerServer.setPlayerNum(newValue.intValue());
-        });
-
-        deck_size_slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            controllerServer.setQuarterCardCount(newValue.intValue());
-            cards_number_label_sp.setText("Всего карт: " + (newValue.intValue() * 21));
-        });
-
-        start_button.setOnMouseClicked(event -> {
-            controllerServer.startConnecting();
+        stop_server_button_sp.setOnMouseClicked(event -> {
+            controller.stopServer();
         });
 
     }
 
+    public void update(){
+
+        server_ip_label_sp.setText(controller.getInetAddress().getHostAddress());
+        server_port_label_sp.setText(String.valueOf(controller.getPort()));
+        max_room_label_sp.setText(String.valueOf(controller.getMaxRoom()));
+        player_count_label_sp.setText(String.valueOf(controller.getPlayerNumber()));
+
+        room_sheet_sp.getChildren().clear();
+
+        for(GamingRoomInfo gamingRoomInfo : controller.getRoomsInfo()){
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+
+            Label roomName = new Label(gamingRoomInfo.roomName);
+            roomName.setWrapText(true);
+            Label playerNumber = new Label(gamingRoomInfo.currentRommSize + " / " + gamingRoomInfo.roomCapacity);
+
+            hBox.getChildren().addAll(roomName, playerNumber);
+
+            room_sheet_sp.getChildren().add(hBox);
+        }
+    }
 
     public void show(){
         Scene scene = new Scene(this, Color.TRANSPARENT);

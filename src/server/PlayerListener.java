@@ -1,17 +1,9 @@
 package server;
 
-import control.Controller;
-import control.ControllerServer;
-import model.*;
 import server.message.*;
-import server.message.action.ActionMessage;
-import server.message.action.GrazingAction;
-import server.message.action.PirateAction;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 public class PlayerListener extends Thread {
 
@@ -46,6 +38,15 @@ public class PlayerListener extends Thread {
             ConnectMessage connectMessage = (ConnectMessage) mesObject;
             System.out.println(getName() + ": received ConnectMessage (login: " + connectMessage.getLogin() + ")");
             playerThread.setLogin(connectMessage.getLogin());
+
+            try {
+                playerThread.sendMessage(playerThread.controllerServer.createClientInfoMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            playerThread.playerReady = true;
+
         }
         else{
             System.out.println(getName() + ": stop (ConnectMessage not received).");

@@ -247,7 +247,7 @@ public class Controller {
     }
     public Player findPlayer(int playerNumber){
         if(playerNumber < 0 || playerNumber >= table.getPlayers().size()){
-            throw new RuntimeException("Controller: playerNumber = " + playerNumber);
+            throw new RuntimeException("Controller: playerTurn = " + playerNumber);
         }
 
         return table.getPlayers().get(playerNumber);

@@ -42,6 +42,7 @@ public class Client extends Thread{
         try {
             os = new ObjectOutputStream(server.getOutputStream());
             is = new ObjectInputStream(server.getInputStream());
+
         } catch (IOException e) {
             System.err.println("input or output stream not open");
             throw new RuntimeException("Client caput", e.getCause());
@@ -62,7 +63,6 @@ public class Client extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
     }
 

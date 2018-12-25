@@ -2,161 +2,91 @@ package control;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import model.Phase;
-import server.PlayerThread;
+import server.GamingRoomInfo;
 import server.Server;
-import server.message.Message;
-import server.message.StartMessage;
-import view.gui.ConnectionPane;
+import server.message.ClientInfoMessage;
+import server.message.CreateRoomMessage;
 import view.gui.ServerPane;
+import view.gui.ServerSettingPane;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 
 public class ControllerServer {
 
     Stage primaryStage;
 
-    int stage;
-
-    Controller controller;
     Server server;
 
+    ServerSettingPane serverSettingPane;
     ServerPane serverPane;
-    ConnectionPane connectionPane;
 
-    int playerNumber; // Меняется в doNextMove()
+    int stage = 0;
 
-    int playerNum = 2; // Количество игроков
     InetAddress inetAddress;
     int port = 4444; //
     final int MIN_PORT_NUMBER = 1000;
     final int MAX_PORT_NUMBER = 65536;
-    int quarterCardCount = 1; // количество четвертей карт
+    int maxRoom = 1;
 
-    int connectPlayer; // Сколько в данный момент подключено игроков
-
-    public ControllerServer(Stage primaryStage, boolean onlyServer){
+    public ControllerServer(Stage primaryStage){
         this.primaryStage = primaryStage;
-        this.controller = controller;
 
         try(final DatagramSocket socket = new DatagramSocket()){
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
             inetAddress = socket.getLocalAddress();
+            socket.close();
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
-//        try {
-//            inetAddress = InetAddress.getLocalHost();
-//        } catch (UnknownHostException e) {
-//            e.printStackTrace();
-//        }
-
+        serverSettingPane = new ServerSettingPane(this, primaryStage);
         serverPane = new ServerPane(this, primaryStage);
-        connectionPane = new ConnectionPane(this, primaryStage);
     }
 
-    ////////////
     public void startServerSetting(){
         stage = 0;
-        serverPane.show();
+        serverSettingPane.show();
     }
-    public void startConnecting(){
+    public void startServer(){
         stage = 1;
-        server = new Server(this, port);
-        connectionPane.show();
+        server = new Server(this);
         server.start();
-    }
-    // Создаем Controller, рассылаем StartMessage
-    public void startGame(){
-        stage = 2;
-        controller = new Controller(quarterCardCount, playerNum);
-
-        for(int i = 0; i < server.getPlayerThreads().size(); ++i){
-            controller.setLogin(server.getPlayerThreads().get(i).getLogin(), i);
-        }
-
-        try {
-            server.startGameDistribution(controller.getTable());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        serverPane.show();
+        serverPane.update();
     }
 
-    public void playerConnect(){
-        if(stage == 1) {
-            connectionPane.playerConnect(connectPlayer);
-            connectPlayer++;
-
-            if(connectPlayer >= playerNum)
-                connectionPane.setStartButtonDisable(false);
-        }
-    }
-    ////////////
-
-    public void doNextMove(){
-        playerNumber = controller.doNextMove();
-    }
-
-    /////////////
-    public void setPlayerNum(int playerNum){
-        this.playerNum = playerNum;
-    }
-    public void setPort(int port){
-        this.port = port;
-    }
-    public void setQuarterCardCount(int quarterCardCount){
-        this.quarterCardCount = quarterCardCount;
-    }
-
-    public int getPlayersNumber(){
-        return playerNum;
-    }
-    public int getPort(){
-        return  port;
-    }
-    public InetAddress getInetAddress() {
-        return inetAddress;
-    }
-    public int getQuarterCardCount() {
-        return quarterCardCount;
-    }
-    ///////////////
-
-    public void setLogin(String login, int playerNumber){
-        if(stage == 1){
-            Platform.runLater(() -> {
-                // Update UI here.
-                connectionPane.setLogin(login, playerNumber);
-                //controller.setLogin(login, playerNumber);
-            });
-        }
-    }
-
-    ///////////////
-
-    public void addTraitToCreature(){
-        /*controller.addTraitToCreature(
-                creatureNode.getPlayerPane().getPlayerNumber(),
-                creatureNode.getCreatureId(),
-                cardNode.getCard(),
-                isUp
-        );*/
+    public void stopServer(){
 
     }
 
-    public int getPlayerCardsNumber(int playerNumber){
-        return controller.getPlayerCardsNumber(playerNumber);
+    public void createRoom(CreateRoomMessage createRoomMessage){
+        System.out.println("ControllerServer: createRoom " + createRoomMessage);
+        server.addRoom(
+                createRoomMessage.getRoomName(),
+                createRoomMessage.getPlayerNumber(),
+                createRoomMessage.getQuarterCardCount()
+        );
+        Platform.runLater(() ->{
+            serverPane.update();
+        });
+
     }
-//    public int getPlayersNumber(){
-//        return controller.getPlayersNumber();
-//    }
-    public boolean isPlayersTurn(int playerNumber){
-        return controller.isPlayersTurn(playerNumber);
+
+    ////////////////////////
+
+    public ClientInfoMessage createClientInfoMessage(){
+        return new ClientInfoMessage(
+                inetAddress.getHostAddress(),
+                port,
+                maxRoom,
+                getRoomsInfo());
     }
+
+    ///////////////////////
 
     public boolean availablePort(int port) {
         if (port < MIN_PORT_NUMBER || port > MAX_PORT_NUMBER) {
@@ -189,14 +119,33 @@ public class ControllerServer {
 
         return false;
     }
-
-    public Phase getCurrentPhase(){
-        return controller.getCurrentPhase();
+    public void setPort(int port) {
+        this.port = port;
+    }
+    public int getPort() {
+        return port;
     }
 
-
-    public void messageHandler(Message message, int playerNumber){
-
+    public InetAddress getInetAddress() {
+        return inetAddress;
+    }
+    public void setInetAddress(InetAddress inetAddress) {
+        this.inetAddress = inetAddress;
     }
 
+    public void setMaxRoom(int maxRoom) {
+        this.maxRoom = maxRoom;
+    }
+    public int getMaxRoom() {
+        return maxRoom;
+    }
+
+    public int getPlayerNumber(){
+        return server.getPlayerNumber();
+    }
+    public ArrayList<GamingRoomInfo> getRoomsInfo(){
+        return server.getRoomsInfo();
+    }
+
+    //////////////////
 }

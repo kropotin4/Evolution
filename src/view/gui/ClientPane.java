@@ -1,20 +1,21 @@
 package view.gui;
 
 import control.ControllerClient;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import server.GamingRoomInfo;
+import server.message.CreateRoomMessage;
 
 import java.io.IOException;
 
@@ -24,32 +25,17 @@ public class ClientPane extends AnchorPane {
 
     ControllerClient controller;
 
-    @FXML TextField login_text_field;
-    @FXML TextField ip1_text_field;
-    @FXML TextField ip2_text_field;
-    @FXML TextField ip3_text_field;
-    @FXML TextField ip4_text_field;
-    @FXML CheckBox localhost_check_box;
-    @FXML TextField port2_text_field;
-    @FXML Button connect_button;
-    @FXML Button  back_button_cp;
-    @FXML VBox box;
+    @FXML Label server_ip_label_cp;
+    @FXML Label server_port_label_cp;
+    @FXML Label max_room_label_cp;
 
-    boolean ip1Pass = false;
-    boolean ip2Pass = false;
-    boolean ip3Pass = false;
-    boolean ip4Pass = false;
+    @FXML VBox room_sheet_cp;
 
-    boolean portPass = false;
-    boolean loginPass = false;
+    @FXML TextField room_name_text_field_cp;
+    @FXML Slider player_count_slider_cp;
+    @FXML Slider card_count_slider_cp;
+    @FXML Button create_room_button_cp;
 
-    Image grass = new Image("/images/grass_960_640.jpg");
-    Image cursorOnButton = new Image("/images/lizard_tail.png");
-    Image cursor = new Image("/images/lizard_cursor.png");
-
-    BackgroundSize backgroundSize;
-    BackgroundImage backgroundImage;
-    Background background;
 
     public ClientPane(ControllerClient controller, Stage primaryStage){
         this.controller = controller;
@@ -70,200 +56,56 @@ public class ClientPane extends AnchorPane {
         }
     }
 
+
     @FXML
     private void initialize(){
+        //room_name_text_field_cp.setText(controller.getLogin() + " room");
 
-        ///region Cursor
-        box.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
-        box.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
-
-        localhost_check_box.setOnMouseEntered(event -> setCursor(Cursor.HAND));
-        localhost_check_box.setOnMouseExited(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
-        ///endregion
-
-        // Обработка ввода логина (до 15 символов)
-        login_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.length() <= 12){
-
-                if(!newValue.isEmpty()){
-                    controller.setLogin(login_text_field.getText());
-                    loginPass = true;
-                }
+        room_name_text_field_cp.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.length() <= 10){
+                room_name_text_field_cp.setText(newValue);
+                if(newValue.length() == 0)
+                    create_room_button_cp.setDisable(true);
                 else
-                    loginPass = false;
-
-                controlConnectButton();
-
-                login_text_field.setText(newValue);
+                    create_room_button_cp.setDisable(false);
             }
-            else login_text_field.setText(oldValue);
+            else room_name_text_field_cp.setText(oldValue);
         });
 
-        // Обработка ввода IP
-        ip1_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.matches("[0-9]*") && newValue.length() <= 3){
-
-                if(!newValue.isEmpty()) {
-                    ip1Pass = true;
-                    if(Integer.parseInt(newValue) > 255){
-                        ip1_text_field.setText(String.valueOf(255));
-                        return;
-                    }
-                }
-                else
-                    ip1Pass = false;
-
-                controlConnectButton();
-
-                ip1_text_field.setText(newValue);
-            }
-            else ip1_text_field.setText(oldValue);
+        create_room_button_cp.setOnMouseClicked(event -> {
+            controller.sendMessage(new CreateRoomMessage(
+                    room_name_text_field_cp.getText(),
+                    (int)player_count_slider_cp.getValue(),
+                    (int)card_count_slider_cp.getValue())
+            );
         });
-        ip2_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.matches("[0-9]*") && newValue.length() <= 3){
-
-                if(!newValue.isEmpty()) {
-                    ip2Pass = true;
-                    if(Integer.parseInt(newValue) > 255){
-                        ip2_text_field.setText(String.valueOf(255));
-                        return;
-                    }
-                }
-                else
-                    ip2Pass = false;
-
-                controlConnectButton();
-
-                ip2_text_field.setText(newValue);
-            }
-            else ip2_text_field.setText(oldValue);
-        });
-        ip3_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.matches("[0-9]*") && newValue.length() <= 3){
-
-                if(!newValue.isEmpty()) {
-                    ip3Pass = true;
-                    if(Integer.parseInt(newValue) > 255){
-                        ip3_text_field.setText(String.valueOf(255));
-                        return;
-                    }
-                }
-                else
-                    ip3Pass = false;
-
-                controlConnectButton();
-
-                ip3_text_field.setText(newValue);
-            }
-            else ip3_text_field.setText(oldValue);
-        });
-        ip4_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.matches("[0-9]*") && newValue.length() <= 3){
-
-                if(!newValue.isEmpty()) {
-                    ip4Pass = true;
-                    if(Integer.parseInt(newValue) > 255){
-                        ip4_text_field.setText(String.valueOf(255));
-                        return;
-                    }
-                }
-                else
-                    ip4Pass = false;
-
-                controlConnectButton();
-
-                ip4_text_field.setText(newValue);
-            }
-            else ip4_text_field.setText(oldValue);
-        });
-
-        // CheckBox с localhost
-        localhost_check_box.setOnMouseClicked(event -> {
-            if(localhost_check_box.isSelected()){
-                ip1_text_field.setDisable(true);
-                ip2_text_field.setDisable(true);
-                ip3_text_field.setDisable(true);
-                ip4_text_field.setDisable(true);
-            }
-            else{
-                ip1_text_field.setDisable(false);
-                ip2_text_field.setDisable(false);
-                ip3_text_field.setDisable(false);
-                ip4_text_field.setDisable(false);
-            }
-
-            controlConnectButton();
-        });
-
-        // Обработка ввода порта
-        port2_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.matches("[0-9]*") && newValue.length() <= 6){
-                port2_text_field.setText(newValue);
-
-                if(!newValue.isEmpty()) {
-                    portPass = Integer.parseInt(newValue) >= 1000 && Integer.parseInt(newValue) <= 65536;
-                }
-                controlConnectButton();
-            }
-            else port2_text_field.setText(oldValue);
-        });
-
-        connect_button.setOnMouseClicked(event -> {
-            if(localhost_check_box.isSelected()){
-                if(controller.connectToServer(
-                        controller.getLogin(),
-                        "localhost",
-                        Integer.parseInt(port2_text_field.getText()))
-                ){
-                    connect_button.setText("Подключено");
-                    connect_button.setDisable(true);
-                }
-                else{
-                    connect_button.setText("Подключиться");
-                    connect_button.setDisable(false);
-                }
-            }
-            else{
-                StringBuilder ip = new StringBuilder();
-                ip.append(ip1_text_field.getText() + ".");
-                ip.append(ip2_text_field.getText() + ".");
-                ip.append(ip3_text_field.getText() + ".");
-                ip.append(ip4_text_field.getText());
-
-                System.out.println("ClientPane: ip = " + ip.toString());
-
-
-                if(controller.connectToServer(
-                        controller.getLogin(),
-                        ip.toString(),
-                        Integer.parseInt(port2_text_field.getText()))
-                ){
-                    connect_button.setText("Подключено");
-                    connect_button.setDisable(true);
-                }
-                else{
-                    connect_button.setText("Подключиться");
-                    connect_button.setDisable(false);
-                }
-            }
-        });
-
-        back_button_cp.setOnMouseClicked(event -> {
-            controller.getStartPane().show();
-        });
-
-        backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
-        backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        background = new Background(backgroundImage);
-        setBackground(background);
     }
 
-    // Смотрим на правельность заполнения полей
-    private void controlConnectButton(){
-        if(portPass && loginPass && ((ip1Pass && ip2Pass && ip3Pass && ip4Pass) || localhost_check_box.isSelected()))
-            connect_button.setDisable(false);
-        else
-            connect_button.setDisable(true);
+    public void update(){
+        server_ip_label_cp.setText(controller.getServerIP());
+        server_port_label_cp.setText(String.valueOf(String.valueOf(controller.getServerPort())));
+        max_room_label_cp.setText(String.valueOf(controller.getRoomCapacity()));
+
+        room_sheet_cp.getChildren().clear();
+
+        for(GamingRoomInfo gamingRoomInfo : controller.getGamingRoomInfo()){
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(18);
+
+            Label roomName = new Label(gamingRoomInfo.roomName);
+            roomName.setWrapText(true);
+            Label playerNumber = new Label(gamingRoomInfo.currentRommSize + " / " + gamingRoomInfo.roomCapacity);
+            Button enter = new Button("Присоединиться");
+
+            enter.setOnMouseClicked(event -> {
+                controller.enterTheRoom(gamingRoomInfo.id);
+            });
+
+            hBox.getChildren().addAll(roomName, playerNumber, enter);
+
+            room_sheet_cp.getChildren().add(hBox);
+        }
     }
 
     public void show(){
@@ -277,5 +119,4 @@ public class ClientPane extends AnchorPane {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 }

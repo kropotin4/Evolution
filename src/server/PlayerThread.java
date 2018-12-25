@@ -1,9 +1,8 @@
 package server;
 
+import control.ControllerGameRoom;
 import control.ControllerServer;
-import model.Trait;
 import server.message.*;
-import server.message.action.*;
 
 
 import java.io.IOException;
@@ -11,14 +10,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import static model.Phase.*;
-
 public class PlayerThread extends Thread {
 
     Server server;
     PlayerListener playerListener;
 
-    ControllerServer controller;
+    ControllerServer controllerServer;
+    ControllerGameRoom controllerGameRoom;
 
     Socket socket;
 
@@ -26,16 +24,19 @@ public class PlayerThread extends Thread {
     ObjectOutputStream os;
 
     String login;
-
     final int playerNumber;
 
-    public PlayerThread(Server server, Socket socket, int playerNumber) throws IOException{
+    boolean playerReady = false;
+    boolean inRoom = false;
+    boolean gameOn = false;
+
+    public PlayerThread(ControllerServer controllerServer, Server server, Socket socket, int playerNumber) throws IOException{
         super("PlayerThread " + playerNumber);
         this.server = server;
         this.socket = socket;
         this.playerNumber = playerNumber;
 
-        controller = server.controller;
+        this.controllerServer = controllerServer;
 
         is = new ObjectInputStream(socket.getInputStream());
         os = new ObjectOutputStream(socket.getOutputStream());
@@ -48,20 +49,43 @@ public class PlayerThread extends Thread {
         playerListener.start();
     }
 
+
     // Отправляем сообщение клиенту
     public void sendMessage(Message message) throws IOException {
         System.out.println(getName() + ": sendMessage " + message.getMessageType());
         os.writeObject(message); // Отправляем сообщение серверу
+        os.flush();
     }
 
     public void messageHandler(Message message){
+        System.out.println(getName() + ": messageHandler");
+
+        // Он не в игровой комнате.
+        if(!inRoom){
+            System.out.println(getName() + ": received message from free player");
+
+            if(message instanceof CreateRoomMessage){
+                controllerServer.createRoom((CreateRoomMessage) message);
+            }
+            else if(message instanceof EnterTheRoomMessage){
+                server.enterTheRoom(this, ((EnterTheRoomMessage) message).getRoomId());
+            }
+
+            return;
+        }
+        else if(!gameOn){
+            System.out.println(getName() + ": received message from room player");
+
+
+            return;
+        }
 
         if(message.getMessageType() == MessageType.CHAT){
-            try {
-                server.distribution(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                 server.distribution(message);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
         else{
 
@@ -69,39 +93,42 @@ public class PlayerThread extends Thread {
 
             String serverMessege = message.getMes();
 
-            switch (controller.getCurrentPhase()){
-                case GROWTH:
-
-                    if(message.getTable().isEndMove())
-                        serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
-
-
-                    try {
-                        server.distribution(new ServerMessage(message.getTable(), serverMessege));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    break;
-                case EATING:
-
-                    if(message.getTable().isEndMove())
-                        serverMessege.concat("\nПосле этой фазы будет определяться победитель");
-
-                    try {
-                        server.distribution(new ServerMessage(message.getTable(), serverMessege));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    break;
-                default:
-                    System.out.print("Its strange");
-                    break;
-            }
+//            switch (controllerServer.getCurrentPhase()){
+//                case GROWTH:
+//
+//                    if(message.getTable().isEndMove())
+//                        serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
+//
+//
+//                    try {
+//                        server.distribution(new ServerMessage(message.getTable(), serverMessege));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    break;
+//                case EATING:
+//
+//                    if(message.getTable().isEndMove())
+//                        serverMessege.concat("\nПосле этой фазы будет определяться победитель");
+//
+//                    try {
+//                        server.distribution(new ServerMessage(message.getTable(), serverMessege));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    break;
+//                default:
+//                    System.out.print("Its strange");
+//                    break;
+//            }
         }
     }
 
+    public void setControllerGameRoom(ControllerGameRoom controller){
+        this.controllerGameRoom = controller;
+    }
 
     /////////////
 
@@ -111,7 +138,11 @@ public class PlayerThread extends Thread {
     }
     public void setLogin(String login) {
         this.login = login;
-        controller.setLogin(login, playerNumber);
+        //controllerServer.setLogin(login, playerNumber);
 
+    }
+
+    public boolean isConnected(){
+        return socket.isConnected();
     }
 }

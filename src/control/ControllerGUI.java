@@ -15,7 +15,7 @@ public class ControllerGUI {
 
     Controller controller;
     ControllerClient controllerClient;
-    ControllerServer controllerServer;
+    ControllerGameRoom controllerGameRoom;
     MainPane mainPane;
 
     GameType type;
@@ -43,10 +43,10 @@ public class ControllerGUI {
         if(playerNumber != controller.getPlayerTurn())
             blockActions = true;
     }
-    /*public ControllerGUI(Controller controller, ControllerServer controllerServer, MainPane mainPane, int playerNumber){
-        this.controllerServer = controllerServer;
+    /*public ControllerGUI(Controller controller, ControllerGameRoom controllerGameRoom, MainPane mainPane, int playerTurn){
+        this.controllerGameRoom = controllerGameRoom;
         this.mainPane = mainPane;
-        this.playerNumber = playerNumber;
+        this.playerTurn = playerTurn;
         type = 2;
     }*/
 
@@ -308,7 +308,7 @@ public class ControllerGUI {
     }
 
     //public boolean findCard(CreatureNode creatureNode, CardNode cardNode){
-    //   return controller.findCard(playerNumber, creatureNode.getCreatureId(), cardNode.getCard());
+    //   return controller.findCard(playerTurn, creatureNode.getCreatureId(), cardNode.getCard());
     //}
     public void selectCard(CardNode cardNode){
         mainPane.setSelectedCard(cardNode);
