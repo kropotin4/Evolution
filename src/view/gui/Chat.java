@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 
 import java.util.Date;
 
@@ -24,17 +25,23 @@ public class Chat {
 
         chat.setWrapText(true);
 
-//        messageTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-//
-//        });
 
         sendMessageButton.setOnMouseClicked(event -> {
-            if(!messageTextField.getText().isEmpty()){
-                //addMessage("Your", messageTextField.getText());
-                controller.sendChatMessage(messageTextField.getText());
+            sendMessage();
+        });
+
+        messageTextField.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER){
+                sendMessage();
             }
         });
 
+    }
+    private void sendMessage(){
+        if(!messageTextField.getText().isEmpty()){
+            controller.sendChatMessage(messageTextField.getText());
+            messageTextField.setText("");
+        }
     }
 
     public void addMessage(String login, String message){

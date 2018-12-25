@@ -24,12 +24,15 @@ import java.util.Properties;
 
 public class StartPane extends VBox {
 
+    Stage primaryStage;
+    Scene scene;
+
     @FXML Button play_yourself;
     @FXML Button play_server;
     @FXML Button play_client;
     @FXML Button play_server_client;
 
-    Stage primaryStage;
+
 
     Image lizard = new Image("/images/lizard_596_380.png");
 
@@ -40,6 +43,8 @@ public class StartPane extends VBox {
     Background background;
 
     public StartPane(Stage primaryStage){
+        this.primaryStage = primaryStage;
+
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/StartPane.fxml")
         );
@@ -54,7 +59,7 @@ public class StartPane extends VBox {
             throw new RuntimeException(exception);
         }
 
-        this.primaryStage = primaryStage;
+        scene = new Scene(this, Color.TRANSPARENT);
     }
 
     @FXML
@@ -100,7 +105,7 @@ public class StartPane extends VBox {
         });
 
         play_client.setOnMouseClicked(event -> {
-            ControllerClient controllerClient = new ControllerClient(primaryStage);
+            ControllerClient controllerClient = new ControllerClient(primaryStage, this);
             controllerClient.startClientSetting();
         });
 
@@ -120,9 +125,7 @@ public class StartPane extends VBox {
         play_server_client.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
 
         backgroundSize = new BackgroundSize(lizard.getWidth(), lizard.getHeight(), false, false, true, true);
-        // new BackgroundImage(image, repeatX, repeatY, position, size)
         backgroundImage = new BackgroundImage(lizard, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        // new Background(images...)
         background = new Background(backgroundImage);
         setBackground(background);
 
@@ -135,7 +138,7 @@ public class StartPane extends VBox {
 
 
     public void show(){
-        Scene scene = new Scene(this, Color.TRANSPARENT);
+        //Scene scene = new Scene(this, Color.TRANSPARENT);
 
         primaryStage.setMinWidth(this.getPrefWidth() + 20);
         primaryStage.setMinHeight(this.getPrefHeight() + 40);

@@ -3,8 +3,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pannable="true" prefHeight="200.0" prefWidth="600.0" style="-fx-background-color: transparent;" type="javafx.scene.control.ScrollPane" vbarPolicy="NEVER" vvalue="1.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" pannable="true" prefHeight="205.0" prefWidth="2000.0" style="-fx-background-color: transparent;" type="javafx.scene.control.ScrollPane" vbarPolicy="NEVER" vvalue="1.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <HBox fx:id="creatures_box_pp" alignment="CENTER_LEFT" prefHeight="190.0" prefWidth="800.0" />
+      <HBox fx:id="creatures_box_pp" alignment="CENTER_LEFT" prefHeight="190.0" />
    </content>
 </fx:root>

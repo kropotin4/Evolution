@@ -2,7 +2,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -29,10 +33,10 @@
       </AnchorPane>
    </right>
    <bottom>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="210.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <AnchorPane fx:id="playing_pane" prefHeight="200.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="5.0" />
-            <VBox fx:id="action_box" alignment="TOP_CENTER" prefWidth="250.0" style="-fx-border-width: 1; -fx-border-color: black;" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <VBox fx:id="action_box" alignment="TOP_CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="250.0" style="-fx-border-width: 1; -fx-border-color: black;" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                <children>
                   <VBox fx:id="top_action_box" prefHeight="200.0" prefWidth="100.0" />
                   <VBox fx:id="bottom_action_box" alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="100.0" />
@@ -41,7 +45,7 @@
       </AnchorPane>
    </bottom>
    <center>
-      <AnchorPane fx:id="pane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="pane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
          <children>
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <content>
@@ -51,4 +55,26 @@
          </children>
       </AnchorPane>
    </center>
+   <top>
+      <MenuBar prefHeight="15.0" prefWidth="850.0" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Игра">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Сохранить" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Выйти в меню" />
+              <MenuItem mnemonicParsing="false" text="Закрыть" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <padding>
+      <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+   </padding>
 </fx:root>
