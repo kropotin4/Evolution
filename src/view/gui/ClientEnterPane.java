@@ -69,7 +69,7 @@ public class ClientEnterPane extends AnchorPane {
 
     @FXML
     private void initialize(){
-        ///region Cursor
+        ///region cursor
         Cursor lizardCursor = new ImageCursor(lizardImage, lizardImage.getWidth() / 2, lizardImage.getHeight() / 2);
         Cursor lizardTailCursor = new ImageCursor(lizardTailImage, lizardTailImage.getWidth() / 2, lizardTailImage.getHeight() / 2);
         setCursor(lizardCursor);

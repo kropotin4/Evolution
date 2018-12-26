@@ -3,6 +3,7 @@ package view.gui;
 import control.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,7 +12,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class StartPane extends VBox {
 
@@ -26,11 +29,10 @@ public class StartPane extends VBox {
 
 
     Image lizard = new Image("/images/lizard_596_380.png");
+    Image icon = new Image("/images/icon.png");
 
     BackgroundSize backgroundSize;
-    // new BackgroundImage(image, repeatX, repeatY, position, size)
     BackgroundImage backgroundImage;
-    // new Background(images...)
     Background background;
 
     public StartPane(Stage primaryStage){
@@ -55,54 +57,49 @@ public class StartPane extends VBox {
 
     @FXML
     private void initialize(){
+        primaryStage.getIcons().add(icon);
+
         this.setPrefSize(500, 300);
-
-
-
-        Image cursorOnButton = new Image("/images/lizard_tail.png");
-        Image cursor = new Image("/images/lizard_cursor.png");
 
         play_yourself.setOnMouseClicked(event -> {
             Controller controller = new Controller(2, 2);
             ControllerGUI controllerGUI = new ControllerGUI(primaryStage, controller, 0);
             controllerGUI.startGame();
         });
-
         play_server.setOnMouseClicked(event -> {
             ControllerServer controllerServer = new ControllerServer(primaryStage);
             controllerServer.startServerSetting();
         });
-
         play_client.setOnMouseClicked(event -> {
             ControllerClient controllerClient = new ControllerClient(primaryStage, this);
             controllerClient.startClientSetting();
         });
-
         play_server_client.setOnMouseClicked(event -> {
 //            ControllerGameRoom controllerGameRoom = new ControllerGameRoom(primaryStage,false);
 //            controllerGameRoom.startServerSetting();
         });
 
-        play_yourself.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
-        play_server.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
-        play_client.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
-        play_server_client.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        ///region cursor
+        Image lizardTailImage = new Image("/images/lizard_tail.png");
+        Image lizardImage = new Image("/images/lizard_cursor.png");
+        Cursor lizardCursor = new ImageCursor(lizardImage, lizardImage.getWidth() / 2, lizardImage.getHeight() / 2);
+        Cursor lizardTailCursor = new ImageCursor(lizardTailImage, lizardTailImage.getWidth() / 2, lizardTailImage.getHeight() / 2);
+        setCursor(lizardCursor);
+        play_yourself.setOnMouseEntered(event -> setCursor(lizardTailCursor));
+        play_server.setOnMouseEntered(event -> setCursor(lizardTailCursor));
+        play_client.setOnMouseEntered(event -> setCursor(lizardTailCursor));
+        play_server_client.setOnMouseEntered(event -> setCursor(lizardTailCursor));
 
-        play_yourself.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
-        play_server.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
-        play_client.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
-        play_server_client.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+        play_yourself.setOnMouseExited(event -> setCursor(lizardCursor));
+        play_server.setOnMouseExited(event -> setCursor(lizardCursor));
+        play_client.setOnMouseExited(event -> setCursor(lizardCursor));
+        play_server_client.setOnMouseExited(event -> setCursor(lizardCursor));
+        ///endregion
 
         backgroundSize = new BackgroundSize(lizard.getWidth(), lizard.getHeight(), false, false, true, true);
         backgroundImage = new BackgroundImage(lizard, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         background = new Background(backgroundImage);
         setBackground(background);
-
-        setCursor(new ImageCursor(cursor,
-                cursor.getWidth() / 2,
-                cursor.getHeight() /2));
-
-
     }
 
 
