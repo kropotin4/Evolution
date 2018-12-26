@@ -59,7 +59,8 @@ public class RoomPane extends AnchorPane {
     @FXML
     private void initialize(){
         ready_button_cp.setOnMouseClicked(event -> {
-            //controller.startGame();
+            controller.readyToPlay();
+            ready_button_cp.setDisable(true);
         });
     }
 
@@ -77,7 +78,8 @@ public class RoomPane extends AnchorPane {
     }
 
     public void update(RoomInfoMessage roomInfoMessage){
-
+        if(controller.getStage() != 3)
+            ready_button_cp.setDisable(false);
         room_name_label_rp.setText("Комната \"" + roomInfoMessage.getRoomName() + "\"");
 
         connection_vbox.getChildren().clear();

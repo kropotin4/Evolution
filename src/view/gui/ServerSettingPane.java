@@ -35,6 +35,7 @@ public class ServerSettingPane extends AnchorPane {
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
     Background background;
+
     Image serverImage = new Image("/images/drops.jpg");
     Image lizardTailImage = new Image("/images/lizard_tail.png");
     Image lizardImage = new Image("/images/lizard_cursor.png");

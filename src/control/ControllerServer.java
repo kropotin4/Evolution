@@ -3,6 +3,7 @@ package control;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import server.GamingRoomInfo;
+import server.PlayerThread;
 import server.Server;
 import server.message.ClientInfoMessage;
 import server.message.CreateRoomMessage;
@@ -75,7 +76,9 @@ public class ControllerServer {
         });
 
     }
-
+    public int enterTheRoom(PlayerThread playerThread, int roomId){
+        return server.enterTheRoom(playerThread, roomId);
+    }
     ////////////////////////
 
     public ClientInfoMessage createClientInfoMessage(){

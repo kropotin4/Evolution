@@ -74,15 +74,21 @@ public class ControllerClient {
         clientEnterPane.show();
     }
     public void startClient(){
+        stage = 1;
         clientPane.show();
     }
     public void startRoom(){
+        stage = 2;
         Platform.runLater(() -> {
             roomPane.show();
         });
     }
+    public void readyToPlay(){
+        stage = 3;
+        sendMessage(new ReadyToPlayMessage());
+    }
     public void startGame(StartMessage startMessage){
-
+        stage = 4;
         controller = new Controller(startMessage.getTable());
         Platform.runLater(() -> {
             // Update UI here.
@@ -159,5 +165,9 @@ public class ControllerClient {
     }
     public ArrayList<GamingRoomInfo> getGamingRoomInfo() {
         return gamingRoomInfo;
+    }
+
+    public int getStage() {
+        return stage;
     }
 }

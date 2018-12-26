@@ -10,6 +10,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import static model.Phase.*;
+
 public class PlayerThread extends Thread {
 
     Server server;
@@ -24,17 +26,19 @@ public class PlayerThread extends Thread {
     ObjectOutputStream os;
 
     String login;
-    final int playerNumber;
+    final int number;
+    int playerNumber;
 
     boolean playerReady = false;
     boolean inRoom = false;
     boolean gameOn = false;
 
-    public PlayerThread(ControllerServer controllerServer, Server server, Socket socket, int playerNumber) throws IOException{
-        super("PlayerThread " + playerNumber);
+    public PlayerThread(ControllerServer controllerServer, Server server, Socket socket, int number) throws IOException{
+        super("PlayerThread " + number);
         this.server = server;
         this.socket = socket;
-        this.playerNumber = playerNumber;
+        this.number = number;
+        //this.playerNumber = playerNumber;
 
         this.controllerServer = controllerServer;
 
@@ -68,7 +72,7 @@ public class PlayerThread extends Thread {
                 controllerServer.createRoom((CreateRoomMessage) message);
             }
             else if(message instanceof EnterTheRoomMessage){
-                server.enterTheRoom(this, ((EnterTheRoomMessage) message).getRoomId());
+                playerNumber = controllerServer.enterTheRoom(this, ((EnterTheRoomMessage) message).getRoomId());
             }
 
             return;
@@ -76,53 +80,60 @@ public class PlayerThread extends Thread {
         else if(!gameOn){
             System.out.println(getName() + ": received message from room player");
 
+            if(message instanceof ReadyToPlayMessage){
+                controllerGameRoom.playerReadyToPlay(playerNumber);
+            }
 
             return;
         }
+        else {
 
-        if(message.getMessageType() == MessageType.CHAT){
-//            try {
-//                 server.distribution(message);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-        }
-        else{
+            if (message.getMessageType() == MessageType.CHAT) {
 
-            System.out.println("Current player: " + message.getTable().getPlayerTurn());
+                try {
+                    controllerGameRoom.distribution(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            String serverMessege = message.getMes();
+            }
+            else {
 
-//            switch (controllerServer.getCurrentPhase()){
-//                case GROWTH:
-//
-//                    if(message.getTable().isEndMove())
-//                        serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
-//
-//
-//                    try {
-//                        server.distribution(new ServerMessage(message.getTable(), serverMessege));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    break;
-//                case EATING:
-//
-//                    if(message.getTable().isEndMove())
-//                        serverMessege.concat("\nПосле этой фазы будет определяться победитель");
-//
-//                    try {
-//                        server.distribution(new ServerMessage(message.getTable(), serverMessege));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    break;
-//                default:
-//                    System.out.print("Its strange");
-//                    break;
-//            }
+                System.out.println("Current player: " + message.getTable().getPlayerTurn());
+
+                String serverMessege = message.getMes();
+
+            switch (controllerGameRoom.getCurrentPhase()){
+                case GROWTH:
+
+                    if(message.getTable().isEndMove())
+                        serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
+
+
+                    try {
+                        controllerGameRoom.distribution(new ServerMessage(message.getTable(), serverMessege));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+                case EATING:
+
+                    if(message.getTable().isEndMove())
+                        serverMessege.concat("\nПосле этой фазы будет определяться победитель");
+
+                    try {
+                        controllerGameRoom.distribution(new ServerMessage(message.getTable(), serverMessege));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+                default:
+                    System.out.print("Its strange");
+                    break;
+            }
+            }
         }
     }
 

@@ -25,6 +25,8 @@ public class GamingRoom implements Serializable {
     ControllerGameRoom controller;
 
     ArrayList<PlayerThread> playerThreads = new ArrayList<>();
+    int readyNumber = 0;
+    boolean[] playersReady;
 
     boolean gameOn = false;
     boolean startGameWithFullPlayers = false;
@@ -36,6 +38,7 @@ public class GamingRoom implements Serializable {
         this.roomCapacity = roomCapacity;
         this.quarterCardCount = quarterCardCount;
         controller = new ControllerGameRoom(this);
+        playersReady = new boolean[roomCapacity];
 
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -67,6 +70,7 @@ public class GamingRoom implements Serializable {
     public void startGameDistribution(Table table) throws IOException {
         for(int i = 0; i < playerThreads.size(); ++i){
             playerThreads.get(i).sendMessage(new StartMessage(table, i, "Игра началось (вы - " + enumerate[i] + ")"));
+            playerThreads.get(i).gameOn = true;
         }
     }
 
@@ -91,8 +95,19 @@ public class GamingRoom implements Serializable {
     public int getPlayerNumber(){
         return playerThreads.size();
     }
+    public void setPlayerReady(int playerNumber){
+        playersReady[playerNumber] = true;
+        readyNumber++;
+
+        if(readyNumber == roomCapacity){
+            controller.startGame();
+        }
+    }
     public ArrayList<PlayerThread> getPlayerThreads() {
         return playerThreads;
+    }
+    public boolean[] getPlayersReady() {
+        return playersReady;
     }
     private String[] getPlayersLogins(){
         String[] res = new String[roomCapacity];

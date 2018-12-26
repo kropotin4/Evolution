@@ -89,15 +89,18 @@ public class Server extends Thread {
         GamingRoom gamingRoom = new GamingRoom(roomName, roomCapacity, quarterCardCount, false);
         gamingRooms.add(gamingRoom);
     }
-    public void enterTheRoom(PlayerThread playerThread, int roomId){
+    public int enterTheRoom(PlayerThread playerThread, int roomId){
 
         for(GamingRoom gamingRoom : gamingRooms){
             if(gamingRoom.id == roomId){
                 gamingRoom.addPlayerThread(playerThread);
                 freePlayersThreads.remove(playerThread);
+
+                return gamingRoom.getPlayerNumber() - 1;
             }
         }
 
+        return -1;
     }
 
     //////////

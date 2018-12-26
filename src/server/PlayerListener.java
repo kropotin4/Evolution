@@ -14,7 +14,7 @@ public class PlayerListener extends Thread {
     ObjectInputStream is;
 
     PlayerListener(Server server, PlayerThread playerThread, ObjectInputStream is) {
-        super("PlayerListener " + playerThread.playerNumber);
+        super("PlayerListener " + playerThread.number);
         this.server = server;
         this.playerThread = playerThread;
 

@@ -1,6 +1,8 @@
 package control;
 
+import model.Phase;
 import server.GamingRoom;
+import server.message.Message;
 
 import java.io.IOException;
 
@@ -42,15 +44,15 @@ public class ControllerGameRoom {
         }
     }
 
-    public void playerConnect(){
-//        if(stage == 1) {
-//            connectionPane.playerConnect(connectPlayer);
-//            connectPlayer++;
-//
-//            if(connectPlayer >= playerNumber)
-//                connectionPane.setStartButtonDisable(false);
-//        }
+    public void playerReadyToPlay(int playerNumber){
+        gamingRoom.setPlayerReady(playerNumber);
     }
+    ////////////
+
+    public void distribution(Message message) throws IOException {
+        gamingRoom.distribution(message);
+    }
+
     ////////////
 
     public void doNextMove(){
@@ -71,7 +73,6 @@ public class ControllerGameRoom {
     public int getQuarterCardCount() {
         return quarterCardCount;
     }
-    ///////////////
 
     public void setLogin(String login, int playerNumber){
 //        if(stage == 1){
@@ -81,6 +82,11 @@ public class ControllerGameRoom {
 //                //controller.setLogin(login, playerTurn);
 //            });
 //        }
+    }
+    ///////////////
+
+    public Phase getCurrentPhase(){
+        return controller.getCurrentPhase();
     }
 
     ///////////////
