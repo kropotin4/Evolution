@@ -11,8 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -44,8 +42,8 @@ public class ClientEnterPane extends AnchorPane {
     boolean loginPass = false;
 
     Image grass = new Image("/images/grass_960_640.jpg");
-    Image cursorOnButton = new Image("/images/lizard_tail.png");
-    Image cursor = new Image("/images/lizard_cursor.png");
+    Image lizardTailImage = new Image("/images/lizard_tail.png");
+    Image lizardImage = new Image("/images/lizard_cursor.png");
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
     Background background;
@@ -72,16 +70,23 @@ public class ClientEnterPane extends AnchorPane {
     @FXML
     private void initialize(){
         ///region Cursor
-        setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2));
+        Cursor lizardCursor = new ImageCursor(lizardImage, lizardImage.getWidth() / 2, lizardImage.getHeight() / 2);
+        Cursor lizardTailCursor = new ImageCursor(lizardTailImage, lizardTailImage.getWidth() / 2, lizardTailImage.getHeight() / 2);
+        setCursor(lizardCursor);
 
-        back_button_cp.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
-        back_button_cp.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+        back_button_cp.setOnMouseEntered(event -> setCursor(lizardTailCursor));
+        back_button_cp.setOnMouseExited(event -> setCursor(lizardCursor));
 
-        connect_button.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
-        connect_button.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+        connect_button.setOnMouseEntered(event -> setCursor(lizardTailCursor));
+        connect_button.setOnMouseExited(event -> setCursor(lizardCursor));
 
         localhost_check_box.setOnMouseEntered(event -> setCursor(Cursor.HAND));
-        localhost_check_box.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+        localhost_check_box.setOnMouseExited(event -> setCursor(lizardCursor));
+
+        connect_button.setOnMousePressed(event -> setCursor(Cursor.WAIT));
+        connect_button.setOnKeyPressed(event -> setCursor(Cursor.WAIT));
+        connect_button.setOnMouseReleased(event -> setCursor(lizardCursor));
+        connect_button.setOnKeyReleased(event -> setCursor(lizardCursor));
         ///endregion
 
         connect_button.setTooltip(new Tooltip("Подключиться к серверу"));
@@ -186,7 +191,7 @@ public class ClientEnterPane extends AnchorPane {
         });
 
         // RadioButton с localhost
-        localhost_check_box.setOnMouseClicked(event -> {
+        localhost_check_box.setOnAction(event -> {
             if(localhost_check_box.isSelected()){
                 ip1_text_field.setDisable(true);
                 ip2_text_field.setDisable(true);
@@ -224,11 +229,10 @@ public class ClientEnterPane extends AnchorPane {
 
             public modAlert(AlertType alertType, String contentText, ButtonType... buttons) {
                 super(alertType, contentText, buttons);
-                setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2));
                 setHeaderText("Произошла ошибка");
                 setTitle("Ошибка");
                 window = getDialogPane().getScene().getWindow();
-                window.getScene().setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2));
+                window.getScene().setCursor(lizardTailCursor);
                 System.out.println(window);
                 thread = new Thread(() -> {
                     try {
@@ -252,9 +256,8 @@ public class ClientEnterPane extends AnchorPane {
             }
         }
         ///endregion
-        connect_button.setOnMousePressed(event -> setCursor(Cursor.WAIT));
-        connect_button.setOnMouseClicked(event -> {
-            setCursor(Cursor.WAIT);
+
+        connect_button.setOnAction(event -> {
             if(localhost_check_box.isSelected()){
                 if(controller.connectToServer(
                         controller.getLogin(),
@@ -317,7 +320,7 @@ public class ClientEnterPane extends AnchorPane {
 
     public void show(){
         Scene scene = new Scene(this, Color.TRANSPARENT);
-
+        scene.setCursor(new ImageCursor(lizardImage, lizardImage.getWidth() / 2, lizardImage.getHeight() / 2));
         primaryStage.setMinWidth(this.getPrefWidth() + 20);
         primaryStage.setMinHeight(this.getPrefHeight() + 40);
 
