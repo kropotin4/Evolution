@@ -14,30 +14,30 @@
    <children>
       <VBox alignment="CENTER" fillWidth="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" minHeight="200.0" minWidth="521.0" prefHeight="300.0" prefWidth="600.0" style="-fx-background-color: FFFFFF80;">
+            <VBox alignment="CENTER" minHeight="200.0" minWidth="350.0" prefHeight="300.0" prefWidth="500.0" style="-fx-background-color: FFFFFF90;">
                <children>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                  <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" spacing="20.0">
                      <children>
                         <Label text="Server ip:" />
                         <Label fx:id="server_ip_label_ssp" text="Label" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <Label text="Server Port" textAlignment="CENTER" wrapText="true" />
-                        <TextField fx:id="port_text_field_ssp" promptText="4444" />
-                        <ImageView fx:id="check_image" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+                        <Label text="Port:" />
+                        <TextField fx:id="port_text_field_ssp" prefWidth="100.0" promptText="Server Port" />
+                        <ImageView fx:id="check_image" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+                     <Label alignment="CENTER" text="Максимальное число комнат" textAlignment="CENTER" wrapText="true" />
                    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-                       <children>
-                           <Label alignment="CENTER" text="Максимальное число комнат" textAlignment="CENTER" wrapText="true" />
+                     <children>
                            <Slider fx:id="max_room_slider_ssp" blockIncrement="1.0" majorTickUnit="1.0" max="8.0" min="1.0" minorTickCount="0" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
-                       </children>
+                     </children>
                    </HBox>
-                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="0.0">
-                  <Button fx:id="back_button_cp" mnemonicParsing="false" text="Назад" />
-                  <Button fx:id="start_button" alignment="CENTER" disable="true" mnemonicParsing="false" text="Старт" translateX="150.0" />
+                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="0.0">
+                  <Button fx:id="start_button" alignment="CENTER" disable="true" mnemonicParsing="false" text="Старт" />
                    </HBox>
                </children>
                <padding>

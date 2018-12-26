@@ -7,9 +7,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import server.GamingRoomInfo;
@@ -28,8 +27,14 @@ public class ServerPane extends AnchorPane {
     @FXML Label server_port_label_sp;
     @FXML Label max_room_label_sp;
     @FXML Label player_count_label_sp;
-
     @FXML Button stop_server_button_sp;
+
+    BackgroundSize backgroundSize;
+    BackgroundImage backgroundImage;
+    Background background;
+    Image serverImage = new Image("/images/server_2000.jpg");
+    Image lizardTailImage = new Image("/images/lizard_tail.png");
+    Image lizardImage = new Image("/images/lizard_cursor.png");
 
     public ServerPane(ControllerServer controller, Stage primaryStage){
         this.controller = controller;
@@ -56,7 +61,6 @@ public class ServerPane extends AnchorPane {
         stop_server_button_sp.setOnMouseClicked(event -> {
             controller.stopServer();
         });
-
     }
 
     public void update(){

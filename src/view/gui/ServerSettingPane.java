@@ -35,7 +35,7 @@ public class ServerSettingPane extends AnchorPane {
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
     Background background;
-    Image serverImage = new Image("/images/server_2000.jpg");
+    Image serverImage = new Image("/images/drops.jpg");
     Image lizardTailImage = new Image("/images/lizard_tail.png");
     Image lizardImage = new Image("/images/lizard_cursor.png");
     Image checkOkImage = new Image("/images/checkOk_100.png");
@@ -63,12 +63,14 @@ public class ServerSettingPane extends AnchorPane {
     @FXML
     private void initialize(){
         ///region cursor
+        //primaryStage.getIcons().removeAll();
+        primaryStage.getIcons().add(new Image("/images/server.png"));
         Cursor lizardCursor = new ImageCursor(lizardImage, lizardImage.getWidth() / 2, lizardImage.getHeight() / 2);
         Cursor lizardTailCursor = new ImageCursor(lizardTailImage, lizardTailImage.getWidth() / 2, lizardTailImage.getHeight() / 2);
         setCursor(lizardCursor);
 
-        back_button_cp.setOnMouseEntered(event -> setCursor(lizardTailCursor));
-        back_button_cp.setOnMouseExited(event -> setCursor(lizardCursor));
+        //back_button_cp.setOnMouseEntered(event -> setCursor(lizardTailCursor));
+        //back_button_cp.setOnMouseExited(event -> setCursor(lizardCursor));
 
         max_room_slider_ssp.setOnMouseEntered(event -> setCursor(lizardTailCursor));
         max_room_slider_ssp.setOnMouseExited(event -> setCursor(lizardCursor));
