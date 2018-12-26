@@ -1,18 +1,20 @@
 package view.gui;
 
 import control.ControllerClient;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -27,7 +29,7 @@ public class ClientEnterPane extends AnchorPane {
     @FXML TextField ip2_text_field;
     @FXML TextField ip3_text_field;
     @FXML TextField ip4_text_field;
-    @FXML CheckBox localhost_check_box;
+    @FXML RadioButton localhost_check_box;
     @FXML TextField port2_text_field;
     @FXML Button connect_button;
     @FXML Button  back_button_cp;
@@ -44,7 +46,6 @@ public class ClientEnterPane extends AnchorPane {
     Image grass = new Image("/images/grass_960_640.jpg");
     Image cursorOnButton = new Image("/images/lizard_tail.png");
     Image cursor = new Image("/images/lizard_cursor.png");
-
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
     Background background;
@@ -70,14 +71,23 @@ public class ClientEnterPane extends AnchorPane {
 
     @FXML
     private void initialize(){
-
         ///region Cursor
-        box.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
-        box.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+        setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2));
+
+        back_button_cp.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        back_button_cp.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
+
+        connect_button.setOnMouseEntered(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        connect_button.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
 
         localhost_check_box.setOnMouseEntered(event -> setCursor(Cursor.HAND));
-        localhost_check_box.setOnMouseExited(event -> setCursor(new ImageCursor(cursorOnButton, cursorOnButton.getWidth() / 2,cursorOnButton.getHeight() / 2)));
+        localhost_check_box.setOnMouseExited(event -> setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2)));
         ///endregion
+
+        connect_button.setTooltip(new Tooltip("Подключиться к серверу"));
+        connect_button.getTooltip().setShowDelay(Duration.ZERO);
+        back_button_cp.setTooltip(new Tooltip("Возврат в главное меню"));
+        back_button_cp.getTooltip().setShowDelay(Duration.ZERO);
 
         // Обработка ввода логина (до 15 символов)
         login_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -175,7 +185,7 @@ public class ClientEnterPane extends AnchorPane {
             else ip4_text_field.setText(oldValue);
         });
 
-        // CheckBox с localhost
+        // RadioButton с localhost
         localhost_check_box.setOnMouseClicked(event -> {
             if(localhost_check_box.isSelected()){
                 ip1_text_field.setDisable(true);
@@ -206,7 +216,45 @@ public class ClientEnterPane extends AnchorPane {
             else port2_text_field.setText(oldValue);
         });
 
+        ///region alert
+        class modAlert extends Alert {
+
+            private Thread thread;
+            private javafx.stage.Window window;
+
+            public modAlert(AlertType alertType, String contentText, ButtonType... buttons) {
+                super(alertType, contentText, buttons);
+                setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2));
+                setHeaderText("Произошла ошибка");
+                setTitle("Ошибка");
+                window = getDialogPane().getScene().getWindow();
+                window.getScene().setCursor(new ImageCursor(cursor, cursor.getWidth() / 2,cursor.getHeight() / 2));
+                System.out.println(window);
+                thread = new Thread(() -> {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException ignored) {
+                    }
+                    long startTime = System.currentTimeMillis();
+                    while (System.currentTimeMillis() - startTime < 1000) {
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException ignored) { }
+                        Platform.runLater(() -> window.setOpacity(Math.max(0, window.getOpacity() - .05)));
+                    }
+                    Platform.runLater(this::close);
+                });
+            }
+
+            void Show() {
+                show();
+                thread.start();
+            }
+        }
+        ///endregion
+        connect_button.setOnMousePressed(event -> setCursor(Cursor.WAIT));
         connect_button.setOnMouseClicked(event -> {
+            setCursor(Cursor.WAIT);
             if(localhost_check_box.isSelected()){
                 if(controller.connectToServer(
                         controller.getLogin(),
@@ -218,6 +266,8 @@ public class ClientEnterPane extends AnchorPane {
                     controller.startClient();
                 }
                 else{
+                    connect_button.setTooltip(new Tooltip("Произошла ошибка. Проверьте, включен ли сервер"));
+                    new modAlert(Alert.AlertType.INFORMATION, "Проверьте, включен ли сервер, а также правильно ли указан порт").Show();
                     connect_button.setText("Подключиться");
                     connect_button.setDisable(false);
                 }
@@ -241,15 +291,15 @@ public class ClientEnterPane extends AnchorPane {
                     connect_button.setDisable(true);
                 }
                 else{
+                    connect_button.setTooltip(new Tooltip("Произошла ошибка. Проверьте правильность введённых данных"));
+                    new modAlert(Alert.AlertType.INFORMATION, "Проверьте, правильно ли указаны все данные (ip-адрес, порт)").Show();
                     connect_button.setText("Подключиться");
                     connect_button.setDisable(false);
                 }
             }
         });
 
-        back_button_cp.setOnMouseClicked(event -> {
-            controller.getStartPane().show();
-        });
+        back_button_cp.setOnMouseClicked(event -> controller.getStartPane().show());
 
         backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
         backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);

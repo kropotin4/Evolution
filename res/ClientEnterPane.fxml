@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.RadioButton?>
 <fx:root prefHeight="400.0" prefWidth="600.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -38,7 +39,7 @@
                                <TextField fx:id="ip4_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
                            </children>
                         </HBox>
-                        <CheckBox fx:id="localhost_check_box" mnemonicParsing="false" text="localhost" />
+                        <RadioButton fx:id="localhost_check_box" mnemonicParsing="false" text="localhost" />
                      </children>
                   </HBox>
                    <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="20.0">
@@ -53,6 +54,7 @@
                         <Button fx:id="connect_button" alignment="CENTER_RIGHT" disable="true" mnemonicParsing="false" text="Подключиться" textAlignment="CENTER" />
                      </children>
                   </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
                </children>
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
