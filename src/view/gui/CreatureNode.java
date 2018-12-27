@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import model.Card;
 import model.Phase;
 import model.Trait;
@@ -191,13 +192,13 @@ public class CreatureNode extends VBox {
                     CheckBox checkBox = new CheckBox();
                     playerPane.scavengerCheckBoxs.add(checkBox);
 
-                    if(playerPane.controller.isActiveScavanger(this))
+                    if(playerPane.controller.isActiveScavenger(this))
                         checkBox.setSelected(true);
                     else
                         checkBox.setSelected(false);
 
                     checkBox.setOnMouseClicked(e -> {
-                        playerPane.controller.setPlayerScavanger(this);
+                        playerPane.controller.setPlayerScavenger(this);
                         for(CheckBox checkBox1 : playerPane.scavengerCheckBoxs){
                             checkBox1.setSelected(false);
                         }
@@ -285,7 +286,14 @@ public class CreatureNode extends VBox {
             switchTraitStyle(label, trait);
 
             Label finalLabel = label;
-            label.setOnContextMenuRequested(event -> {
+
+            Tooltip traitTooltip = new Tooltip(trait.getDescription());
+            label.setTooltip(traitTooltip);
+            traitTooltip.setShowDelay(Duration.ZERO);
+            label.setOnMouseEntered(event -> traitTooltip.setShowDuration(Duration.INDEFINITE));
+            label.setOnMouseExited(event -> traitTooltip.setShowDuration(Duration.ZERO));
+
+            label.setOnContextMenuRequested(event -> { //это велосипед
                 traitContextMenu.getItems().get(0).setText(trait.getDescription());
                 traitContextMenu.show(finalLabel, event.getScreenX(), event.getScreenY());
             });

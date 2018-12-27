@@ -138,11 +138,11 @@ public class Controller {
     public void useFatTissue(int playerNumber, int creatureID, int cardNumber){
         findPlayer(playerNumber).findCreature(creatureID).useFatTissue(cardNumber);
     }
-    public void setPlayerScavanger(int playerNumber, int creatureID){
-        System.out.println("Controller: setPlayerScavanger: " + playerNumber + " " + creatureID);
+    public void setPlayerScavenger(int playerNumber, int creatureID){
+        System.out.println("Controller: setPlayerScavenger: " + playerNumber + " " + creatureID);
         table.setPlayerScavanger(playerNumber, creatureID);
     }
-    public boolean isActiveScavanger(int playerNumber, int creatureID){
+    public boolean isActiveScavenger(int playerNumber, int creatureID){
         return findPlayer(playerNumber).findCreature(creatureID).isActiveScavenger();
     }
     public int getScavengerNumber(int playerNumber){

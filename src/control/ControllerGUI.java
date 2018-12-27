@@ -333,14 +333,14 @@ public class ControllerGUI {
         return mainPane.isCreatureAdding();
     }
 
-    public void setPlayerScavanger(CreatureNode scavanger){
-        controller.setPlayerScavanger(
-                scavanger.getPlayerPane().getPlayerNumber(),
-                scavanger.getCreatureId()
+    public void setPlayerScavenger(CreatureNode scavenger){
+        controller.setPlayerScavenger(
+                scavenger.getPlayerPane().getPlayerNumber(),
+                scavenger.getCreatureId()
         );
     }
-    public boolean isActiveScavanger(CreatureNode scavenger){
-        return controller.isActiveScavanger(
+    public boolean isActiveScavenger(CreatureNode scavenger){
+        return controller.isActiveScavenger(
                 scavenger.getPlayerPane().getPlayerNumber(),
                 scavenger.getCreatureId()
         );
