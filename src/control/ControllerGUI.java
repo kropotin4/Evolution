@@ -149,10 +149,10 @@ public class ControllerGUI {
     public boolean haveHungryCreature(){
         return controller.haveHungryCreature(playerNumber);
     }
-    public int getCreauterHunger(CreatureNode creatureNode){
+    public int getCreatureHunger(CreatureNode creatureNode){
         return controller.getCreatureHunger(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
-    public int getCreauterSatiety(CreatureNode creatureNode){
+    public int getCreatureSatiety(CreatureNode creatureNode){
         return controller.getCreatureSatiety(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
     public boolean isCreatureFed(CreatureNode creatureNode){
