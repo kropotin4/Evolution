@@ -39,7 +39,7 @@
                                <TextField fx:id="ip4_text_field" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" text="" />
                            </children>
                         </HBox>
-                        <RadioButton fx:id="localhost_check_box" mnemonicParsing="false" text="localhost" />
+                        <RadioButton fx:id="localhost_radio_button" mnemonicParsing="false" text="localhost" />
                      </children>
                   </HBox>
                    <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="200.0" spacing="20.0">

@@ -86,7 +86,7 @@ public class ServerSettingPane extends AnchorPane {
         check_image.setImage(checkFalseImage);
 
         port_text_field_ssp.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.matches("[0-9]*") && newValue.length() < 10){
+            if(newValue.matches("[0-9]*") && newValue.length() < 6){
                 port_text_field_ssp.setText(newValue);
 
                 if(!newValue.isEmpty()) {
@@ -108,9 +108,8 @@ public class ServerSettingPane extends AnchorPane {
             controller.setMaxRoom(newValue.intValue());
         });
 
-        start_button.setOnMouseClicked(event -> {
-            controller.startServer();
-        });
+        start_button.setOnMouseClicked(event -> controller.startServer());
+        port_text_field_ssp.setOnAction(event -> controller.startServer());
 
         backgroundSize = new BackgroundSize(serverImage.getWidth(), serverImage.getHeight(), false, false, true, true);
         backgroundImage = new BackgroundImage(serverImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);

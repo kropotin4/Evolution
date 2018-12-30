@@ -4,6 +4,8 @@ import control.ControllerServer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,6 +16,7 @@ import javafx.stage.Stage;
 import server.GamingRoomInfo;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class ServerPane extends AnchorPane {
 
@@ -28,6 +31,7 @@ public class ServerPane extends AnchorPane {
     @FXML Label max_room_label_sp;
     @FXML Label player_count_label_sp;
     @FXML Button stop_server_button_sp;
+    @FXML VBox mystery_box;
 
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
@@ -57,10 +61,12 @@ public class ServerPane extends AnchorPane {
 
     @FXML
     private void initialize(){
-
-        stop_server_button_sp.setOnMouseClicked(event -> {
-            controller.stopServer();
+        stop_server_button_sp.setOnMouseEntered(event -> {
+            System.out.println("something should change now: " + Math.random());
+            stop_server_button_sp.setTranslateX((Math.random() - 0.5) * (mystery_box.getWidth() - stop_server_button_sp.getWidth()));
+            stop_server_button_sp.setTranslateY((Math.random() - 0.5) * (mystery_box.getHeight() - stop_server_button_sp.getHeight()));
         });
+        stop_server_button_sp.setOnAction(event -> controller.stopServer());
     }
 
     public void update(){
@@ -89,6 +95,8 @@ public class ServerPane extends AnchorPane {
 
     public void show(){
         Scene scene = new Scene(this, Color.TRANSPARENT);
+
+        scene.setCursor(new ImageCursor(lizardImage));
 
         primaryStage.setMinWidth(this.getPrefWidth() + 20);
         primaryStage.setMinHeight(this.getPrefHeight() + 40);

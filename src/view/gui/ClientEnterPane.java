@@ -27,7 +27,7 @@ public class ClientEnterPane extends AnchorPane {
     @FXML TextField ip2_text_field;
     @FXML TextField ip3_text_field;
     @FXML TextField ip4_text_field;
-    @FXML RadioButton localhost_check_box;
+    @FXML RadioButton localhost_radio_button;
     @FXML TextField port2_text_field;
     @FXML Button connect_button;
     @FXML Button  back_button_cp;
@@ -37,6 +37,10 @@ public class ClientEnterPane extends AnchorPane {
     boolean ip2Pass = false;
     boolean ip3Pass = false;
     boolean ip4Pass = false;
+
+    boolean ipPass(){
+        return ip1Pass && ip2Pass && ip3Pass && ip4Pass;
+    }
 
     boolean portPass = false;
     boolean loginPass = false;
@@ -80,8 +84,8 @@ public class ClientEnterPane extends AnchorPane {
         connect_button.setOnMouseEntered(event -> setCursor(lizardTailCursor));
         connect_button.setOnMouseExited(event -> setCursor(lizardCursor));
 
-        localhost_check_box.setOnMouseEntered(event -> setCursor(Cursor.HAND));
-        localhost_check_box.setOnMouseExited(event -> setCursor(lizardCursor));
+        localhost_radio_button.setOnMouseEntered(event -> setCursor(Cursor.HAND));
+        localhost_radio_button.setOnMouseExited(event -> setCursor(lizardCursor));
 
         connect_button.setOnMousePressed(event -> setCursor(Cursor.WAIT));
         connect_button.setOnKeyPressed(event -> setCursor(Cursor.WAIT));
@@ -191,8 +195,8 @@ public class ClientEnterPane extends AnchorPane {
         });
 
         // RadioButton с localhost
-        localhost_check_box.setOnAction(event -> {
-            if(localhost_check_box.isSelected()){
+        localhost_radio_button.setOnAction(event -> {
+            if(localhost_radio_button.isSelected()){
                 ip1_text_field.setDisable(true);
                 ip2_text_field.setDisable(true);
                 ip3_text_field.setDisable(true);
@@ -210,7 +214,7 @@ public class ClientEnterPane extends AnchorPane {
 
         // Обработка ввода порта
         port2_text_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.matches("[0-9]*") && newValue.length() <= 6){
+            if(newValue.matches("[0-9]*") && newValue.length() < 6){
                 port2_text_field.setText(newValue);
 
                 if(!newValue.isEmpty()) {
@@ -258,7 +262,7 @@ public class ClientEnterPane extends AnchorPane {
         ///endregion
 
         connect_button.setOnAction(event -> {
-            if(localhost_check_box.isSelected()){
+            if(localhost_radio_button.isSelected()){
                 if(controller.connectToServer(
                         controller.getLogin(),
                         "localhost",
@@ -270,16 +274,16 @@ public class ClientEnterPane extends AnchorPane {
                 }
                 else{
                     connect_button.setTooltip(new Tooltip("Произошла ошибка. Проверьте, включен ли сервер"));
-                    new modAlert(Alert.AlertType.INFORMATION, "Проверьте, включен ли сервер, а также правильно ли указан порт").Show();
+                    new modAlert(Alert.AlertType.ERROR, "Проверьте, включен ли сервер, а также правильно ли указан порт").Show();
                     connect_button.setText("Подключиться");
                     connect_button.setDisable(false);
                 }
             }
             else{
                 StringBuilder ip = new StringBuilder();
-                ip.append(ip1_text_field.getText() + ".");
-                ip.append(ip2_text_field.getText() + ".");
-                ip.append(ip3_text_field.getText() + ".");
+                ip.append(ip1_text_field.getText()).append(".");
+                ip.append(ip2_text_field.getText()).append(".");
+                ip.append(ip3_text_field.getText()).append(".");
                 ip.append(ip4_text_field.getText());
 
                 System.out.println("ClientEnterPane: ip = " + ip.toString());
@@ -295,24 +299,45 @@ public class ClientEnterPane extends AnchorPane {
                 }
                 else{
                     connect_button.setTooltip(new Tooltip("Произошла ошибка. Проверьте правильность введённых данных"));
-                    new modAlert(Alert.AlertType.INFORMATION, "Проверьте, правильно ли указаны все данные (ip-адрес, порт)").Show();
+                    new modAlert(Alert.AlertType.ERROR, "Проверьте, правильно ли указаны все данные (ip-адрес, порт)").Show();
                     connect_button.setText("Подключиться");
                     connect_button.setDisable(false);
                 }
             }
         });
+        port2_text_field.setOnAction(event -> {
+            try {
+                connect_button.getOnAction().handle(event);
+            } catch (Exception e) {
+                new modAlert(Alert.AlertType.ERROR, "Пожалуйста, заполните все поля").Show();
+            }
+        });
+        login_text_field.setOnAction(event -> {
+            if(login_text_field.getText().equals("")){
+                login_text_field.setText("User " + System.nanoTime()%1000);
+            }
+            if (!ipPass() && !localhost_radio_button.isSelected()) {
+                localhost_radio_button.fire();
+            }
+            if (!portPass) {
+                port2_text_field.setText("4444");
+            }
+            connect_button.getOnAction().handle(event);
+        });
 
-        back_button_cp.setOnMouseClicked(event -> controller.getStartPane().show());
+        back_button_cp.setOnAction(event -> controller.getStartPane().show());
 
         backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
         backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         background = new Background(backgroundImage);
+
+
         setBackground(background);
     }
 
     // Смотрим на правельность заполнения полей
     private void controlConnectButton(){
-        if(portPass && loginPass && ((ip1Pass && ip2Pass && ip3Pass && ip4Pass) || localhost_check_box.isSelected()))
+        if(portPass && loginPass && (ipPass() || localhost_radio_button.isSelected()))
             connect_button.setDisable(false);
         else
             connect_button.setDisable(true);

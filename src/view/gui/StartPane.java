@@ -61,20 +61,20 @@ public class StartPane extends VBox {
 
         this.setPrefSize(500, 300);
 
-        play_yourself.setOnMouseClicked(event -> {
+        play_yourself.setOnAction(event -> {
             Controller controller = new Controller(2, 2);
             ControllerGUI controllerGUI = new ControllerGUI(primaryStage, controller, 0);
             controllerGUI.startGame();
         });
-        play_server.setOnMouseClicked(event -> {
+        play_server.setOnAction(event -> {
             ControllerServer controllerServer = new ControllerServer(primaryStage);
             controllerServer.startServerSetting();
         });
-        play_client.setOnMouseClicked(event -> {
+        play_client.setOnAction(event -> {
             ControllerClient controllerClient = new ControllerClient(primaryStage, this);
             controllerClient.startClientSetting();
         });
-        play_server_client.setOnMouseClicked(event -> {
+        play_server_client.setOnAction(event -> {
 //            ControllerGameRoom controllerGameRoom = new ControllerGameRoom(primaryStage,false);
 //            controllerGameRoom.startServerSetting();
         });
