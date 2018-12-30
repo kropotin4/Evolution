@@ -3,6 +3,9 @@ package model;
 import model.decks.DropCardDeck;
 import model.decks.PlayerCardDeck;
 
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -117,6 +120,22 @@ public class Player implements Serializable {
     }
 
     public boolean killCreature(Creature creature){
+        ///region sound
+        try {
+            System.out.print("SOUND IS NOW PLAYING");
+            AudioInputStream in = AudioSystem.getAudioInputStream(new File("res\\sounds\\death16.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(in);
+            clip.start();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        ///endregion
+
         if(creatures.remove(creature)){
 
             for(int i = 0; i < communicationCreatures.size(); ++i){
