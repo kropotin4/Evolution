@@ -302,8 +302,8 @@ public class CreatureNode extends VBox {
         }
 
 
-        int satiety = playerPane.controller.getCreauterSatiety(this);
-        int hunger = playerPane.controller.getCreauterHunger(this);
+        int satiety = playerPane.controller.getCreatureSatiety(this);
+        int hunger = playerPane.controller.getCreatureHunger(this);
         eatButton.setText(satiety + "/" + hunger);
         if(playerPane.controller.isHibernating(this))
             eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,0,255,0.2); -fx-background-radius: 30;");

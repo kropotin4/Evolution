@@ -13,7 +13,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -306,8 +305,8 @@ public class PlayerPane extends ScrollPane {
         for(CreatureNode creatureNode : creatureNodes){
             if(creatureNode == exceptCreature) continue;
 
-            hunger = controller.getCreauterHunger(creatureNode);
-            satiety = controller.getCreauterSatiety(creatureNode);
+            hunger = controller.getCreatureHunger(creatureNode);
+            satiety = controller.getCreatureSatiety(creatureNode);
             if(satiety < hunger && satiety > 0){
                 creatureNode.setStyleType(1);
             }
