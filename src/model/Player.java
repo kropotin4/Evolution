@@ -77,6 +77,23 @@ public class Player implements Serializable {
         if(defendTrait.length == 0 || attacker.isAbsoluteAttackPossible(defender)) {
             attacker.attack(defender);
             table.useScavenger(attacker.getPlayer().playerNumber);
+
+            ///region sound
+            try {
+                System.out.print("Lion sound");
+                AudioInputStream in = AudioSystem.getAudioInputStream(new File("res\\sounds\\rar16.wav").getAbsoluteFile());
+                Clip clip = AudioSystem.getClip();
+                clip.open(in);
+                clip.start();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+            ///endregion
+
             return true;
         }
 
@@ -110,6 +127,22 @@ public class Player implements Serializable {
     }
     public boolean pirateCreature(Creature pirate, Creature victim){
         if(pirate.isPirated() || victim.getTotalSatiety() == 0 || victim.isFed()) return false;
+
+        ///region sound
+        try {
+            System.out.print("Seagull sound");
+            AudioInputStream in = AudioSystem.getAudioInputStream(new File("res\\sounds\\seagull16.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(in);
+            clip.start();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        ///endregion
 
         pirate.setPirated(true);
 
@@ -250,6 +283,29 @@ public class Player implements Serializable {
             //    table.getFood(2);
             //else
             table.getFood(1 + getGrazingActiveNumber());
+
+            ///region sound
+            try {
+                System.out.print("Mouse sound");
+                AudioInputStream in = AudioSystem.getAudioInputStream(new File("res\\sounds\\mouse16.wav").getAbsoluteFile());
+                Clip clip = AudioSystem.getClip();
+                clip.open(in);
+                clip.start();
+                if (getGrazingActiveNumber() != 0){
+                    System.out.print("Grazing sound");
+                    in = AudioSystem.getAudioInputStream(new File("res\\sounds\\grazing16.wav").getAbsoluteFile());
+                    clip = AudioSystem.getClip();
+                    clip.open(in);
+                    clip.start();
+                }
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+            ///endregion
 
             return true;
         }
