@@ -39,17 +39,17 @@ public class Server extends Thread {
         }
 
 
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    distributionForFreePlayers(controller.createClientInfoMessage());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        timer.schedule(timerTask, 500, 2000);
+//        timerTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//                try {
+//                    distributionForFreePlayers(controller.createClientInfoMessage());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        timer.schedule(timerTask, 500, 2000);
     }
 
 
@@ -109,6 +109,16 @@ public class Server extends Thread {
         for(PlayerThread playerThread : freePlayersThreads){
             if(playerThread.playerReady)
                 playerThread.sendMessage(message);
+        }
+    }
+    
+    public synchronized void distribution(Message message) throws IOException {
+        distributionForFreePlayers(message);
+
+        for(GamingRoom gamingRoom : gamingRooms){
+            for(PlayerThread playerThread : gamingRoom.playerThreads){
+                playerThread.sendMessage(message);
+            }
         }
     }
 

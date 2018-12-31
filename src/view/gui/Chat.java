@@ -1,66 +1,90 @@
 package view.gui;
 
 import control.ControllerGUI;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.HTMLEditor;
+import javafx.scene.web.WebView;
 
+import java.io.IOException;
 import java.util.Date;
 
-public class Chat {
+public class Chat extends VBox {
 
-    ControllerGUI controller;
+    String headerHTML =
+            "<html><head>" +
+            "<style>\n" +
+                    "   * {\n" +
+                    "    margin: 0;\n" +
+                    "    padding: 0;\n" +
+                    "   }\n" +
+            "</style>" +
+            "</head><body contentEditable=\"false\">";
+    String text = "";
+    String endHTML = "</body></html>";
 
-    TextArea chat;
-    TextField messageTextField;
-    Button sendMessageButton;
+    @FXML WebView text_chat_rp;
+    @FXML TextField text_input_rp;
+    @FXML Button send_button_chat_rp;
 
-    public Chat(ControllerGUI controller, TextArea chat, TextField messageTextField, Button sendMessageButton){
-        this.controller = controller;
-        this.chat = chat;
-        this.messageTextField = messageTextField;
-        this.sendMessageButton = sendMessageButton;
+    public Chat(){
 
-        chat.setWrapText(true);
+        FXMLLoader fxmlLoader = new FXMLLoader(
+                getClass().getResource("/Chat.fxml")
+        );
 
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
 
-        sendMessageButton.setOnMouseClicked(event -> {
-            sendMessage();
-        });
+        try {
+            fxmlLoader.load();
 
-        messageTextField.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.ENTER){
-                sendMessage();
-            }
-        });
-
-    }
-    private void sendMessage(){
-        if(!messageTextField.getText().isEmpty()){
-            controller.sendChatMessage(messageTextField.getText());
-            messageTextField.setText("");
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
         }
+
     }
+
+    @FXML
+    private void initialize(){
+
+    }
+
+    public Button getSendButton(){
+        return send_button_chat_rp;
+    }
+    public TextField getTextInputField(){
+        return text_input_rp;
+    }
+
 
     public void addMessage(String login, String message){
-        Date date = new Date();
 
-        if(!chat.getText().isEmpty())
-            chat.setText(chat.getText() + "\n" + login + ": " + message);
-        else
-            chat.setText(login + ": " + message);
+        text = text.concat("<xmp>" + login + ": " + message + "</xmp>");
+        update();
 
-        chat.positionCaret(chat.getText().length());
+        //text_chat_rp.positionCaret(text_chat_rp.getHtmlText().length());
     }
     public void addMessage(String message){
-        if(!chat.getText().isEmpty())
-            chat.setText(chat.getText() + "\n" + message);
-        else
-            chat.setText(message);
 
-        chat.positionCaret(chat.getText().length());
+        text = text.concat("<xmp>" + message + "</xmp>");
+        update();
+
+        //text_chat_rp.positionCaret(text_chat_rp.getHtmlText().length());
+    }
+
+    public void update(){
+        Platform.runLater(() -> {
+            text_chat_rp.getEngine().loadContent(headerHTML + text + endHTML);
+        });
+
     }
 
 }

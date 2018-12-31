@@ -160,6 +160,8 @@ public class Player implements Serializable {
             Clip clip = AudioSystem.getClip();
             clip.open(in);
             clip.start();
+
+            in.close();
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         } catch (IOException e) {

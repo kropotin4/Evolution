@@ -31,7 +31,7 @@ public class GamingRoom implements Serializable {
     boolean gameOn = false;
     boolean startGameWithFullPlayers = false;
 
-    Timer timer = new Timer();
+    //Timer timer = new Timer();
 
     public  GamingRoom(String roomName, int roomCapacity, int quarterCardCount, boolean startGameWithFullPlayers){
         this.roomName = roomName;
@@ -40,19 +40,19 @@ public class GamingRoom implements Serializable {
         controller = new ControllerGameRoom(this);
         playersReady = new boolean[roomCapacity];
 
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                for(PlayerThread playerThread : playerThreads){
-                    try {
-                        playerThread.sendMessage(new RoomInfoMessage(roomName, roomCapacity, getPlayersLogins()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        timer.schedule(timerTask, 500, 2000);
+//        TimerTask timerTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//                for(PlayerThread playerThread : playerThreads){
+//                    try {
+//                        playerThread.sendMessage(new RoomInfoMessage(roomName, roomCapacity, getPlayersLogins()));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        };
+//        timer.schedule(timerTask, 500, 2000);
     }
 
     public void addPlayerThread(PlayerThread playerThread){
@@ -87,9 +87,16 @@ public class GamingRoom implements Serializable {
     public GamingRoomInfo getGamingRoomInfo(){
         return new GamingRoomInfo(roomName, id, playerThreads.size(), roomCapacity);
     }
+    public GamingRoomInfo getFullGamingRoomInfo(){
+        return new GamingRoomInfo(roomName, id, playerThreads.size(), roomCapacity, getPlayersReady(), getPlayersLogins());
+    }
 
     public int getRoomCapacity() {
         return roomCapacity;
+    }
+
+    public int getQuarterCardCount() {
+        return quarterCardCount;
     }
 
     public int getPlayerNumber(){

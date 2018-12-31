@@ -29,8 +29,7 @@ public class ServerSettingPane extends AnchorPane {
     @FXML Slider max_room_slider_ssp;
     @FXML Button start_button;
     @FXML ImageView check_image;
-    @FXML Label cards_number_label_sp;
-    @FXML Button back_button_cp;
+    @FXML Button back_button_ssp;
 
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
@@ -110,6 +109,7 @@ public class ServerSettingPane extends AnchorPane {
 
         start_button.setOnMouseClicked(event -> controller.startServer());
         port_text_field_ssp.setOnAction(event -> controller.startServer());
+        back_button_ssp.setOnAction(event -> controller.getStartPane().show());
 
         backgroundSize = new BackgroundSize(serverImage.getWidth(), serverImage.getHeight(), false, false, true, true);
         backgroundImage = new BackgroundImage(serverImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);

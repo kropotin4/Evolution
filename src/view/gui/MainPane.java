@@ -35,9 +35,10 @@ public class MainPane extends BorderPane {
     @FXML private AnchorPane pane;
     @FXML private VBox players_pane;
 
-    @FXML private TextArea text_chat;
-    @FXML private TextField text_input;
-    @FXML private Button send_button_chat;
+    @FXML private AnchorPane chat_pane_mp;
+//    @FXML private TextArea text_chat;
+//    @FXML private TextField text_input;
+//    @FXML private Button send_button_chat;
 
     @FXML private AnchorPane playing_pane;
     PlayerPane playerPane;
@@ -131,11 +132,21 @@ public class MainPane extends BorderPane {
     @FXML
     private void initialize(){
 
-
-
         addTraitPane = new AddTraitPane(controler);
         deckPane = new DeckPane(controler);
-        chat = new Chat(controler, text_chat, text_input, send_button_chat);
+
+        chat = new Chat();
+        chat_pane_mp.getChildren().add(chat);
+        chat.getSendButton().setOnMouseClicked(event -> {
+            if(!chat.getTextInputField().getText().isEmpty()){
+                controler.sendChatMessage(chat.getTextInputField().getText());
+                chat.getTextInputField().setText("");
+            }
+        });
+        AnchorPane.setTopAnchor(chat, 3.0);
+        AnchorPane.setRightAnchor(chat, 3.0);
+        AnchorPane.setBottomAnchor(chat, 3.0);
+        AnchorPane.setLeftAnchor(chat, 3.0);
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
