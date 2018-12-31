@@ -8,6 +8,9 @@ import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -105,6 +108,20 @@ public class StartPane extends VBox {
 
     public void show(){
         //Scene scene = new Scene(this, Color.TRANSPARENT);
+        ///region accelerators
+        play_yourself.getScene().getAccelerators().put(
+                new KeyCodeCombination(KeyCode.A, KeyCombination.SHORTCUT_DOWN),
+                () -> play_yourself.fire());
+        play_server.getScene().getAccelerators().put(
+                new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN),
+                () -> play_server.fire());
+        play_client.getScene().getAccelerators().put(
+                new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN),
+                () -> play_client.fire());
+        play_server_client.getScene().getAccelerators().put(
+                new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN),
+                () -> play_server_client.fire());
+        ///endregion
 
         primaryStage.setMinWidth(this.getPrefWidth() + 20);
         primaryStage.setMinHeight(this.getPrefHeight() + 40);
