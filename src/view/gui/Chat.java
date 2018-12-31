@@ -55,7 +55,6 @@ public class Chat extends VBox {
 
     @FXML
     private void initialize(){
-
     }
 
     public Button getSendButton(){
@@ -82,10 +81,7 @@ public class Chat extends VBox {
     }
 
     public void update(){
-        Platform.runLater(() -> {
-            text_chat_rp.getEngine().loadContent(headerHTML + text + endHTML);
-        });
-
+        Platform.runLater(() -> text_chat_rp.getEngine().loadContent(headerHTML + text + endHTML));
     }
 
 }
