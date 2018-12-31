@@ -106,17 +106,18 @@ public class ControllerClient {
         roomCapacity = clientInfoMessage.getRoomCapacity();
         gamingRoomInfo = clientInfoMessage.getGamingRoomInfo();
 
-        Platform.runLater(() ->{
-            clientPane.update();
-        });
+        Platform.runLater(() -> clientPane.update());
 
     }
     public void updateRoom(RoomInfoMessage roomInfoMessage){
-        Platform.runLater(() -> {
-            roomPane.update(roomInfoMessage);
-        });
+        Platform.runLater(() -> roomPane.update(roomInfoMessage));
     }
-    // true - соединился с сервером
+    /**
+     * @param login name of player
+     * @param ip server IP address
+     * @param port server port
+     * @return true if successfully connected to server
+     */
     public boolean connectToServer(String login, String ip, int port){
         try {
             client = new Client(this, login, ip, port);

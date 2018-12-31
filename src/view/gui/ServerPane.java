@@ -32,6 +32,7 @@ public class ServerPane extends AnchorPane {
     @FXML Label player_count_label_sp;
     @FXML Button stop_server_button_sp;
     @FXML VBox mystery_box;
+    int mysteryBoxCounter = 0;
 
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
@@ -61,10 +62,23 @@ public class ServerPane extends AnchorPane {
 
     @FXML
     private void initialize(){
+        String[] mysteryBoxTexts = {
+                "Plz don't touch",
+                "I said don't touch",
+                "Do not touch PLEASE",
+                "DO. NOT. TOUCH.",
+        };
+        String finalMysteryBoxText = "OK, you won...";
         stop_server_button_sp.setOnMouseEntered(event -> {
-            System.out.println("something should change now: " + Math.random());
-            stop_server_button_sp.setTranslateX((Math.random() - 0.5) * (mystery_box.getWidth() - stop_server_button_sp.getWidth()));
-            stop_server_button_sp.setTranslateY((Math.random() - 0.5) * (mystery_box.getHeight() - stop_server_button_sp.getHeight()));
+            if (mysteryBoxCounter < mysteryBoxTexts.length) {
+                stop_server_button_sp.setText(mysteryBoxTexts[mysteryBoxCounter++]);
+                stop_server_button_sp.setTranslateX((Math.random() - 0.5) * (mystery_box.getWidth() - stop_server_button_sp.getWidth()));
+                stop_server_button_sp.setTranslateY((Math.random() - 0.5) * (mystery_box.getHeight() - stop_server_button_sp.getHeight()));
+            } else {
+                stop_server_button_sp.setText(finalMysteryBoxText);
+                stop_server_button_sp.setTranslateX(0);
+                stop_server_button_sp.setTranslateY(0);
+            }
         });
         stop_server_button_sp.setOnAction(event -> controller.stopServer());
     }
