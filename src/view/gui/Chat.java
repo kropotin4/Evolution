@@ -24,6 +24,7 @@ public class Chat extends VBox {
                     "   * {\n" +
                     "    margin: 0;\n" +
                     "    padding: 0;\n" +
+                    "    word-wrap: break-word;\n" +
                     "   }\n" +
             "</style>" +
             "</head><body contentEditable=\"false\">";
