@@ -33,6 +33,7 @@ public class ServerPane extends AnchorPane {
     @FXML Button stop_server_button_sp;
     @FXML VBox mystery_box;
     int mysteryBoxCounter = 0;
+    int mysteryBoxCounterDelay = 3;
 
     BackgroundSize backgroundSize;
     BackgroundImage backgroundImage;
@@ -70,8 +71,8 @@ public class ServerPane extends AnchorPane {
         };
         String finalMysteryBoxText = "OK, you won...";
         stop_server_button_sp.setOnMouseEntered(event -> {
-            if (mysteryBoxCounter < mysteryBoxTexts.length) {
-                stop_server_button_sp.setText(mysteryBoxTexts[mysteryBoxCounter++]);
+            if (mysteryBoxCounter < mysteryBoxTexts.length * mysteryBoxCounterDelay) {
+                if (mysteryBoxCounter++ % mysteryBoxCounterDelay == 0) stop_server_button_sp.setText(mysteryBoxTexts[mysteryBoxCounter / mysteryBoxCounterDelay]);
                 stop_server_button_sp.setTranslateX((Math.random() - 0.5) * (mystery_box.getWidth() - stop_server_button_sp.getWidth()));
                 stop_server_button_sp.setTranslateY((Math.random() - 0.5) * (mystery_box.getHeight() - stop_server_button_sp.getHeight()));
             } else {
