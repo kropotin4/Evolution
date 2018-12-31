@@ -62,7 +62,7 @@ public class StartPane extends VBox {
     private void initialize(){
         primaryStage.getIcons().add(icon);
 
-        this.setPrefSize(500, 300);
+        //this.setPrefSize(500, 300);
 
         play_yourself.setOnAction(event -> {
             Controller controller = new Controller(2, 2);
@@ -70,7 +70,7 @@ public class StartPane extends VBox {
             controllerGUI.startGame();
         });
         play_server.setOnAction(event -> {
-            ControllerServer controllerServer = new ControllerServer(primaryStage);
+            ControllerServer controllerServer = new ControllerServer(primaryStage, this);
             controllerServer.startServerSetting();
         });
         play_client.setOnAction(event -> {

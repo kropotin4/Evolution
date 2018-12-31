@@ -2,7 +2,9 @@ package control;
 
 import model.Phase;
 import server.GamingRoom;
+import server.GamingRoomInfo;
 import server.message.Message;
+import server.message.RoomInfoMessage;
 
 import java.io.IOException;
 
@@ -15,13 +17,6 @@ public class ControllerGameRoom {
     Controller controller;
 
 
-    int playerTurn; // Меняется в doNextMove()
-
-    int playerNumber = 2; // Количество игроков
-    int quarterCardCount = 1; // количество четвертей карт
-
-    int connectPlayer; // Сколько в данный момент подключено игроков
-
     public ControllerGameRoom(GamingRoom gamingRoom){
         this.gamingRoom = gamingRoom;
     }
@@ -30,8 +25,9 @@ public class ControllerGameRoom {
 
     // Создаем Controller, рассылаем StartMessage
     public void startGame(){
+        System.out.println("ControllerGameRoom: startGame (playerNum: " + gamingRoom.getPlayerNumber() + ", qurtCards: " + gamingRoom.getQuarterCardCount() + ")");
         stage = 2;
-        controller = new Controller(quarterCardCount, playerNumber);
+        controller = new Controller(gamingRoom.getQuarterCardCount(), gamingRoom.getPlayerNumber());
 
         for(int i = 0; i < gamingRoom.getRoomCapacity(); ++i){
             controller.setLogin(gamingRoom.getPlayerThreads().get(i).getLogin(), i);
@@ -53,40 +49,23 @@ public class ControllerGameRoom {
         gamingRoom.distribution(message);
     }
 
+    public RoomInfoMessage createRoomInfoMessage(){
+        return new RoomInfoMessage(getFullGamingRoomInfo());
+    }
+
     ////////////
 
-    public void doNextMove(){
-        playerTurn = controller.doNextMove();
-    }
 
     /////////////
-    public void setPlayerNumber(int playerNumber){
-        this.playerNumber = playerNumber;
-    }
-    public void setQuarterCardCount(int quarterCardCount){
-        this.quarterCardCount = quarterCardCount;
-    }
 
-    public int getPlayersNumber(){
-        return playerNumber;
-    }
-    public int getQuarterCardCount() {
-        return quarterCardCount;
-    }
 
-    public void setLogin(String login, int playerNumber){
-//        if(stage == 1){
-//            Platform.runLater(() -> {
-//                // Update UI here.
-//                connectionPane.setLogin(login, playerNumber);
-//                //controller.setLogin(login, playerTurn);
-//            });
-//        }
-    }
     ///////////////
 
     public Phase getCurrentPhase(){
         return controller.getCurrentPhase();
+    }
+    public GamingRoomInfo getFullGamingRoomInfo(){
+        return gamingRoom.getFullGamingRoomInfo();
     }
 
     ///////////////

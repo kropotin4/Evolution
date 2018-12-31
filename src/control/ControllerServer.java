@@ -9,6 +9,7 @@ import server.message.ClientInfoMessage;
 import server.message.CreateRoomMessage;
 import view.gui.ServerPane;
 import view.gui.ServerSettingPane;
+import view.gui.StartPane;
 
 import java.io.IOException;
 import java.net.*;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 public class ControllerServer {
 
     Stage primaryStage;
+    StartPane startPane;
 
     Server server;
 
@@ -31,8 +33,9 @@ public class ControllerServer {
     final int MAX_PORT_NUMBER = 65536;
     int maxRoom = 1;
 
-    public ControllerServer(Stage primaryStage){
+    public ControllerServer(Stage primaryStage, StartPane startPane){
         this.primaryStage = primaryStage;
+        this.startPane = startPane;
 
         try(final DatagramSocket socket = new DatagramSocket()){
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
@@ -150,5 +153,9 @@ public class ControllerServer {
         return server.getRoomsInfo();
     }
 
+
+    public StartPane getStartPane(){
+        return startPane;
+    }
     //////////////////
 }

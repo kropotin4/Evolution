@@ -61,6 +61,12 @@ public class ServerListener extends Thread {
                     controller.startGame((StartMessage) mesObject);
                     isGameOn = true;
                 }
+                else if(mesObject instanceof Message){
+                    if(((Message) mesObject).getMessageType() == MessageType.CHAT){
+                        System.out.println("Received Chat message (in room)");
+                        controller.addMessageToRoomChat(((Message) mesObject).getMes());
+                    }
+                }
             }
             else{
                 if(mesObject instanceof Message){

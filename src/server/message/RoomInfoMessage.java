@@ -1,26 +1,29 @@
 package server.message;
 
+import server.GamingRoomInfo;
+
 public class RoomInfoMessage extends Message {
 
-    final String roomName;
-    final int roomCapacity;
-    final String[] players;
 
-    public RoomInfoMessage(String roomName, int roomCapacity, String[] players){
-        this.roomName = roomName;
-        this.roomCapacity = roomCapacity;
-        this.players = players;
+    final GamingRoomInfo gamingRoomInfo;
+
+    public RoomInfoMessage(GamingRoomInfo gamingRoomInfo){
+        this.gamingRoomInfo = gamingRoomInfo;
     }
 
     public String getRoomName() {
-        return roomName;
+        return gamingRoomInfo.roomName;
     }
 
     public int getRoomCapacity() {
-        return roomCapacity;
+        return gamingRoomInfo.roomCapacity;
     }
 
-    public String[] getPlayers() {
-        return players;
+    public String[] getPlayersLogins() {
+        return gamingRoomInfo.playersLogins;
+    }
+
+    public boolean[] getPlayersReady() {
+        return gamingRoomInfo.playersReady;
     }
 }

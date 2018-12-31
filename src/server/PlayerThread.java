@@ -73,19 +73,42 @@ public class PlayerThread extends Thread {
             }
             else if(message instanceof EnterTheRoomMessage){
                 playerNumber = controllerServer.enterTheRoom(this, ((EnterTheRoomMessage) message).getRoomId());
+
+                try {
+                    controllerGameRoom.distribution(controllerGameRoom.createRoomInfoMessage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
-            return;
+            try {
+                server.distribution(controllerServer.createClientInfoMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        // В комнате, но еще не играет
         else if(!gameOn){
             System.out.println(getName() + ": received message from room player");
 
-            if(message instanceof ReadyToPlayMessage){
+            if(message.getMessageType() == MessageType.CHAT){
+                try {
+                    controllerGameRoom.distribution(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if(message instanceof ReadyToPlayMessage){
                 controllerGameRoom.playerReadyToPlay(playerNumber);
             }
 
-            return;
+            try {
+                controllerGameRoom.distribution(controllerGameRoom.createRoomInfoMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        // Играет
         else {
 
             if (message.getMessageType() == MessageType.CHAT) {
