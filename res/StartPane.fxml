@@ -10,22 +10,22 @@
          <children>
             <HBox alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="100.0" prefWidth="400.0">
                <children>
-                  <Button fx:id="play_yourself" alignment="TOP_LEFT" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Игра с самим собой" wrapText="true"/>
+                  <Button fx:id="play_yourself" alignment="TOP_LEFT" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="true" prefHeight="30.0" prefWidth="150.0" text="_Игра с самим собой" wrapText="true"/>
                </children>
             </HBox>
             <HBox alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="100.0" prefWidth="400.0">
                <children>
-                  <Button fx:id="play_server" alignment="TOP_LEFT" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Включить сервер" wrapText="true" />
+                  <Button fx:id="play_server" alignment="TOP_LEFT" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="true" prefHeight="30.0" prefWidth="150.0" text="_Включить сервер" wrapText="true" />
                </children>
             </HBox>
             <HBox alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="100.0" prefWidth="400.0">
                <children>
-                  <Button fx:id="play_client" alignment="TOP_LEFT" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Игра как клиент" wrapText="true" />
+                  <Button fx:id="play_client" alignment="TOP_LEFT" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="true" prefHeight="30.0" prefWidth="150.0" text="Игра как _клиент" wrapText="true" />
                </children>
             </HBox>
             <HBox alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="100.0" prefWidth="400.0">
                <children>
-                  <Button fx:id="play_server_client" alignment="TOP_LEFT" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Игра как сервер-клиент" wrapText="true" />
+                  <Button fx:id="play_server_client" alignment="TOP_LEFT" contentDisplay="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="true" prefHeight="30.0" prefWidth="150.0" text="Игра как _сервер-клиент" wrapText="true" />
                </children>
             </HBox>
          </children></VBox>
