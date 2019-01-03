@@ -17,6 +17,8 @@ public class CommonCardDeck implements Serializable {
             deck.addAll(oneQuarter());
 
         deck = shuffle(deck);
+
+        System.out.println("CommonCardDeck create: " + deck.size());
     }
 
     public Card getCard(){

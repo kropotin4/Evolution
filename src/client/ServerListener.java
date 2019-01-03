@@ -64,7 +64,7 @@ public class ServerListener extends Thread {
                 else if(mesObject instanceof Message){
                     if(((Message) mesObject).getMessageType() == MessageType.CHAT){
                         System.out.println("Received Chat message (in room)");
-                        controller.addMessageToRoomChat(((Message) mesObject).getMes());
+                        controller.addMessageToRoomChat(((ChatMessage) mesObject).login,((Message) mesObject).getMes());
                     }
                 }
             }
@@ -72,7 +72,7 @@ public class ServerListener extends Thread {
                 if(mesObject instanceof Message){
                     if(((Message) mesObject).getMessageType() == MessageType.CHAT){
                         System.out.println("Received Chat message");
-                        controller.getControllerGUI().addMessageToChat(((Message) mesObject).getMes());
+                        controller.getControllerGUI().addMessageToChat(((ChatMessage) mesObject).login,((Message) mesObject).getMes());
                     }
                     else if(((Message) mesObject).getMessageType() == MessageType.SERVER){
                         System.out.println("Received Server message");

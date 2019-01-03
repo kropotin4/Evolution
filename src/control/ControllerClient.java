@@ -149,6 +149,9 @@ public class ControllerClient {
     public void addMessageToRoomChat(String message){
         roomPane.getChat().addMessage(message);
     }
+    public void addMessageToRoomChat(String login, String message){
+        roomPane.getChat().addMessage(login, message);
+    }
     //////////////////
 
     public void setLogin(String login){

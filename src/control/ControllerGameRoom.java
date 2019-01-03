@@ -1,6 +1,7 @@
 package control;
 
 import model.Phase;
+import model.Table;
 import server.GamingRoom;
 import server.GamingRoomInfo;
 import server.message.Message;
@@ -55,6 +56,9 @@ public class ControllerGameRoom {
 
     ////////////
 
+    public void setTable(Table table){
+        controller.setTable(table);
+    }
 
     /////////////
 

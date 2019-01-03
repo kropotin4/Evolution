@@ -212,7 +212,7 @@ public class CreatureNode extends VBox {
 
                 //endregion
             }
-            else if(trait == Trait.PREDATOR){
+            else if(trait == Trait.PREDATOR || trait == Trait.HIGH_BODY){
                 //region PREDATOR
                 Label plusOne = new Label("+1");
                 plusOne.setMinSize(15, 15);

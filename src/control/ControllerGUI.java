@@ -98,6 +98,9 @@ public class ControllerGUI {
     public void addMessageToChat(String message){
         mainPane.getChat().addMessage(message);
     }
+    public void addMessageToChat(String login, String message){
+        mainPane.getChat().addMessage(login, message);
+    }
 
     public void passPlayer(){
         controller.setPlayerPass(playerNumber);

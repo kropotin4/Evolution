@@ -124,13 +124,14 @@ public class PlayerThread extends Thread {
 
                 System.out.println("Current player: " + message.getTable().getPlayerTurn());
 
+                controllerGameRoom.setTable(message.getTable());
                 String serverMessege = message.getMes();
 
             switch (controllerGameRoom.getCurrentPhase()){
                 case GROWTH:
 
                     if(message.getTable().isEndMove())
-                        serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
+                        serverMessege = serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
 
 
                     try {
@@ -143,7 +144,7 @@ public class PlayerThread extends Thread {
                 case EATING:
 
                     if(message.getTable().isEndMove())
-                        serverMessege.concat("\nПосле этой фазы будет определяться победитель");
+                        serverMessege = serverMessege.concat("\nПосле этой фазы будет определяться победитель");
 
                     try {
                         controllerGameRoom.distribution(new ServerMessage(message.getTable(), serverMessege));

@@ -47,6 +47,8 @@ public class Table implements Serializable {
     }
 
     public void doNextMove(){
+        System.out.println("doNextMove: cards = " + commonDeck.getCardCount());
+
         boolean allPass = true;
         int i = 0, oldTurn = playerTurn;
         step++;
@@ -143,26 +145,37 @@ public class Table implements Serializable {
         }
 
         ///region Раздача карт
+
+        int[] player_cards = new int[players.size()];
+
+        int i = 0;
+        int max = 0;
         for(Player player : players){
-            player.getCard();
+
+            if(player.creatures.size() == 0 && player.getPlayerCardsNumber() == 0)
+                player_cards[i] = initCardsNumber;
+            else
+                player_cards[i] = player.creatures.size() + 1;
+
+            if(player_cards[i] > max)
+                max = player_cards[i];
+
             player.setPass(false);
+            ++i;
         }
 
-        int max = 0;
-        for(Player player : players)
-            if(max < player.getCreatures().size())
-                max = player.getCreatures().size();
-
         for(int g = 0; g < max; ++g){
+            i = 0;
             for(Player player : players){
-                if(player.getCreatures().size() > g)
+                if(player_cards[i] > g)
                     player.getCard();
+                ++i;
             }
         }
         ///endregion
     }
     public boolean isEndMove(){
-        return commonDeck.getCardCount() == 0;
+        return commonDeck.getCardCount() <= 0;
     }
 
     public CommonCardDeck getCommonDeck() {
