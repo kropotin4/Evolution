@@ -22,6 +22,7 @@ import java.io.IOException;
 public class ClientPane extends AnchorPane {
 
     Stage primaryStage;
+    Scene scene = new Scene(this, Color.TRANSPARENT);
 
     ControllerClient controller;
 
@@ -42,7 +43,7 @@ public class ClientPane extends AnchorPane {
         this.primaryStage = primaryStage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/ClientPane.fxml")
+                getClass().getResource("/fxml/ClientPane.fxml")
         );
 
         fxmlLoader.setRoot(this);
@@ -109,7 +110,6 @@ public class ClientPane extends AnchorPane {
     }
 
     public void show(){
-        Scene scene = new Scene(this, Color.TRANSPARENT);
 
         primaryStage.setMinWidth(this.getPrefWidth() + 20);
         primaryStage.setMinHeight(this.getPrefHeight() + 40);

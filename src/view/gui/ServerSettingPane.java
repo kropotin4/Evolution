@@ -46,7 +46,7 @@ public class ServerSettingPane extends AnchorPane {
         this.primaryStage = primaryStage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/ServerSettingPane.fxml")
+                getClass().getResource("/fxml/ServerSettingPane.fxml")
         );
 
         fxmlLoader.setRoot(this);
@@ -103,6 +103,7 @@ public class ServerSettingPane extends AnchorPane {
             else port_text_field_ssp.setText(oldValue);
         });
 
+        controller.setMaxRoom((int)max_room_slider_ssp.getValue());
         max_room_slider_ssp.valueProperty().addListener((observable, oldValue, newValue )-> {
             controller.setMaxRoom(newValue.intValue());
         });

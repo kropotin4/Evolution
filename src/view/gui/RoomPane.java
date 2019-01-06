@@ -1,24 +1,18 @@
 package view.gui;
 
 import control.ControllerClient;
-import control.ControllerGameRoom;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import server.message.ChatMessage;
 import server.message.RoomInfoMessage;
@@ -34,7 +28,8 @@ public class RoomPane extends AnchorPane {
 
     @FXML Label room_name_label_rp;
     @FXML VBox connection_vbox;
-    @FXML Button ready_button_cp;
+    @FXML Button ready_button_rp;
+    @FXML Button back_button_rp;
 
     @FXML AnchorPane chat_pane_rp;
     Chat chat;
@@ -48,7 +43,7 @@ public class RoomPane extends AnchorPane {
         this.controller = controller;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/RoomPane.fxml")
+                getClass().getResource("/fxml/RoomPane.fxml")
         );
 
         fxmlLoader.setRoot(this);
@@ -66,11 +61,14 @@ public class RoomPane extends AnchorPane {
 
     @FXML
     private void initialize(){
-        ready_button_cp.setOnMouseClicked(event -> {
+        ready_button_rp.setOnMouseClicked(event -> {
             controller.readyToPlay();
-            ready_button_cp.setDisable(true);
+            ready_button_rp.setDisable(true);
         });
 
+        back_button_rp.setOnMouseClicked(event -> {
+            controller.exitFromRoom();
+        });
 
         chat = new Chat();
         chat_pane_rp.getChildren().add(chat);
@@ -92,7 +90,7 @@ public class RoomPane extends AnchorPane {
 
     public void update(RoomInfoMessage roomInfoMessage){
         if(controller.getStage() != 3)
-            ready_button_cp.setDisable(false);
+            ready_button_rp.setDisable(false);
         room_name_label_rp.setText("Комната \"" + roomInfoMessage.getRoomName() + "\"");
 
         connection_vbox.getChildren().clear();

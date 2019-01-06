@@ -25,19 +25,17 @@ public class GamingRoom implements Serializable {
     ControllerGameRoom controller;
 
     ArrayList<PlayerThread> playerThreads = new ArrayList<>();
-    int readyNumber = 0;
     boolean[] playersReady;
 
-    boolean gameOn = false;
-    boolean startGameWithFullPlayers = false;
+
 
     //Timer timer = new Timer();
 
-    public  GamingRoom(String roomName, int roomCapacity, int quarterCardCount, boolean startGameWithFullPlayers){
+    public  GamingRoom(String roomName, int roomCapacity, int quarterCardCount, Server server){
         this.roomName = roomName;
         this.roomCapacity = roomCapacity;
         this.quarterCardCount = quarterCardCount;
-        controller = new ControllerGameRoom(this);
+        controller = new ControllerGameRoom(this, server);
         playersReady = new boolean[roomCapacity];
 
 //        TimerTask timerTask = new TimerTask() {
@@ -66,20 +64,23 @@ public class GamingRoom implements Serializable {
             System.out.println(roomName + ": add new player fails");
         }
     }
+    public void deletePlayerThread(PlayerThread playerThread){
+        playerThreads.remove(playerThread);
+        playersReady[playerThread.getPlayerNumber()] = false;
+    }
 
+    //////////////////////
     public void startGameDistribution(Table table) throws IOException {
         for(int i = 0; i < playerThreads.size(); ++i){
             playerThreads.get(i).sendMessage(new StartMessage(table, i, "Игра началось (вы - " + enumerate[i] + ")"));
-            playerThreads.get(i).gameOn = true;
         }
     }
-
     public synchronized void distribution(Message message) throws IOException {
         for(PlayerThread playerThread : playerThreads){
             playerThread.sendMessage(message);
         }
     }
-
+    //////////////////////
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
@@ -94,7 +95,9 @@ public class GamingRoom implements Serializable {
     public int getRoomCapacity() {
         return roomCapacity;
     }
-
+    public int getId() {
+        return id;
+    }
     public int getQuarterCardCount() {
         return quarterCardCount;
     }
@@ -104,11 +107,17 @@ public class GamingRoom implements Serializable {
     }
     public void setPlayerReady(int playerNumber){
         playersReady[playerNumber] = true;
-        readyNumber++;
 
-        if(readyNumber == roomCapacity){
+        if(isAllReady()){
             controller.startGame();
         }
+    }
+    public boolean isAllReady(){
+        for(boolean ready : playersReady) {
+            if (!ready) return false;
+        }
+
+        return true;
     }
     public ArrayList<PlayerThread> getPlayerThreads() {
         return playerThreads;

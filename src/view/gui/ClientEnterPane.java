@@ -57,7 +57,7 @@ public class ClientEnterPane extends AnchorPane {
         this.primaryStage = primaryStage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/ClientEnterPane.fxml")
+                getClass().getResource("/fxml/ClientEnterPane.fxml")
         );
 
         fxmlLoader.setRoot(this);

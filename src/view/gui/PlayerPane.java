@@ -60,7 +60,7 @@ public class PlayerPane extends ScrollPane {
         this.playerNumber = playerNumber;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/PlayerPane.fxml")
+                getClass().getResource("/fxml/PlayerPane.fxml")
         );
 
         fxmlLoader.setRoot(this);

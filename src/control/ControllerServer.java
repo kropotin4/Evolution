@@ -7,6 +7,8 @@ import server.PlayerThread;
 import server.Server;
 import server.message.ClientInfoMessage;
 import server.message.CreateRoomMessage;
+import server.message.EnterTheRoomMessage;
+import server.message.Message;
 import view.gui.ServerPane;
 import view.gui.ServerSettingPane;
 import view.gui.StartPane;
@@ -31,7 +33,7 @@ public class ControllerServer {
     int port = 4444; //
     final int MIN_PORT_NUMBER = 1000;
     final int MAX_PORT_NUMBER = 65536;
-    int maxRoom = 1;
+    int maxRoom = 4;
 
     public ControllerServer(Stage primaryStage, StartPane startPane){
         this.primaryStage = primaryStage;
@@ -83,6 +85,34 @@ public class ControllerServer {
         return server.enterTheRoom(playerThread, roomId);
     }
     ////////////////////////
+
+    synchronized public void messageHandler(Message message, PlayerThread playerThread){
+        if(message instanceof CreateRoomMessage){
+            createRoom((CreateRoomMessage) message);
+        }
+        else if(message instanceof EnterTheRoomMessage){
+            int playerNumber = enterTheRoom(playerThread, ((EnterTheRoomMessage) message).getRoomId());
+            playerThread.setPlayerNumber(playerNumber);
+            playerThread.setInRoom(true);
+
+            try {
+                playerThread.getControllerGameRoom().distribution(playerThread.getControllerGameRoom().createRoomInfoMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            server.distribution(createClientInfoMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Platform.runLater(()->{
+            serverPane.update();
+        });
+
+    }
 
     public ClientInfoMessage createClientInfoMessage(){
         return new ClientInfoMessage(

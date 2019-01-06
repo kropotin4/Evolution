@@ -4,7 +4,6 @@ import control.ControllerServer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,7 +15,6 @@ import javafx.stage.Stage;
 import server.GamingRoomInfo;
 
 import java.io.IOException;
-import java.util.Random;
 
 public class ServerPane extends AnchorPane {
 
@@ -47,7 +45,7 @@ public class ServerPane extends AnchorPane {
         this.primaryStage = primaryStage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/ServerPane.fxml")
+                getClass().getResource("/fxml/ServerPane.fxml")
         );
 
         fxmlLoader.setRoot(this);

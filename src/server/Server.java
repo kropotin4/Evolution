@@ -86,7 +86,9 @@ public class Server extends Thread {
     /////////
 
     public void addRoom(String roomName, int roomCapacity, int quarterCardCount){
-        GamingRoom gamingRoom = new GamingRoom(roomName, roomCapacity, quarterCardCount, false);
+        if(gamingRooms.size() >= controller.getMaxRoom()) return;
+
+        GamingRoom gamingRoom = new GamingRoom(roomName, roomCapacity, quarterCardCount, this);
         gamingRooms.add(gamingRoom);
     }
     public int enterTheRoom(PlayerThread playerThread, int roomId){
@@ -102,7 +104,21 @@ public class Server extends Thread {
 
         return -1;
     }
+    public void exitFromRoom(PlayerThread playerThread, int roomId){
 
+        for(GamingRoom gamingRoom : gamingRooms){
+            if(gamingRoom.id == roomId){
+                gamingRoom.deletePlayerThread(playerThread);
+                freePlayersThreads.add(playerThread);
+            }
+        }
+
+        try {
+            distribution(controller.createClientInfoMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     //////////
 
     public synchronized void distributionForFreePlayers(Message message) throws IOException {

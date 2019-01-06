@@ -113,7 +113,7 @@ public class MainPane extends BorderPane {
         //primaryStage.setScene(scene);
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/MainPane.fxml")
+                getClass().getResource("/fxml/MainPane.fxml")
         );
 
         fxmlLoader.setRoot(this);

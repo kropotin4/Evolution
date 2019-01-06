@@ -60,7 +60,7 @@ public class CreatureNode extends VBox {
         this.creatureId = creatureId;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/CreatureNode.fxml")
+                getClass().getResource("/fxml/CreatureNode.fxml")
         );
 
         //fxmlLoader.setRoot(this);

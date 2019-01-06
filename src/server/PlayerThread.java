@@ -31,7 +31,6 @@ public class PlayerThread extends Thread {
 
     boolean playerReady = false;
     boolean inRoom = false;
-    boolean gameOn = false;
 
     public PlayerThread(ControllerServer controllerServer, Server server, Socket socket, int number) throws IOException{
         super("PlayerThread " + number);
@@ -64,101 +63,21 @@ public class PlayerThread extends Thread {
     public void messageHandler(Message message){
         System.out.println(getName() + ": messageHandler");
 
-        // Он не в игровой комнате.
+        // Он не в игровой комнате
         if(!inRoom){
             System.out.println(getName() + ": received message from free player");
 
-            if(message instanceof CreateRoomMessage){
-                controllerServer.createRoom((CreateRoomMessage) message);
-            }
-            else if(message instanceof EnterTheRoomMessage){
-                playerNumber = controllerServer.enterTheRoom(this, ((EnterTheRoomMessage) message).getRoomId());
+            controllerServer.messageHandler(message, this);
 
-                try {
-                    controllerGameRoom.distribution(controllerGameRoom.createRoomInfoMessage());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            try {
-                server.distribution(controllerServer.createClientInfoMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-        // В комнате, но еще не играет
-        else if(!gameOn){
+        // В комнате
+        else {
             System.out.println(getName() + ": received message from room player");
 
-            if(message.getMessageType() == MessageType.CHAT){
-                try {
-                    controllerGameRoom.distribution(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            else if(message instanceof ReadyToPlayMessage){
-                controllerGameRoom.playerReadyToPlay(playerNumber);
-            }
+            controllerGameRoom.messageHandler(message, this);
 
-            try {
-                controllerGameRoom.distribution(controllerGameRoom.createRoomInfoMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-        // Играет
-        else {
 
-            if (message.getMessageType() == MessageType.CHAT) {
-
-                try {
-                    controllerGameRoom.distribution(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            else {
-
-                System.out.println("Current player: " + message.getTable().getPlayerTurn());
-
-                controllerGameRoom.setTable(message.getTable());
-                String serverMessege = message.getMes();
-
-            switch (controllerGameRoom.getCurrentPhase()){
-                case GROWTH:
-
-                    if(message.getTable().isEndMove())
-                        serverMessege = serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
-
-
-                    try {
-                        controllerGameRoom.distribution(new ServerMessage(message.getTable(), serverMessege));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    break;
-                case EATING:
-
-                    if(message.getTable().isEndMove())
-                        serverMessege = serverMessege.concat("\nПосле этой фазы будет определяться победитель");
-
-                    try {
-                        controllerGameRoom.distribution(new ServerMessage(message.getTable(), serverMessege));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    break;
-                default:
-                    System.out.print("Its strange");
-                    break;
-            }
-            }
-        }
     }
 
     public void setControllerGameRoom(ControllerGameRoom controller){
@@ -167,6 +86,20 @@ public class PlayerThread extends Thread {
 
     /////////////
 
+    public void setInRoom(boolean inRoom){
+        this.inRoom = inRoom;
+    }
+
+    public ControllerGameRoom getControllerGameRoom() {
+        return controllerGameRoom;
+    }
+
+    public void setPlayerNumber(int playerNumber) {
+        this.playerNumber = playerNumber;
+    }
+    public int getPlayerNumber() {
+        return playerNumber;
+    }
 
     public String getLogin() {
         return login;

@@ -15,9 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class StartPane extends VBox {
 
@@ -42,7 +40,7 @@ public class StartPane extends VBox {
         this.primaryStage = primaryStage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/StartPane.fxml")
+                getClass().getResource("/fxml/StartPane.fxml")
         );
 
         fxmlLoader.setRoot(this);

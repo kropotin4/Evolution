@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class ControllerClient {
 
+    ///region field
     Stage primaryStage;
     StartPane startPane;
 
@@ -36,6 +37,9 @@ public class ControllerClient {
     int serverPort;
     int roomCapacity;
     ArrayList<GamingRoomInfo> gamingRoomInfo;
+    ///endregion
+
+    //////////////////////////////
 
     public ControllerClient(Stage primaryStage, StartPane startPane){
         this.primaryStage = primaryStage;
@@ -77,9 +81,11 @@ public class ControllerClient {
         stage = 1;
         clientPane.show();
     }
+    //Стираем чат перед входом
     public void startRoom(){
         stage = 2;
         Platform.runLater(() -> {
+            roomPane.getChat().clear();
             roomPane.show();
         });
     }
@@ -133,6 +139,10 @@ public class ControllerClient {
     public void enterTheRoom(int roomId){
         sendMessage(new EnterTheRoomMessage(roomId));
         startRoom();
+    }
+    public void exitFromRoom(){
+        sendMessage(new ExitFromRoomMessage());
+        startClient();
     }
     //////////////////
     // Посылаем сообщение
