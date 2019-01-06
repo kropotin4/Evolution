@@ -11,6 +11,7 @@ public class Table implements Serializable {
     Phase curPhase;
     public int step = 0;
     int playerTurn = 0;
+    boolean gameOver = false;
 
     int fodder = 0;
 
@@ -144,6 +145,11 @@ public class Table implements Serializable {
             }
         }
 
+        // До раздачи карт
+        if(isEndMove()){
+            gameOver = true;
+        }
+
         ///region Раздача карт
 
         int[] player_cards = new int[players.size()];
@@ -190,6 +196,10 @@ public class Table implements Serializable {
     }
     private void setDice(int playerCount){
         dice = new Dice((playerCount + 1) / 2, playerCount % 2 == 0 ? 2 : 0);
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     public Phase getCurrentPhase(){

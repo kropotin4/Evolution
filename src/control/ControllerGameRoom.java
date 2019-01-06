@@ -16,6 +16,7 @@ public class ControllerGameRoom {
     GamingRoom gamingRoom;
 
     int stage;
+    int endMessage = 0;
     boolean gameOn = false;
 
     Controller controller;
@@ -112,9 +113,10 @@ public class ControllerGameRoom {
                 switch (getCurrentPhase()){
                     case GROWTH:
 
-                        if(message.getTable().isEndMove())
+                        if(message.getTable().isEndMove() && endMessage == 0) {
                             serverMessege = serverMessege.concat("\nВ колоде больше нет карт - это последний ход.");
-
+                            ++endMessage;
+                        }
 
                         try {
                             distribution(new ServerMessage(message.getTable(), serverMessege));
@@ -125,8 +127,10 @@ public class ControllerGameRoom {
                         break;
                     case EATING:
 
-                        if(message.getTable().isEndMove())
+                        if(message.getTable().isEndMove() && endMessage == 1) {
                             serverMessege = serverMessege.concat("\nПосле этой фазы будет определяться победитель");
+                            ++endMessage;
+                        }
 
                         try {
                             distribution(new ServerMessage(message.getTable(), serverMessege));

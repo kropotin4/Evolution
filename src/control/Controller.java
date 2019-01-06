@@ -205,6 +205,9 @@ public class Controller {
         return false;
     }
 
+    public boolean isGameOver(){
+        return table.isGameOver();
+    }
     public Phase getCurrentPhase(){
         return table.getCurrentPhase();
     }

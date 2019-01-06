@@ -22,7 +22,7 @@ import java.io.IOException;
 public class RoomPane extends AnchorPane {
 
     Stage primaryStage;
-    Scene scene;
+    Scene scene = new Scene(this, Color.TRANSPARENT);
 
     ControllerClient controller;
 
@@ -56,7 +56,6 @@ public class RoomPane extends AnchorPane {
             throw new RuntimeException(exception);
         }
 
-        scene = new Scene(this, Color.TRANSPARENT);
     }
 
     @FXML
@@ -123,7 +122,7 @@ public class RoomPane extends AnchorPane {
         primaryStage.setMinWidth(this.getPrefWidth() + 20);
         primaryStage.setMinHeight(this.getPrefHeight() + 40);
 
-        primaryStage.setTitle("Эволюция: сервер");
+        primaryStage.setTitle("Эволюция: комната");
 
         primaryStage.setScene(scene);
         primaryStage.show();

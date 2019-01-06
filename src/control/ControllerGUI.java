@@ -15,8 +15,9 @@ public class ControllerGUI {
 
     Controller controller;
     ControllerClient controllerClient;
-    ControllerGameRoom controllerGameRoom;
+
     MainPane mainPane;
+    EndGamePane endGamePane;
 
     GameType type;
 
@@ -26,8 +27,11 @@ public class ControllerGUI {
 
     public ControllerGUI(Stage primaryStage, Controller controller, int playerNumber){
         this.controller = controller;
-        this.mainPane = new MainPane(primaryStage, this);
         this.playerNumber = playerNumber;
+
+        this.mainPane = new MainPane(primaryStage, this);
+        this.endGamePane = new EndGamePane(primaryStage);
+
         type = GameType.ALONE;
 
         //mainPane.setPhaseElement(Phase.GROWTH);
@@ -36,19 +40,16 @@ public class ControllerGUI {
     public ControllerGUI(Stage primaryStage, Controller controller, ControllerClient controllerClient, int playerNumber){
         this.controller = controller;
         this.controllerClient = controllerClient;
-        this.mainPane = new MainPane(primaryStage, this);
         this.playerNumber = playerNumber;
+
+        this.mainPane = new MainPane(primaryStage, this);
+        this.endGamePane = new EndGamePane(primaryStage);
+
         type = GameType.CLIENT;
 
         if(playerNumber != controller.getPlayerTurn())
             blockActions = true;
     }
-    /*public ControllerGUI(Controller controller, ControllerGameRoom controllerGameRoom, MainPane mainPane, int playerTurn){
-        this.controllerGameRoom = controllerGameRoom;
-        this.mainPane = mainPane;
-        this.playerTurn = playerTurn;
-        type = 2;
-    }*/
 
 
     public void startGame(){
@@ -65,8 +66,6 @@ public class ControllerGUI {
 
         blockActions = playerNumber != controller.getPlayerTurn();
 
-        mainPane.update(playerNumber);
-
         if(type == GameType.CLIENT){
             switch (controller.getCurrentPhase()){
                 case EATING:
@@ -79,10 +78,17 @@ public class ControllerGUI {
                     break;
             }
         }
+
+        update();
+
     }
 
     public void update(){
         blockActions = playerNumber != controller.getPlayerTurn();
+
+        if(controller.isGameOver()){
+            endGamePane.show();
+        }
 
         mainPane.update(playerNumber);
     }
