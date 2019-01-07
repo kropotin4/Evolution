@@ -3,6 +3,7 @@ package view.gui;
 import control.ControllerClient;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,10 +12,13 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import server.GamingRoomInfo;
+import server.message.ChatMessage;
 import server.message.CreateRoomMessage;
 
 import java.io.IOException;
@@ -36,6 +40,9 @@ public class ClientPane extends AnchorPane {
     @FXML Slider player_count_slider_cp;
     @FXML Slider card_count_slider_cp;
     @FXML Button create_room_button_cp;
+
+    @FXML Pane chat_pane_cp;
+    Chat chat;
 
 
     public ClientPane(ControllerClient controller, Stage primaryStage){
@@ -80,6 +87,24 @@ public class ClientPane extends AnchorPane {
                     (int)card_count_slider_cp.getValue())
             );
         });
+
+        chat = new Chat();
+        chat_pane_cp.getChildren().add(chat);
+        chat.getSendButton().setOnMouseClicked(event -> {
+            if(!chat.getTextInputField().getText().isEmpty()){
+                controller.sendMessage(new ChatMessage(controller.getLogin(), chat.getTextInputField().getText()));
+                chat.getTextInputField().setText("");
+            }
+        });
+        AnchorPane.setTopAnchor(chat, 0.0);
+        AnchorPane.setRightAnchor(chat, 0.0);
+        AnchorPane.setBottomAnchor(chat, 0.0);
+        AnchorPane.setLeftAnchor(chat, 0.0);
+
+    }
+
+    public Chat getChat(){
+        return chat;
     }
 
     public void update(){

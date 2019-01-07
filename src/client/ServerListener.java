@@ -1,14 +1,10 @@
 package client;
 
-import control.Controller;
 import control.ControllerClient;
-import model.Table;
 import server.message.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 public class ServerListener extends Thread {
 
@@ -64,7 +60,7 @@ public class ServerListener extends Thread {
                 else if(mesObject instanceof Message){
                     if(((Message) mesObject).getMessageType() == MessageType.CHAT){
                         System.out.println("Received Chat message (in room)");
-                        controller.addMessageToRoomChat(((ChatMessage) mesObject).login,((Message) mesObject).getMes());
+                        controller.addMessageToChat(((ChatMessage) mesObject).login,((Message) mesObject).getMes());
                     }
                 }
             }

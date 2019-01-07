@@ -5,10 +5,7 @@ import javafx.stage.Stage;
 import server.GamingRoomInfo;
 import server.PlayerThread;
 import server.Server;
-import server.message.ClientInfoMessage;
-import server.message.CreateRoomMessage;
-import server.message.EnterTheRoomMessage;
-import server.message.Message;
+import server.message.*;
 import view.gui.ServerPane;
 import view.gui.ServerSettingPane;
 import view.gui.StartPane;
@@ -87,7 +84,15 @@ public class ControllerServer {
     ////////////////////////
 
     synchronized public void messageHandler(Message message, PlayerThread playerThread){
-        if(message instanceof CreateRoomMessage){
+
+        if(message instanceof ChatMessage){
+            try {
+                server.distributionForFreePlayers(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(message instanceof CreateRoomMessage){
             createRoom((CreateRoomMessage) message);
         }
         else if(message instanceof EnterTheRoomMessage){

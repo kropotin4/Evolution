@@ -60,6 +60,7 @@ public class Chat extends VBox {
                         "</style>" +
                         "</head>" +
                     "<body contentEditable=\"false\">";
+
     }
 
     public Button getSendButton(){

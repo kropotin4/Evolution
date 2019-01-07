@@ -156,11 +156,23 @@ public class ControllerClient {
         }
     }
 
-    public void addMessageToRoomChat(String message){
-        roomPane.getChat().addMessage(message);
+    public void addMessageToChat(String message){
+        if(stage == 1){
+            clientPane.getChat().addMessage(message);
+        }
+        else if(stage == 2){
+            roomPane.getChat().addMessage(message);
+        }
+
     }
-    public void addMessageToRoomChat(String login, String message){
-        roomPane.getChat().addMessage(login, message);
+    public void addMessageToChat(String login, String message){
+        if(stage == 1){
+            clientPane.getChat().addMessage(login, message);
+        }
+        else if(stage == 2){
+            roomPane.getChat().addMessage(login, message);
+        }
+
     }
     //////////////////
 
