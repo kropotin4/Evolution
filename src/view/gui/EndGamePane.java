@@ -20,6 +20,9 @@ import model.EndGameInfo;
 import model.Player;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 
 public class EndGamePane extends AnchorPane {
@@ -35,7 +38,8 @@ public class EndGamePane extends AnchorPane {
 
     public void setInfo(EndGameInfo info) {
         this.info = info;
-        this.info.players.sort(Comparator.comparingInt(Player::getScore));
+        //this.info.players.sort(Comparator.comparingInt(Player::getScore));
+        Collections.sort(info.players, (p1, p2) -> -p1.getScore() + p2.getScore());
     }
 
     public EndGamePane(Stage primaryStage, EndGameInfo info, int player){
@@ -109,6 +113,7 @@ public class EndGamePane extends AnchorPane {
             data.getNode().setStyle("-fx-pie-color: " + info.players.get(num).getColor() + ";");
             ++num;
         }
+
         ///endregion
     }
 

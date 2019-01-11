@@ -63,7 +63,7 @@ public class StartPane extends VBox {
         //this.setPrefSize(500, 300);
 
         play_yourself.setOnAction(event -> {
-            Controller controller = new Controller(2, 2);
+            Controller controller = new Controller(1, 2);
             ControllerGUI controllerGUI = new ControllerGUI(primaryStage, controller, 0);
             controllerGUI.startGame();
         });
