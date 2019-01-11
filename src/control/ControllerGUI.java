@@ -86,14 +86,16 @@ public class ControllerGUI {
     }
 
     public void update(){
-        blockActions = playerNumber != controller.getPlayerTurn();
+        if(!endGamePane.isShow()) {
+            blockActions = playerNumber != controller.getPlayerTurn();
 
-        if(controller.isGameOver()){
-            endGamePane.setInfo(new EndGameInfo(controller));
-            endGamePane.show();
+            if (controller.isGameOver()) {
+                endGamePane.setInfo(new EndGameInfo(controller));
+                endGamePane.show();
+            }
+
+            mainPane.update(playerNumber);
         }
-
-        mainPane.update(playerNumber);
     }
     public boolean isBlockActions(){
         return blockActions;

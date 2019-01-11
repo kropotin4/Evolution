@@ -26,6 +26,7 @@ public class EndGamePane extends AnchorPane {
     Stage primaryStage;
     Scene scene = new Scene(this, Color.TRANSPARENT);
 
+    boolean isShow = false;
 
     @FXML Label result;
     @FXML PieChart chart;
@@ -85,6 +86,7 @@ public class EndGamePane extends AnchorPane {
                     " — " + player.getScore() + " point" +
                     (player.getScore() == 11? "s" : player.getScore() % 10 == 1? "" : "s")), player.getScore()));
         }
+
         chart.setData(pieChartData);
         chart.setTitle("Результаты");
         chart.setLegendSide(Side.BOTTOM);
@@ -99,15 +101,20 @@ public class EndGamePane extends AnchorPane {
         ///endregion angle
         ///endregion chart
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
         ///region chart coloring
         int num = 0;
         for (PieChart.Data data : pieChartData) {
             data.getNode().setStyle("-fx-pie-color: " + info.players.get(num++).getColor() + ";");
         }
         ///endregion
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        isShow = true;
+    }
+
+    public boolean isShow() {
+        return isShow;
     }
 
     public void close(){
