@@ -1,5 +1,6 @@
 package model;
 
+import ai.aiThread;
 import model.decks.CommonCardDeck;
 
 import java.io.Serializable;
@@ -83,6 +84,7 @@ public class Table implements Serializable {
                         player.setPass(false);
                     break;
                 }
+
                 break;
             case EATING:
                 if(passNumber == players.size()){
@@ -112,7 +114,20 @@ public class Table implements Serializable {
                         player.setPass(false);
                     break;
                 }
+
                 break;
+        }
+
+        if(players.get(playerTurn).isAi){
+
+            aiThread aiThread = new aiThread(this, playerTurn);
+            aiThread.start();
+
+            try {
+                aiThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
     private void doExtinction(){

@@ -34,6 +34,7 @@ public class Player implements Serializable {
     String login;
     int playerNumber;
 
+    boolean isAi = false;
     boolean isPass = false;
 
     PlayerCardDeck playerDeck = new PlayerCardDeck();
@@ -394,6 +395,9 @@ public class Player implements Serializable {
                         (table.getCurrentPhase() == Phase.EATING && !haveActiveCreatures())));
     }
 
+    public void setAI(boolean isAi){
+        this.isAi = isAi;
+    }
     public void setPass(boolean isPass){
         this.isPass = isPass;
         if(isPass) table.passNumber++;

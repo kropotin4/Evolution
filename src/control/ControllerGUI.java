@@ -34,6 +34,8 @@ public class ControllerGUI {
 
         type = GameType.ALONE;
 
+        controller.getPlayers().get(1).setAI(true);
+
         //mainPane.setPhaseElement(Phase.GROWTH);
         //startGame();
     }
