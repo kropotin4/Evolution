@@ -420,6 +420,14 @@ public class Player implements Serializable {
         return playerNumber;
     }
 
+    public int countPlayerPoints(){
+        int res = 0;
+        for (Creature creature : this.creatures){
+            res += 1 + creature.getCards().size() + creature.getTotalHunger();
+        }
+        return res;
+    }
+
     @Override
     public String toString() {
         return "Player{" +

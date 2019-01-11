@@ -6,16 +6,24 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.EndGameInfo;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class EndGamePane extends AnchorPane {
-
     Stage primaryStage;
     Scene scene = new Scene(this, Color.TRANSPARENT);
 
-    public EndGamePane(Stage primaryStage){
+    @FXML Label result;
+
+    EndGameInfo info;
+    int player;
+
+    public EndGamePane(Stage primaryStage, EndGameInfo info, int player){
         this.primaryStage = primaryStage;
+        this.player = player;
+        this.info = info;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/fxml/EndGamePane.fxml")
@@ -35,7 +43,10 @@ public class EndGamePane extends AnchorPane {
 
     @FXML
     private void initialize(){
-
+        if (info.isDraw && info.maximum > info.players.get(player).countPlayerPoints()) result.setText("Ничья... Но ты всё равно проиграл :/");
+        else if (info.isDraw) result.setText("Ничья.");
+        else if (info.winner == player) result.setText("Ура! Победа!");
+        else result.setText("Поражение.");
     }
 
     public void show(){

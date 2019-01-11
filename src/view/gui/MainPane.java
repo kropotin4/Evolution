@@ -148,23 +148,15 @@ public class MainPane extends BorderPane {
         AnchorPane.setBottomAnchor(chat, 3.0);
         AnchorPane.setLeftAnchor(chat, 3.0);
 
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(!pressedPlusImage && !pressedCreatureNode) {
-                    primaryStage.setAlwaysOnTop(true);
-                    primaryStage.setAlwaysOnTop(false);
-                }
-                pressedPlusImage = false;
-                pressedCreatureNode = false;
+        this.setOnMouseClicked(event -> {
+            if(!pressedPlusImage && !pressedCreatureNode) {
+                primaryStage.setAlwaysOnTop(true);
+                primaryStage.setAlwaysOnTop(false);
             }
+            pressedPlusImage = false;
+            pressedCreatureNode = false;
         });
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                close();
-            }
-        });
+        primaryStage.setOnCloseRequest(event -> close());
 
         initButton();
 

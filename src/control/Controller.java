@@ -3,9 +3,7 @@ package control;
 import model.*;
 import storage.Loader;
 import storage.Saver;
-import view.gui.CreatureNode;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Controller {
@@ -140,7 +138,7 @@ public class Controller {
     }
     public void setPlayerScavenger(int playerNumber, int creatureID){
         System.out.println("Controller: setPlayerScavenger: " + playerNumber + " " + creatureID);
-        table.setPlayerScavanger(playerNumber, creatureID);
+        table.setPlayerScavenger(playerNumber, creatureID);
     }
     public boolean isActiveScavenger(int playerNumber, int creatureID){
         return findPlayer(playerNumber).findCreature(creatureID).isActiveScavenger();

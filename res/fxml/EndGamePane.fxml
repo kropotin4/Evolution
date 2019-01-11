@@ -15,6 +15,11 @@
                   <Font size="26.0" />
                </font>
             </Label>
+            <Label fx:id="result" text="">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Label>
          </children>
       </VBox>
    </children>

@@ -198,15 +198,30 @@ public class Table implements Serializable {
         dice = new Dice((playerCount + 1) / 2, playerCount % 2 == 0 ? 2 : 0);
     }
 
+    /**
+     * @return positive number if player has won; negative if has lost; zero if draw
+     */
     public boolean isGameOver() {
         return gameOver;
+    }
+
+    public int hasPlayerWon(int player){
+        int result = players.get(player).countPlayerPoints();
+        int best = 0;
+        int cur;
+        for (Player p : players){
+            if (p.getPlayerNumber() == player) continue;
+            cur = p.countPlayerPoints();
+            if (cur > best) best = cur;
+        }
+        return result - best;
     }
 
     public Phase getCurrentPhase(){
         return curPhase;
     }
 
-    public void setPlayerScavanger(int playerNumber, int creatureID){
+    public void setPlayerScavenger(int playerNumber, int creatureID){
         for(Creature creature : findPlayer(playerNumber).getCreatures()){
             if(creature.getId() == creatureID)
                 creature.setActiveScavenger(true);
@@ -214,9 +229,9 @@ public class Table implements Serializable {
                 creature.setActiveScavenger(false);
         }
     }
-    public void useScavenger(int ownerAttatckCreature){
+    public void useScavenger(int ownerAttackCreature){
 
-        for(int i = ownerAttatckCreature; i < players.size(); ++i) {
+        for(int i = ownerAttackCreature; i < players.size(); ++i) {
             for (Creature creature : players.get(i).getCreatures()) {
                 if(creature.isActiveScavenger() && !creature.isSatisfied()){
                     creature.addFood();
@@ -225,7 +240,7 @@ public class Table implements Serializable {
             }
         }
 
-        for(int i = 0; i < ownerAttatckCreature; ++i){
+        for(int i = 0; i < ownerAttackCreature; ++i){
             for (Creature creature : players.get(i).getCreatures()) {
                 if(creature.isActiveScavenger() && !creature.isSatisfied()){
                     creature.addFood();
