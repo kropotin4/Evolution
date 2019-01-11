@@ -34,8 +34,8 @@ public class EndGamePane extends AnchorPane {
     int player;
 
     public void setInfo(EndGameInfo info) {
-        this.info = info;
         info.players.sort(Comparator.comparingInt(Player::getScore));
+        this.info = info;
     }
 
     public EndGamePane(Stage primaryStage, EndGameInfo info, int player){
