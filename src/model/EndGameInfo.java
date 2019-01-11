@@ -11,7 +11,7 @@ public class EndGameInfo {
     public ArrayList<Player> players;
     public int maximum = -1;
 
-    EndGameInfo(Controller controller){
+    public EndGameInfo(Controller controller){
         players = controller.getPlayers();
         winner = -1;
         int current;

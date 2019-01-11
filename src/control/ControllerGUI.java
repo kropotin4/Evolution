@@ -30,7 +30,7 @@ public class ControllerGUI {
         this.playerNumber = playerNumber;
 
         this.mainPane = new MainPane(primaryStage, this);
-        this.endGamePane = new EndGamePane(primaryStage);
+        this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), playerNumber);
 
         type = GameType.ALONE;
 
@@ -43,7 +43,7 @@ public class ControllerGUI {
         this.playerNumber = playerNumber;
 
         this.mainPane = new MainPane(primaryStage, this);
-        this.endGamePane = new EndGamePane(primaryStage);
+        this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), playerNumber);
 
         type = GameType.CLIENT;
 
