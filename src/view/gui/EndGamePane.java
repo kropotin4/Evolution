@@ -3,17 +3,19 @@ package view.gui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.EndGameInfo;
 
-import java.awt.*;
+
 import java.io.IOException;
 
 public class EndGamePane extends AnchorPane {
     Stage primaryStage;
     Scene scene = new Scene(this, Color.TRANSPARENT);
+
 
     @FXML Label result;
 
