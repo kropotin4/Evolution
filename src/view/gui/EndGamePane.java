@@ -34,8 +34,8 @@ public class EndGamePane extends AnchorPane {
     int player;
 
     public void setInfo(EndGameInfo info) {
-        info.players.sort(Comparator.comparingInt(Player::getScore));
         this.info = info;
+        this.info.players.sort(Comparator.comparingInt(Player::getScore));
     }
 
     public EndGamePane(Stage primaryStage, EndGameInfo info, int player){
@@ -71,7 +71,8 @@ public class EndGamePane extends AnchorPane {
 
         primaryStage.setTitle("Эволюция: конец игры");
 
-        if (info.isDraw && info.maximum > info.players.get(player).getScore()) result.setText("Никто не выиграл... Но ты всё равно проиграл :/");
+        if (info.isDraw && info.maximum > info.players.get(player).getScore())
+            result.setText("Никто не выиграл... Но ты всё равно проиграл :/");
         else if (info.isDraw) result.setText("Ничья.");
         else if (info.winner == player) result.setText("Ура! Победа!");
         else result.setText("Поражение.");
@@ -80,12 +81,14 @@ public class EndGamePane extends AnchorPane {
         ObservableList<PieChart.Data> pieChartData =
                 FXCollections.observableArrayList();
         for (Player player : info.players){
-            pieChartData.add(new PieChart.Data((player.getLogin() + " — " + player.getScore() + " point" +
+            pieChartData.add(new PieChart.Data((player.getLogin() +
+                    (player.getPlayerNumber() == this.player ? " (you)" : "") +
+                    " — " + player.getScore() + " point" +
                     (player.getScore() == 11? "s" : player.getScore() % 10 == 1? "" : "s")), player.getScore()));
         }
         chart.setData(pieChartData);
         chart.setTitle("Результаты");
-        chart.setLegendSide(Side.LEFT);
+        chart.setLegendSide(Side.BOTTOM);
         ///region angle
         int winner = info.players.get(0).getScore();
         int total = 0;
