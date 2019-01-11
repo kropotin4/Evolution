@@ -35,7 +35,7 @@ public class EndGamePane extends AnchorPane {
 
     public void setInfo(EndGameInfo info) {
         this.info = info;
-        this.info.players.sort(Comparator.comparingInt(Player::getScore));
+        this.info.players.sort(Comparator.comparingInt(Player::getScore).reversed());
     }
 
     public EndGamePane(Stage primaryStage, EndGameInfo info, int player){
@@ -109,6 +109,8 @@ public class EndGamePane extends AnchorPane {
             data.getNode().setStyle("-fx-pie-color: " + info.players.get(num).getColor() + ";");
             ++num;
         }
+        chart.setLegendVisible(false);
+        chart.setLegendVisible(true);
         ///endregion
     }
 
