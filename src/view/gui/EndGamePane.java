@@ -2,15 +2,25 @@ package view.gui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.EndGameInfo;
 
+
+///region pieChart
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.*;
+///endregion
+
+import model.EndGameInfo;
+import model.Player;
 
 import java.io.IOException;
+import java.util.Comparator;
 
 public class EndGamePane extends AnchorPane {
     Stage primaryStage;
@@ -18,9 +28,15 @@ public class EndGamePane extends AnchorPane {
 
 
     @FXML Label result;
+    @FXML PieChart chart;
 
     EndGameInfo info;
     int player;
+
+    public void setInfo(EndGameInfo info) {
+        this.info = info;
+        info.players.sort(Comparator.comparingInt(Player::getScore));
+    }
 
     public EndGamePane(Stage primaryStage, EndGameInfo info, int player){
         this.primaryStage = primaryStage;
@@ -45,10 +61,7 @@ public class EndGamePane extends AnchorPane {
 
     @FXML
     private void initialize(){
-        if (info.isDraw && info.maximum > info.players.get(player).countPlayerPoints()) result.setText("Ничья... Но ты всё равно проиграл :/");
-        else if (info.isDraw) result.setText("Ничья.");
-        else if (info.winner == player) result.setText("Ура! Победа!");
-        else result.setText("Поражение.");
+        primaryStage.setOnCloseRequest(event -> close());
     }
 
     public void show(){
@@ -58,8 +71,45 @@ public class EndGamePane extends AnchorPane {
 
         primaryStage.setTitle("Эволюция: конец игры");
 
+        if (info.isDraw && info.maximum > info.players.get(player).getScore()) result.setText("Никто не выиграл... Но ты всё равно проиграл :/");
+        else if (info.isDraw) result.setText("Ничья.");
+        else if (info.winner == player) result.setText("Ура! Победа!");
+        else result.setText("Поражение.");
+
+        ///region chart
+        ObservableList<PieChart.Data> pieChartData =
+                FXCollections.observableArrayList();
+        for (Player player : info.players){
+            pieChartData.add(new PieChart.Data((player.getLogin() + " — " + player.getScore() + " point" +
+                    (player.getScore() == 11? "s" : player.getScore() % 10 == 1? "" : "s")), player.getScore()));
+        }
+        chart.setData(pieChartData);
+        chart.setTitle("Результаты");
+        chart.setLegendSide(Side.LEFT);
+        ///region angle
+        int winner = info.players.get(0).getScore();
+        int total = 0;
+        for (Player player : info.players){
+            total += player.getScore();
+        }
+        float angle = (float)winner / (float)total;
+        chart.setStartAngle(angle * 180);
+        ///endregion angle
+        ///endregion chart
+
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        ///region chart coloring
+        int num = 0;
+        for (PieChart.Data data : pieChartData) {
+            data.getNode().setStyle("-fx-pie-color: " + info.players.get(num).getColor() + ";");
+            ++num;
+        }
+        ///endregion
+    }
+
+    public void close(){
+        primaryStage.close();
     }
 }

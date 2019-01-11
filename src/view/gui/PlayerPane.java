@@ -12,6 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -42,7 +45,7 @@ public class PlayerPane extends ScrollPane {
 
     ArrayList<CreatureNode> creatureNodes = new ArrayList<>(8);
 
-    ArrayList<CheckBox> scavengerCheckBoxs = new ArrayList<>();
+    ArrayList<CheckBox> scavengerCheckBoxes = new ArrayList<>();
 
     int coopNumber = 0;
     int comNumber = 0;
@@ -101,32 +104,28 @@ public class PlayerPane extends ScrollPane {
         imageBox.setPrefSize(80, 300);
         imageView.setCache(true);
 
-        imageView.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                imageView.setImage(plus2);
-            }
-        });
-
-        imageView.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                imageView.setImage(plus1);
-            }
-        });
+        imageView.setOnMousePressed(event -> imageView.setImage(plus2));
+        imageView.setOnMouseReleased(event -> imageView.setImage(plus1));
 
         update();
     }
 
     ///Здесь добавляются все существа + навешиваются обработчики событий
     public void update(){
+/*
+        ///region accelerators
+        play_server_client.getScene().getAccelerators().put(
+                new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN),
+                () -> play_server_client.fire());
+        ///endregion
+*/
         if(controller.getCreatures(playerNumber).size() == 0) {
             creatures_box_pp.getChildren().clear();
             creatures_box_pp.getChildren().add(playerNumberLabel);
             return;
         }
 
-        scavengerCheckBoxs.clear();
+        scavengerCheckBoxes.clear();
 
         int num = 0;
         creatures_box_pp.getChildren().clear(); // Очистка

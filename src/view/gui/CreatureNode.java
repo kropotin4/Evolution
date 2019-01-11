@@ -190,7 +190,7 @@ public class CreatureNode extends VBox {
                 if(playerPane.controller.getScavengerNumber(this) > 1
                 && playerPane.getPlayerNumber() == playerPane.controller.getPlayerTurn()){
                     CheckBox checkBox = new CheckBox();
-                    playerPane.scavengerCheckBoxs.add(checkBox);
+                    playerPane.scavengerCheckBoxes.add(checkBox);
 
                     if(playerPane.controller.isActiveScavenger(this))
                         checkBox.setSelected(true);
@@ -199,7 +199,7 @@ public class CreatureNode extends VBox {
 
                     checkBox.setOnMouseClicked(e -> {
                         playerPane.controller.setPlayerScavenger(this);
-                        for(CheckBox checkBox1 : playerPane.scavengerCheckBoxs){
+                        for(CheckBox checkBox1 : playerPane.scavengerCheckBoxes){
                             checkBox1.setSelected(false);
                         }
                         checkBox.setSelected(true);

@@ -5,7 +5,6 @@ import model.decks.CommonCardDeck;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class Table implements Serializable {
 
@@ -221,12 +220,12 @@ public class Table implements Serializable {
     }
 
     public int hasPlayerWon(int player){
-        int result = players.get(player).countPlayerPoints();
+        int result = players.get(player).getScore();
         int best = 0;
         int cur;
         for (Player p : players){
             if (p.getPlayerNumber() == player) continue;
-            cur = p.countPlayerPoints();
+            cur = p.getScore();
             if (cur > best) best = cur;
         }
         return result - best;

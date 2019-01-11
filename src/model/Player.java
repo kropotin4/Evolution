@@ -35,6 +35,7 @@ public class Player implements Serializable {
     int playerNumber;
 
     boolean isAi = false;
+    String color;
     boolean isPass = false;
 
     PlayerCardDeck playerDeck = new PlayerCardDeck();
@@ -51,6 +52,10 @@ public class Player implements Serializable {
         this.table = table;
         this.login = login;
         this.playerNumber = playerNumber;
+        color = playerNumber == 0? "#ff0000" :
+                playerNumber == 1? "#ffff00" :
+                playerNumber == 2? "#00ff00" :
+                playerNumber == 3? "#0000ff" : "#ffffff";
     }
 
     public ArrayList<Creature> getCreatures() {
@@ -424,12 +429,16 @@ public class Player implements Serializable {
         return playerNumber;
     }
 
-    public int countPlayerPoints(){
+    public int getScore(){
         int res = 0;
         for (Creature creature : this.creatures){
             res += 1 + creature.getCards().size() + creature.getTotalHunger();
         }
         return res;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     @Override

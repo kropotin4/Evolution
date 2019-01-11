@@ -16,7 +16,7 @@ public class EndGameInfo {
         winner = -1;
         int current;
         for (Player player : players) {
-            current = player.countPlayerPoints();
+            current = player.getScore();
             if (current == maximum){
                 isDraw = true;
             }

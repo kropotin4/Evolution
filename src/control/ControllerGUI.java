@@ -30,7 +30,7 @@ public class ControllerGUI {
         this.playerNumber = playerNumber;
 
         this.mainPane = new MainPane(primaryStage, this);
-        this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), playerNumber);
+        this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), -1);
 
         type = GameType.ALONE;
 
@@ -89,6 +89,7 @@ public class ControllerGUI {
         blockActions = playerNumber != controller.getPlayerTurn();
 
         if(controller.isGameOver()){
+            endGamePane.setInfo(new EndGameInfo(controller));
             endGamePane.show();
         }
 
