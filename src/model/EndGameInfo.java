@@ -8,7 +8,6 @@ import java.util.Comparator;
 public class EndGameInfo {
     public boolean isDraw = false;
     public ArrayList<Player> players;
-    public int maximum = -1;
 
     public EndGameInfo(Controller controller){
         players = controller.getPlayers();

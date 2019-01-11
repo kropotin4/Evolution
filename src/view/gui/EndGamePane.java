@@ -36,6 +36,14 @@ public class EndGamePane extends AnchorPane {
 
     public void setInfo(EndGameInfo info) {
         this.info = info;
+        int i = 0;
+        for (Player player : this.info.players){
+            if (player.getPlayerNumber() == i){
+                this.player = player.getPlayerNumber();
+                break;
+            }
+            ++i;
+        }
     }
 
     public EndGamePane(Stage primaryStage, EndGameInfo info, int player){
@@ -71,10 +79,10 @@ public class EndGamePane extends AnchorPane {
 
         primaryStage.setTitle("Эволюция: конец игры");
 
-        if (info.isDraw && info.maximum > info.players.get(player).getScore())
+        if (info.isDraw && info.players.get(0).getScore() > info.players.get(player).getScore())
             result.setText("Никто не выиграл... Но ты всё равно проиграл :/");
         else if (info.isDraw) result.setText("Ничья.");
-        else if (player == 0) result.setText("Ура! Победа!");
+        else if (player == info.players.get(0).getPlayerNumber()) result.setText("Ура! Победа!");
         else result.setText("Поражение.");
 
         ///region chart
