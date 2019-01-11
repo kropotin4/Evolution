@@ -73,7 +73,7 @@ public class EndGamePane extends AnchorPane {
         if (info.isDraw && info.maximum > info.players.get(player).getScore())
             result.setText("Никто не выиграл... Но ты всё равно проиграл :/");
         else if (info.isDraw) result.setText("Ничья.");
-        else if (info.winner == player) result.setText("Ура! Победа!");
+        else if (player == 0) result.setText("Ура! Победа!");
         else result.setText("Поражение.");
 
         ///region chart
