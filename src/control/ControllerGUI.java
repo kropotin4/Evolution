@@ -140,9 +140,9 @@ public class ControllerGUI {
             );
             mainPane.updateCurrentPlayer();
 
-            if(type == GameType.CLIENT){
+            //if(type == GameType.CLIENT){
                 doNextMove("Использован жировой запас");
-            }
+            //}
         }
     }
 
@@ -198,9 +198,9 @@ public class ControllerGUI {
             mainPane.setIsCardSelecting(false);
             mainPane.updateCurrentPlayer();
 
-            if(type == GameType.CLIENT){
+            //if(type == GameType.CLIENT){
                 doNextMove("Добавили существо");
-            }
+            //}
         }
     }
 
@@ -246,9 +246,9 @@ public class ControllerGUI {
             mainPane.setIsCardSelecting(false);
             mainPane.updateCurrentPlayer();
 
-            if(type == GameType.CLIENT){
+            //if(type == GameType.CLIENT){
                 doNextMove("К существу добавлено свойство");
-            }
+            //}
         }
     }
     public void addTraitToCreature(int playerNumber, CreatureNode creatureNode, CardNode cardNode, boolean isUp){
@@ -265,9 +265,9 @@ public class ControllerGUI {
             mainPane.setIsCardSelecting(false);
             mainPane.update(this.playerNumber);
 
-            if(type == GameType.CLIENT){
+            //if(type == GameType.CLIENT){
                 doNextMove("К чужому существу добавлено свойство");
-            }
+            //}
         }
     }
     public void addPairTraitToCreature(CreatureNode creatureNode1, CreatureNode creatureNode2, CardNode cardNode, boolean isUp){
@@ -285,9 +285,9 @@ public class ControllerGUI {
         mainPane.setIsCardSelecting(false);
         mainPane.updateCurrentPlayer();
 
-        if(type == GameType.CLIENT){
+        //if(type == GameType.CLIENT){
             doNextMove("К существам добавлено парное свойство");
-        }
+        //}
 
     }
     /////////////////////
@@ -305,9 +305,9 @@ public class ControllerGUI {
         controller.getFoodFromFodder(playerNumber, creatureNode.getCreatureId());
         mainPane.updateCurrentPlayer();
 
-        if(type == GameType.CLIENT){
+        //if(type == GameType.CLIENT){
             doNextMove("Из кормовой базы взята еда");
-        }
+        //}
     }
     public boolean isFoodGetting(){
         return mainPane.isFoodGetting();
@@ -497,9 +497,9 @@ public class ControllerGUI {
         setIsDefenderSelecting(false);
         setIsAttackerSelecting(false);
 
-        if(type == GameType.CLIENT){
+        //if(type == GameType.CLIENT){
             doNextMove("Атаковано существо");
-        }
+        //}
     }
     //endregion
 

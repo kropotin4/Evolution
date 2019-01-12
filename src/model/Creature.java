@@ -219,8 +219,7 @@ public class Creature implements Serializable {
         }
         return true;
     }
-
-    boolean addPairTrait(Trait trait, Creature creature){
+    public boolean addPairTrait(Trait trait, Creature creature){
         switch (trait) {
             case COOPERATION:
                 if (cooperationList.contains(creature)) return false;
