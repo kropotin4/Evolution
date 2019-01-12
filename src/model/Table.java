@@ -1,6 +1,6 @@
 package model;
 
-import ai.aiThread;
+import ai.AiThread;
 import model.decks.CommonCardDeck;
 
 import java.io.Serializable;
@@ -119,7 +119,7 @@ public class Table implements Serializable {
 
         if(players.get(playerTurn).isAi){
 
-            aiThread aiThread = new aiThread(this, playerTurn);
+            AiThread aiThread = new AiThread(this, playerTurn);
             aiThread.start();
 
             try {

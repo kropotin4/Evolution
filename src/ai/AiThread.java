@@ -5,7 +5,7 @@ import model.*;
 
 import java.util.ArrayList;
 
-public class aiThread extends Thread {
+public class AiThread extends Thread {
 
     Controller controller;
     Table table;
@@ -20,11 +20,11 @@ public class aiThread extends Thread {
     Creature second;
     Card card;
 
-    public aiThread(Controller controller){
+    public AiThread(Controller controller){
         super("AI Thread");
         this.controller = controller;
     }
-    public aiThread(Table table, int playerNumber){
+    public AiThread(Table table, int playerNumber){
         super("AI Thread");
         this.table = table;
         this.playerNumber = playerNumber;
@@ -36,7 +36,7 @@ public class aiThread extends Thread {
 
         // Заглушка
         if(table.getPlayerTurn() != playerNumber)
-            throw new RuntimeException("aiThread: table.getPlayerTurn() != playerNumber");
+            throw new RuntimeException("AiThread: table.getPlayerTurn() != playerNumber");
 
         switch (table.getCurrentPhase()){
             case GROWTH:
