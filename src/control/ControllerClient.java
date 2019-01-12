@@ -136,6 +136,17 @@ public class ControllerClient {
         }
     }
 
+    public boolean disconnect(){
+        try {
+            client.interrupt();
+            return true;
+        }
+        catch (Exception e){
+            System.out.println("ControllerClient: connect to server failed");
+            return false;
+        }
+    }
+
     public void enterTheRoom(int roomId){
         sendMessage(new EnterTheRoomMessage(roomId));
         startRoom();

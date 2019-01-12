@@ -79,7 +79,13 @@ public class ServerPane extends AnchorPane {
                 stop_server_button_sp.setTranslateY(0);
             }
         });
-        stop_server_button_sp.setOnAction(event -> controller.stopServer());
+        stop_server_button_sp.setOnAction(event -> {
+            try {
+                controller.stopServer();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void update(){

@@ -37,7 +37,9 @@ public class ServerListener extends Thread {
             try {
                 mesObject = is.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                //TODO: что-то сделать
+                client.interrupt();
+                controller.disconnect();
+
                 System.err.println("ServerListener stop");
                 return;
             }

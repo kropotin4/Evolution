@@ -26,6 +26,7 @@ public class Server extends Thread {
     TimerTask timerTask;
 
     public Server(ControllerServer controller) {
+        super("server");
         this.controller = controller;
 
         port = controller.getPort();
@@ -74,13 +75,35 @@ public class Server extends Thread {
 
             } catch (IOException e) {
                 System.out.println("Connect with player has failed");
+                return;
             }
         }
 
     }
 
+    @Override
+    public void interrupt(){
+        super.interrupt();
+        try {
+            close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void close() throws IOException {
+        System.out.println("server close");
+        for (PlayerThread thread : freePlayersThreads){
+            thread.interrupt();
+            }
+        for (GamingRoom room : gamingRooms){
+            for (PlayerThread thread : room.getPlayerThreads()){
+                thread.interrupt();
+            }
+        }
         serverSocket.close();
+        controller.getStartPane().show();
+
     }
 
     /////////

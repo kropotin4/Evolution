@@ -52,6 +52,19 @@ public class PlayerThread extends Thread {
         playerListener.start();
     }
 
+    @Override
+    public void interrupt(){
+        super.interrupt();
+        try {
+            is.close();
+            os.close();
+            socket.close();
+            playerListener.interrupt();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     // Отправляем сообщение клиенту
     public void sendMessage(Message message) throws IOException {

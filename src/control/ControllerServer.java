@@ -27,9 +27,9 @@ public class ControllerServer {
     int stage = 0;
 
     InetAddress inetAddress;
-    int port = 4444; //
+    int port = 4444;
     final int MIN_PORT_NUMBER = 1000;
-    final int MAX_PORT_NUMBER = 65536;
+    final int MAX_PORT_NUMBER = 65535;
     int maxRoom = 4;
 
     public ControllerServer(Stage primaryStage, StartPane startPane){
@@ -62,8 +62,8 @@ public class ControllerServer {
         serverPane.update();
     }
 
-    public void stopServer(){
-
+    public void stopServer() throws IOException {
+        server.interrupt();
     }
 
     public void createRoom(CreateRoomMessage createRoomMessage){

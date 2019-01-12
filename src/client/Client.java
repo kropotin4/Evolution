@@ -66,6 +66,18 @@ public class Client extends Thread{
 
     }
 
+    @Override
+    public void interrupt(){
+        super.interrupt();
+        try {
+            serverListener.interrupt();
+            server.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendMessage(Message message) throws IOException {
         System.out.println("Client: sendMessage " + message.getMessageType());
 

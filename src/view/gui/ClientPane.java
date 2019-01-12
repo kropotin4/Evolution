@@ -40,6 +40,7 @@ public class ClientPane extends AnchorPane {
     @FXML Slider player_count_slider_cp;
     @FXML Slider card_count_slider_cp;
     @FXML Button create_room_button_cp;
+    @FXML Button back_button;
 
     @FXML Pane chat_pane_cp;
     Chat chat;
@@ -101,6 +102,7 @@ public class ClientPane extends AnchorPane {
         AnchorPane.setBottomAnchor(chat, 0.0);
         AnchorPane.setLeftAnchor(chat, 0.0);
 
+        back_button.setOnAction(event -> close());
     }
 
     public Chat getChat(){
@@ -143,5 +145,10 @@ public class ClientPane extends AnchorPane {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void close(){
+        controller.disconnect();
+        controller.getStartPane().show();
     }
 }
