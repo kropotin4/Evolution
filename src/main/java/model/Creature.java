@@ -307,7 +307,7 @@ public class Creature implements Serializable {
         totalSatiety = 0;
     }
     public boolean isHungry(){
-        return totalHunger < totalSatiety;
+        return totalHunger > totalSatiety;
     }
     public int getTotalHunger(){
         return totalHunger;
