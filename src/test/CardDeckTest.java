@@ -1,11 +1,11 @@
-package test;
-
-import com.sun.source.tree.AssertTree;
 import model.Card;
 import model.decks.*;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CardDeckTest {
     static int count = 0;

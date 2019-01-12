@@ -1,10 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>........</groupId>
-    <artifactId>.....</artifactId>
-    <version>1.0-SNAPSHOT</version>
-</project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  <modelVersion>4.0.0</modelVersion>  <groupId>com.evolution</groupId>  <artifactId>Evolution</artifactId>  <version>1.0-SNAPSHOT</version>    <dependencies>        <dependency>            <groupId>junit</groupId>            <artifactId>junit</artifactId>            <version>4.12</version>            <scope>test</scope>        </dependency>        <dependency>            <groupId>com.jfoenix</groupId>            <artifactId>jfoenix</artifactId>            <version>9.0.6</version>        </dependency>        <dependency>            <groupId>org.jetbrains</groupId>            <artifactId>annotations</artifactId>            <version>16.0.2</version>        </dependency>    </dependencies>  <build>      <plugins>          <plugin>              <groupId>org.apache.maven.plugins</groupId>              <artifactId>maven-compiler-plugin</artifactId>              <version>3.3</version>              <configuration>                  <source>10</source>                  <target>10</target>              </configuration>          </plugin>          <plugin>              <groupId>org.apache.maven.plugins</groupId>              <artifactId>maven-jar-plugin</artifactId>              <version>2.4</version>              <configuration>                  <archive>                      <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>                  </archive>              </configuration>          </plugin>      </plugins>  </build></project>

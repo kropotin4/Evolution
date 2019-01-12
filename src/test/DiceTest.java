@@ -1,5 +1,3 @@
-package test;
-
 import model.Dice;
 import org.junit.After;
 import org.junit.Before;

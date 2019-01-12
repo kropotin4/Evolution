@@ -1,7 +1,4 @@
-package test;
-
 import model.*;
-import model.decks.CommonCardDeck;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
