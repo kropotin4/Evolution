@@ -39,7 +39,7 @@ public class EndGamePane extends AnchorPane {
         int i = 0;
         for (Player player : this.info.players){
             if (player.getPlayerNumber() == i){
-                this.player = player.getPlayerNumber();
+                this.player = i;
                 break;
             }
             ++i;
