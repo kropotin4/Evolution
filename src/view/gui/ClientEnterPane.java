@@ -296,6 +296,7 @@ public class ClientEnterPane extends AnchorPane {
                 ){
                     connect_button.setText("Подключено");
                     connect_button.setDisable(true);
+                    controller.startClient();
                 }
                 else{
                     connect_button.setTooltip(new Tooltip("Произошла ошибка. Проверьте правильность введённых данных"));
