@@ -286,7 +286,7 @@ public class ClientEnterPane extends AnchorPane {
                 ip.append(ip3_text_field.getText()).append(".");
                 ip.append(ip4_text_field.getText());
 
-                System.out.println("ClientEnterPane: ip = " + ip.toString() + " ");
+                System.out.println("ClientEnterPane: ip = " + ip.toString());
 
 
                 if(controller.connectToServer(
