@@ -35,8 +35,9 @@ public class RoomPane extends AnchorPane {
     Chat chat;
 
     HBox playerBoxs[];
-    Image checkOkImage = new Image("/images/checkOk_50.png");
-    Image checkFalseImage = new Image("/images/checkFalse_50.png");
+    Image checkOkImage = new Image("/images/checkOk_35.png");
+    Image checkWaitImage = new Image("/images/checkWait_35.png");
+    Image checkFalseImage = new Image("/images/checkFalse_35.png");
 
     public RoomPane(ControllerClient controller, Stage primaryStage){
         this.primaryStage = primaryStage;
@@ -88,13 +89,17 @@ public class RoomPane extends AnchorPane {
     }
 
     public void update(RoomInfoMessage roomInfoMessage){
+        System.out.println("updateRoom: " + roomInfoMessage);
+
         if(controller.getStage() != 3)
             ready_button_rp.setDisable(false);
+
         room_name_label_rp.setText("Комната \"" + roomInfoMessage.getRoomName() + "\"");
 
         connection_vbox.getChildren().clear();
 
         String[] logins = roomInfoMessage.getPlayersLogins();
+        boolean[] playerReady = roomInfoMessage.getPlayersReady();
         for(int i = 0; i < roomInfoMessage.getRoomCapacity(); ++i){
 
             HBox hBox = new HBox();
@@ -109,7 +114,11 @@ public class RoomPane extends AnchorPane {
             }
             else {
                 playerName = new Label(logins[i]);
-                imageView = new ImageView(checkOkImage);
+
+                if(playerReady[i])
+                    imageView = new ImageView(checkOkImage);
+                else
+                    imageView = new ImageView(checkWaitImage);
             }
 
             hBox.getChildren().addAll(playerName, imageView);

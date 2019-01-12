@@ -86,6 +86,7 @@ public class ControllerServer {
     synchronized public void messageHandler(Message message, PlayerThread playerThread){
 
         if(message instanceof ChatMessage){
+            System.out.println("ControllerServer: received ChatMessage");
             try {
                 server.distributionForFreePlayers(message);
             } catch (IOException e) {
@@ -93,9 +94,11 @@ public class ControllerServer {
             }
         }
         else if(message instanceof CreateRoomMessage){
+            System.out.println("ControllerServer: received CreateRoomMessage");
             createRoom((CreateRoomMessage) message);
         }
         else if(message instanceof EnterTheRoomMessage){
+            System.out.println("ControllerServer: received EnterTheRoomMessage");
             int playerNumber = enterTheRoom(playerThread, ((EnterTheRoomMessage) message).getRoomId());
             playerThread.setPlayerNumber(playerNumber);
             playerThread.setInRoom(true);

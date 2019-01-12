@@ -10,7 +10,7 @@ public abstract class Message implements Serializable {
     //TODO: Через этот класс будут передоваться действия игроков + сообщения сервера => сделать это
     //Можно сделать несколько server.message.Message разных типов под разные действия
 
-    Phase phase;
+    Phase phase = null;
 
     MessageType messageType;
 
@@ -66,5 +66,10 @@ public abstract class Message implements Serializable {
     }
     public void setMes(String mes) {
         this.mes = mes;
+    }
+
+    @Override
+    public String toString() {
+        return phase == null ? "null" : phase.toString();
     }
 }

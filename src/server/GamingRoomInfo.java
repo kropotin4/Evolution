@@ -1,6 +1,7 @@
 package server;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class GamingRoomInfo implements Serializable {
 
@@ -32,4 +33,15 @@ public class GamingRoomInfo implements Serializable {
         this.playersLogins = playersLogins;
     }
 
+    @Override
+    public String toString() {
+        return "GamingRoomInfo{" +
+                "roomName='" + roomName + '\'' +
+                ", id=" + id +
+                ", currentRommSize=" + currentRommSize +
+                ", roomCapacity=" + roomCapacity +
+                ", playersReady=" + Arrays.toString(playersReady) +
+                ", playersLogins=" + Arrays.toString(playersLogins) +
+                '}';
+    }
 }

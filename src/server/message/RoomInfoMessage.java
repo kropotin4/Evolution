@@ -26,4 +26,9 @@ public class RoomInfoMessage extends Message {
     public boolean[] getPlayersReady() {
         return gamingRoomInfo.playersReady;
     }
+
+    @Override
+    public String toString() {
+        return gamingRoomInfo.toString();
+    }
 }

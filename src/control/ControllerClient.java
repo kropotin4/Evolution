@@ -169,7 +169,7 @@ public class ControllerClient {
         if(stage == 1){
             clientPane.getChat().addMessage(login, message);
         }
-        else if(stage == 2){
+        else if(stage == 2 || stage == 3){
             roomPane.getChat().addMessage(login, message);
         }
 

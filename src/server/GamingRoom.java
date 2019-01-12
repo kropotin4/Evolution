@@ -9,6 +9,7 @@ import server.message.StartMessage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,8 +25,8 @@ public class GamingRoom implements Serializable {
 
     ControllerGameRoom controller;
 
-    ArrayList<PlayerThread> playerThreads = new ArrayList<>();
-    boolean[] playersReady;
+    private ArrayList<PlayerThread> playerThreads = new ArrayList<>();
+    private boolean[] playersReady;
 
 
 
@@ -65,8 +66,10 @@ public class GamingRoom implements Serializable {
         }
     }
     public void deletePlayerThread(PlayerThread playerThread){
+        System.out.println("GamingRoom: deletePlayerThread " + playerThread.getPlayerNumber());
         playerThreads.remove(playerThread);
         playersReady[playerThread.getPlayerNumber()] = false;
+        playerThread.inRoom = false;
     }
 
     //////////////////////
@@ -89,7 +92,7 @@ public class GamingRoom implements Serializable {
         return new GamingRoomInfo(roomName, id, playerThreads.size(), roomCapacity);
     }
     public GamingRoomInfo getFullGamingRoomInfo(){
-        return new GamingRoomInfo(roomName, id, playerThreads.size(), roomCapacity, getPlayersReady(), getPlayersLogins());
+        return new GamingRoomInfo(roomName, id, playerThreads.size(), roomCapacity, playersReady, getPlayersLogins());
     }
 
     public int getRoomCapacity() {
@@ -106,8 +109,9 @@ public class GamingRoom implements Serializable {
         return playerThreads.size();
     }
     public void setPlayerReady(int playerNumber){
+        System.out.println("GamingRoom: setPlayerReady " + playerNumber);
         playersReady[playerNumber] = true;
-
+        System.out.println(Arrays.toString(playersReady));
         if(isAllReady()){
             controller.startGame();
         }

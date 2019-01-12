@@ -73,6 +73,7 @@ public class ControllerGameRoom {
         if(!gameOn){
 
             if(message instanceof ChatMessage){
+                System.out.println("ControllerGameRoom: received ChatMessage");
                 try {
                     distribution(message);
                 } catch (IOException e) {
@@ -80,9 +81,11 @@ public class ControllerGameRoom {
                 }
             }
             else if(message instanceof ReadyToPlayMessage){
+                System.out.println("ControllerGameRoom: received ReadyToPlayMessage");
                 playerReadyToPlay(playerThread.getPlayerNumber());
             }
             else if(message instanceof ExitFromRoomMessage){
+                System.out.println("ControllerGameRoom: received ExitFromRoomMessage");
                 playerThread.setInRoom(false);
                 server.exitFromRoom(playerThread, gamingRoom.getId());
             }

@@ -132,7 +132,7 @@ public class Server extends Thread {
         distributionForFreePlayers(message);
 
         for(GamingRoom gamingRoom : gamingRooms){
-            for(PlayerThread playerThread : gamingRoom.playerThreads){
+            for(PlayerThread playerThread : gamingRoom.getPlayerThreads()){
                 playerThread.sendMessage(message);
             }
         }

@@ -55,7 +55,7 @@ public class PlayerThread extends Thread {
 
     // Отправляем сообщение клиенту
     public void sendMessage(Message message) throws IOException {
-        System.out.println(getName() + ": sendMessage " + message.getMessageType());
+        System.out.println(getName() + ": sendMessage " + message.toString());
         os.writeObject(message); // Отправляем сообщение серверу
         os.flush();
     }

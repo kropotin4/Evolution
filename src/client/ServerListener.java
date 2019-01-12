@@ -63,6 +63,9 @@ public class ServerListener extends Thread {
                         controller.addMessageToChat(((ChatMessage) mesObject).login,((Message) mesObject).getMes());
                     }
                 }
+                else{
+                    System.out.println("Received unknown message (in room)");
+                }
             }
             else{
                 if(mesObject instanceof Message){
