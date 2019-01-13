@@ -20,7 +20,7 @@ public class AddTraitPane  extends VBox {
 
     Stage addTraitStage = new Stage();
 
-    ControllerGUI controler;
+    ControllerGUI controller;
 
     CardNode cardNode;
     CreatureNode creatureNode;
@@ -28,14 +28,14 @@ public class AddTraitPane  extends VBox {
     Button addButton;
 
     HBox radioBox;
-    JFXRadioButton firtsTrait;
+    JFXRadioButton firstTrait;
     JFXRadioButton secondTrait;
     Label aloneTrait;
 
     boolean isOneTrait;
 
-    public AddTraitPane(ControllerGUI controler){
-        this.controler = controler;
+    public AddTraitPane(ControllerGUI controller){
+        this.controller = controller;
         this.setMinSize(150, 100);
         this.setPrefSize(250, 100);
         this.setSpacing(5);
@@ -48,58 +48,40 @@ public class AddTraitPane  extends VBox {
         ToggleGroup group = new ToggleGroup();
 
         aloneTrait = new Label();
-        firtsTrait = new JFXRadioButton();
+        firstTrait = new JFXRadioButton();
         secondTrait = new JFXRadioButton();
-        firtsTrait.setToggleGroup(group);
+        firstTrait.setToggleGroup(group);
         secondTrait.setToggleGroup(group);
 
-        firtsTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                addButton.setDisable(false);
-            }
-        });
-        secondTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                addButton.setDisable(false);
-            }
-        });
+        firstTrait.setOnMouseClicked(event -> addButton.setDisable(false));
+        secondTrait.setOnMouseClicked(event -> addButton.setDisable(false));
 
         HBox buttonBox = new HBox();
         buttonBox.setPrefWidth(this.getPrefWidth());
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setSpacing(7);
         addButton = new Button("Добавить");
-        addButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(isOneTrait){
-                    //controller.addTraitToSelectedCreature(cardNode, true);
-                    controler.addTraitToCreature(creatureNode, cardNode, true);
-                }
-                else{
-                    if(firtsTrait.isSelected()) {
-                        //controller.addTraitToSelectedCreature(cardNode, true);
-                        controler.addTraitToCreature(creatureNode, cardNode, true);
-                        firtsTrait.setSelected(false);
-                    }
-                    else {
-                        //controller.addTraitToSelectedCreature(cardNode, false);
-                        controler.addTraitToCreature(creatureNode, cardNode, false);
-                        secondTrait.setSelected(false);
-                    }
-                }
-                close();
+        addButton.setOnMouseClicked(event -> {
+            if(isOneTrait){
+                //controller.addTraitToSelectedCreature(cardNode, true);
+                controller.addTraitToCreature(creatureNode, cardNode, true);
             }
+            else{
+                if(firstTrait.isSelected()) {
+                    //controller.addTraitToSelectedCreature(cardNode, true);
+                    controller.addTraitToCreature(creatureNode, cardNode, true);
+                    firstTrait.setSelected(false);
+                }
+                else {
+                    //controller.addTraitToSelectedCreature(cardNode, false);
+                    controller.addTraitToCreature(creatureNode, cardNode, false);
+                    secondTrait.setSelected(false);
+                }
+            }
+            close();
         });
         Button cancelButton = new Button("Отменить");
-        cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                close();
-            }
-        });
+        cancelButton.setOnMouseClicked(event -> close());
 
         buttonBox.getChildren().addAll(addButton);
 
@@ -119,9 +101,9 @@ public class AddTraitPane  extends VBox {
         else{
             addButton.setDisable(true);
             isOneTrait = false;
-            firtsTrait.setText(cardNode.card.getTrait(true).toString());
+            firstTrait.setText(cardNode.card.getTrait(true).toString());
             secondTrait.setText(cardNode.card.getTrait(false).toString());
-            radioBox.getChildren().addAll(firtsTrait, secondTrait);
+            radioBox.getChildren().addAll(firstTrait, secondTrait);
         }
     }
     public void setCreatureNode(CreatureNode creatureNode){

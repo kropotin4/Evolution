@@ -169,11 +169,11 @@ public class MainPane extends BorderPane {
         info_pane.setSpacing(10);
         info_pane.setAlignment(Pos.CENTER);
 
-        //controler.startGame();
+        //controller.startGame();
         setPhaseElement(Phase.GROWTH);
 
         ///temp
-        //DefenseOrderPane defenseOrderPane = new DefenseOrderPane(controler);
+        //DefenseOrderPane defenseOrderPane = new DefenseOrderPane(controller);
         //ArrayList<Trait> traits = new ArrayList<>();
         //traits.add(Trait.FAT_TISSUE);
         //traits.add(Trait.CAMOUFLAGE);
@@ -188,17 +188,14 @@ public class MainPane extends BorderPane {
         addTraitButton.setText("Положить свойство");
         addTraitButton.setPrefWidth(500);
 
-        addTraitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                //TODO: Сначала выбираем trait, потом тыкаем на существо
-                if(!isCardSelected) {
-                    if (!deckPane.isShow)
-                        showDeckPane();
-                    deckPane.setTop();
+        addTraitButton.setOnMouseClicked(event -> {
+            //TODO: Сначала выбираем trait, потом тыкаем на существо
+            if(!isCardSelected) {
+                if (!deckPane.isShow)
+                    showDeckPane();
+                deckPane.setTop();
 
-                    isCardSelecting = true;
-                }
+                isCardSelecting = true;
             }
         });
         ///endregion
@@ -213,37 +210,21 @@ public class MainPane extends BorderPane {
         getEatButton.setText("Взять еду из кормовой базы");
         getEatButton.setPrefWidth(500);
 
-        getEatButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                isFoodGetting = true;
-                playerPane.setHungerCreaturesTrue();
-                if(eatButtonBox.getChildren().size() < 2)
-                    eatButtonBox.getChildren().add(cancelEatImage);
-            }
+        getEatButton.setOnMouseClicked(event -> {
+            isFoodGetting = true;
+            playerPane.setHungerCreaturesTrue();
+            if(eatButtonBox.getChildren().size() < 2)
+                eatButtonBox.getChildren().add(cancelEatImage);
         });
         cancelEatImage.setCache(true);
-        cancelEatImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                isFoodGetting = false;
-                playerPane.setAllCreaturesDefault();
-                eatButtonBox.getChildren().remove(1);
-            }
+        cancelEatImage.setOnMouseClicked(event -> {
+            isFoodGetting = false;
+            playerPane.setAllCreaturesDefault();
+            eatButtonBox.getChildren().remove(1);
         });
 
-        cancelEatImage.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                cancelEatImage.setImage(cancel4);
-            }
-        });
-        cancelEatImage.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                cancelEatImage.setImage(cancel3);
-            }
-        });
+        cancelEatImage.setOnMousePressed(event -> cancelEatImage.setImage(cancel4));
+        cancelEatImage.setOnMouseReleased(event -> cancelEatImage.setImage(cancel3));
         ///endregion
 
         ///region attackButton + cancelAttackImage + attackButtonBox init
@@ -256,39 +237,23 @@ public class MainPane extends BorderPane {
         attackButton.setText("Атака");
         attackButton.setPrefWidth(500);
 
-        attackButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("Нажата атака");
-                isAttackerSelecting = true;
-                playerPane.setAttackerCreaturesTrue();
-                //playerPane.setCreaturesWithTraitTrue(Trait.PREDATOR);
-                if(attackButtonBox.getChildren().size() < 2)
-                    attackButtonBox.getChildren().add(cancelAttackImage);
-            }
+        attackButton.setOnMouseClicked(event -> {
+            System.out.println("Нажата атака");
+            isAttackerSelecting = true;
+            playerPane.setAttackerCreaturesTrue();
+            //playerPane.setCreaturesWithTraitTrue(Trait.PREDATOR);
+            if(attackButtonBox.getChildren().size() < 2)
+                attackButtonBox.getChildren().add(cancelAttackImage);
         });
         cancelAttackImage.setCache(true);
-        cancelAttackImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                isAttackerSelecting = false;
-                setAllCreaturesDefault();
-                attackButtonBox.getChildren().remove(1);
-            }
+        cancelAttackImage.setOnMouseClicked(event -> {
+            isAttackerSelecting = false;
+            setAllCreaturesDefault();
+            attackButtonBox.getChildren().remove(1);
         });
 
-        cancelAttackImage.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                cancelAttackImage.setImage(cancel4);
-            }
-        });
-        cancelAttackImage.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                cancelAttackImage.setImage(cancel3);
-            }
-        });
+        cancelAttackImage.setOnMousePressed(event -> cancelAttackImage.setImage(cancel4));
+        cancelAttackImage.setOnMouseReleased(event -> cancelAttackImage.setImage(cancel3));
         ///endregion
 
         ///region piracyButton + cancelPiracyImage + piracyButtonBox init
@@ -301,53 +266,34 @@ public class MainPane extends BorderPane {
         piracyButton.setText("Взять этих сухопутных крыс на абардаж");
         piracyButton.setPrefWidth(500);
 
-        piracyButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("Нажато пиратсво.");
-                isPirateSelecting = true;
-                playerPane.setCreaturesWithTraitTrue(Trait.PIRACY);
-                if(piracyButtonBox.getChildren().size() < 2)
-                    piracyButtonBox.getChildren().add(cancelPiracyImage);
-            }
+        piracyButton.setOnMouseClicked(event -> {
+            System.out.println("Нажато пиратсво.");
+            isPirateSelecting = true;
+            playerPane.setCreaturesWithTraitTrue(Trait.PIRACY);
+            if(piracyButtonBox.getChildren().size() < 2)
+                piracyButtonBox.getChildren().add(cancelPiracyImage);
         });
         cancelPiracyImage.setCache(true);
-        cancelPiracyImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                isPirateSelecting = false;
-                setAllCreaturesDefault();
-                piracyButtonBox.getChildren().remove(1);
-            }
+        cancelPiracyImage.setOnMouseClicked(event -> {
+            isPirateSelecting = false;
+            setAllCreaturesDefault();
+            piracyButtonBox.getChildren().remove(1);
         });
 
-        cancelPiracyImage.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                cancelPiracyImage.setImage(cancel4);
-            }
-        });
-        cancelPiracyImage.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                cancelPiracyImage.setImage(cancel3);
-            }
-        });
+        cancelPiracyImage.setOnMousePressed(event -> cancelPiracyImage.setImage(cancel4));
+        cancelPiracyImage.setOnMouseReleased(event -> cancelPiracyImage.setImage(cancel3));
         ///endregion
 
         ///region showCards init
         showCardsButton.setText("Показать свои карты");
         showCardsButton.setPrefWidth(500);
 
-        showCardsButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                isCardSelecting = false;
-                if(!deckPane.isShow)
-                    showDeckPane();
+        showCardsButton.setOnMouseClicked(event -> {
+            isCardSelecting = false;
+            if(!deckPane.isShow)
+                showDeckPane();
 
-                deckPane.setTop();
-            }
+            deckPane.setTop();
         });
         bottom_action_box.getChildren().add(showCardsButton);
         ///endregion
@@ -356,36 +302,18 @@ public class MainPane extends BorderPane {
         passButton.setText("Пасс");
         passButton.setPrefWidth(500);
 
-        passButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                controler.passPlayer();
-            }
-        });
+        passButton.setOnMouseClicked(event -> controler.passPlayer());
         ///endregion
 
         ///region cancelImage init
         cancelImage.setCache(true);
-        cancelImage.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(isCardSelected){
-                    showSelectedCard(false);
-                }
+        cancelImage.setOnMouseClicked(event -> {
+            if (isCardSelected) {
+                showSelectedCard(false);
             }
         });
-        cancelImage.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                cancelImage.setImage(cancel2);
-            }
-        });
-        cancelImage.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                cancelImage.setImage(cancel1);
-            }
-        });
+        cancelImage.setOnMousePressed(event -> cancelImage.setImage(cancel2));
+        cancelImage.setOnMouseReleased(event -> cancelImage.setImage(cancel1));
         ///endregion
     }
 
@@ -483,58 +411,52 @@ public class MainPane extends BorderPane {
             if(selectedCard.card.getTrait(true) != selectedCard.card.getTrait(false)){
                 ToggleGroup group = new ToggleGroup();
 
-                JFXRadioButton firtsTrait = new JFXRadioButton();
+                JFXRadioButton firstTrait = new JFXRadioButton();
                 JFXRadioButton secondTrait = new JFXRadioButton();
-                firtsTrait.setToggleGroup(group);
+                firstTrait.setToggleGroup(group);
                 secondTrait.setToggleGroup(group);
 
-                firtsTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        isUp = true;
-                        System.out.print("MainPain: firstTrait -> ");
-                        if(Creature.isPairTrait(cardNode.getCard().getTrait(true)))
-                            isPairTraitSelected = true;
-                        else
-                            isPairTraitSelected = false;
+                firstTrait.setOnMouseClicked(event -> {
+                    isUp = true;
+                    System.out.print("MainPain: firstTrait -> ");
+                    if(Creature.isPairTrait(cardNode.getCard().getTrait(true)))
+                        isPairTraitSelected = true;
+                    else
+                        isPairTraitSelected = false;
 
-                        System.out.println("isPairTraitSelected = " + isPairTraitSelected + " ");
+                    System.out.println("isPairTraitSelected = " + isPairTraitSelected + " ");
 
-                        if(cardNode.getCard().getTrait(true) != Trait.PARASITE){
-                            setAllCreaturesDefault();
-                            playerPane.setCanGettingTraitCreaturesTrue(cardNode.getCard().getTrait(true));
-                        }
-                        else{
-                            setAllCreaturesDefault();
-                            for (Node node : players_pane.getChildren()) {
-                                PlayerPane playerPane = (PlayerPane) node;
+                    if(cardNode.getCard().getTrait(true) != Trait.PARASITE){
+                        setAllCreaturesDefault();
+                        playerPane.setCanGettingTraitCreaturesTrue(cardNode.getCard().getTrait(true));
+                    }
+                    else{
+                        setAllCreaturesDefault();
+                        for (Node node : players_pane.getChildren()) {
+                            PlayerPane playerPane = (PlayerPane) node;
 
-                                playerPane.setCanGettingTraitCreaturesPoison(cardNode.getCard().getTrait(true));
-                            }
+                            playerPane.setCanGettingTraitCreaturesPoison(cardNode.getCard().getTrait(true));
                         }
                     }
                 });
-                secondTrait.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        isUp = false;
-                        System.out.print("MainPain: secondTrait -> ");
-                        if(Creature.isPairTrait(cardNode.getCard().getTrait(false)))
-                            isPairTraitSelected = true;
-                        else
-                            isPairTraitSelected = false;
-                        System.out.println("isPairTraitSelected = " + isPairTraitSelected + " ");
-                        if(cardNode.getCard().getTrait(false) != Trait.PARASITE){
-                            setAllCreaturesDefault();
-                            playerPane.setCanGettingTraitCreaturesTrue(cardNode.getCard().getTrait(false));
-                        }
-                        else{
-                            setAllCreaturesDefault();
-                            for (Node node : players_pane.getChildren()) {
-                                PlayerPane playerPane = (PlayerPane) node;
+                secondTrait.setOnMouseClicked(event -> {
+                    isUp = false;
+                    System.out.print("MainPain: secondTrait -> ");
+                    if(Creature.isPairTrait(cardNode.getCard().getTrait(false)))
+                        isPairTraitSelected = true;
+                    else
+                        isPairTraitSelected = false;
+                    System.out.println("isPairTraitSelected = " + isPairTraitSelected + " ");
+                    if(cardNode.getCard().getTrait(false) != Trait.PARASITE){
+                        setAllCreaturesDefault();
+                        playerPane.setCanGettingTraitCreaturesTrue(cardNode.getCard().getTrait(false));
+                    }
+                    else{
+                        setAllCreaturesDefault();
+                        for (Node node : players_pane.getChildren()) {
+                            PlayerPane playerPane = (PlayerPane) node;
 
-                                playerPane.setCanGettingTraitCreaturesPoison(cardNode.getCard().getTrait(false));
-                            }
+                            playerPane.setCanGettingTraitCreaturesPoison(cardNode.getCard().getTrait(false));
                         }
                     }
                 });
@@ -545,7 +467,7 @@ public class MainPane extends BorderPane {
                 radioBox.setAlignment(Pos.CENTER);
                 radioBox.setSpacing(12);
 
-                radioBox.getChildren().addAll(firtsTrait, secondTrait);
+                radioBox.getChildren().addAll(firstTrait, secondTrait);
                 cardBox.getChildren().addAll(radioBox, cardNode, cancelImage);
             }
             else {
@@ -711,20 +633,17 @@ public class MainPane extends BorderPane {
 
             playerPane.showAddIcon(true);
             ImageView addIcon = playerPane.getAddIcon();
-            addIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if(isCardSelected){
-                        controler.addCreature(selectedCard);
-                    }
-                    else {
-                        if (!deckPane.isShow)
-                            showDeckPane();
-                        pressedPlusImage = true;
-                        isCardSelecting = true;
-                        isCreatureAdding = true;
-                        deckPane.setTop();
-                    }
+            addIcon.setOnMouseClicked(event -> {
+                if(isCardSelected){
+                    controler.addCreature(selectedCard);
+                }
+                else {
+                    if (!deckPane.isShow)
+                        showDeckPane();
+                    pressedPlusImage = true;
+                    isCardSelecting = true;
+                    isCreatureAdding = true;
+                    deckPane.setTop();
                 }
             });
         }
