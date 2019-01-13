@@ -47,6 +47,9 @@ public class ControllerGameRoom {
         }
     }
 
+    public void deleteRoom(){
+        server.deleteRoom(gamingRoom.getId());
+    }
     public void playerReadyToPlay(int playerNumber){
         gamingRoom.setPlayerReady(playerNumber);
     }
@@ -86,7 +89,6 @@ public class ControllerGameRoom {
             }
             else if(message instanceof ExitFromRoomMessage){
                 System.out.println("ControllerGameRoom: received ExitFromRoomMessage");
-                playerThread.setInRoom(false);
                 server.exitFromRoom(playerThread, gamingRoom.getId());
             }
 

@@ -114,6 +114,21 @@ public class Server extends Thread {
         GamingRoom gamingRoom = new GamingRoom(roomName, roomCapacity, quarterCardCount, this);
         gamingRooms.add(gamingRoom);
     }
+    public void deleteRoom(int roomId){
+        for(GamingRoom gamingRoom : gamingRooms){
+            if(gamingRoom.getId() == roomId){
+                gamingRooms.remove(gamingRoom);
+                break;
+            }
+        }
+
+        try {
+            distribution(controller.createClientInfoMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int enterTheRoom(PlayerThread playerThread, int roomId){
 
         for(GamingRoom gamingRoom : gamingRooms){
@@ -121,6 +136,7 @@ public class Server extends Thread {
                 gamingRoom.addPlayerThread(playerThread);
                 freePlayersThreads.remove(playerThread);
 
+                playerThread.setInRoom(true);
                 return gamingRoom.getPlayerNumber() - 1;
             }
         }
@@ -133,6 +149,7 @@ public class Server extends Thread {
             if(gamingRoom.id == roomId){
                 gamingRoom.deletePlayerThread(playerThread);
                 freePlayersThreads.add(playerThread);
+                playerThread.setInRoom(false);
             }
         }
 
