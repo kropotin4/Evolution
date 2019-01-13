@@ -12,6 +12,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import model.Creature;
@@ -82,6 +83,8 @@ public class PlayerPane extends ScrollPane {
         creatures_box_pp.setAlignment(Pos.CENTER_LEFT);
         creatures_box_pp.setPadding(new Insets(3));
         creatures_box_pp.setSpacing(3);
+        creatures_box_pp.setStyle(creatures_box_pp.getStyle() + "-fx-background-color: " + controller.getPlayerColor(playerNumber) + "50;");
+        //Color.web(controller.getPlayerColor(playerNumber), 0.3).toString()
 
         playerNumberLabel = new Label(" P" + playerNumber + " ");
         playerNumberLabel.setTextAlignment(TextAlignment.CENTER);

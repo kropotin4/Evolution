@@ -103,14 +103,26 @@ public class ControllerGUI {
 
     public void sendChatMessage(String message){
         if(type == GameType.CLIENT){
-            controllerClient.sendMessage(new ChatMessage(controllerClient.getLogin(), message));
+            controllerClient.sendMessage(
+                    new ChatMessage(
+                            controllerClient.getLogin(),
+                            message,
+                            getPlayerColor(playerNumber))
+            );
+        }
+        else {
+            addMessageToChat(
+                    "Я",
+                    message,
+                    getPlayerColor(playerNumber)
+            );
         }
     }
     public void addMessageToChat(String message){
         mainPane.getChat().addMessage(message);
     }
-    public void addMessageToChat(String login, String message){
-        mainPane.getChat().addMessage(login, message);
+    public void addMessageToChat(String login, String message, String color){
+        mainPane.getChat().addMessage(login, message, color);
     }
 
     public void passPlayer(){
@@ -298,6 +310,9 @@ public class ControllerGUI {
 
     public int getPlayerCardsNumber(){
         return controller.getPlayerCardsNumber(playerNumber);
+    }
+    public String getPlayerColor(int playerNumber){
+        return controller.getPlayers().get(playerNumber).getColor();
     }
 
     public void getFoodFromFodder(CreatureNode creatureNode){

@@ -91,7 +91,9 @@ public class ClientPane extends AnchorPane {
         chat_pane_cp.getChildren().add(chat);
         chat.getSendButton().setOnMouseClicked(event -> {
             if(!chat.getTextInputField().getText().isEmpty()){
-                controller.sendMessage(new ChatMessage(controller.getLogin(), chat.getTextInputField().getText()));
+                controller.sendMessage(
+                        new ChatMessage(controller.getLogin(), chat.getTextInputField().getText())
+                );
                 chat.getTextInputField().setText("");
             }
         });

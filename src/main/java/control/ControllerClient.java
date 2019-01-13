@@ -183,7 +183,14 @@ public class ControllerClient {
         else if(stage == 2 || stage == 3){
             roomPane.getChat().addMessage(login, message);
         }
-
+    }
+    public void addMessageToChat(String login, String message, String color){
+        if(stage == 1){
+            clientPane.getChat().addMessage(login, message, color);
+        }
+        else if(stage == 2 || stage == 3){
+            roomPane.getChat().addMessage(login, message, color);
+        }
     }
     //////////////////
 

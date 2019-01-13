@@ -71,16 +71,23 @@ public class Chat extends VBox {
     }
 
 
+    public void addMessage(String login, String message, String color){
+
+        text = text.concat("<font color=\"" + color + "\">" + login + "</font>: <xmp>" + message + "</xmp><br>");
+        update();
+
+        //text_chat_rp.positionCaret(text_chat_rp.getHtmlText().length());
+    }
     public void addMessage(String login, String message){
 
-        text = text.concat("<xmp>" + login + ": " + message + "</xmp>");
+        text = text.concat("<xmp>" + login + ": " + message + "</xmp><br>");
         update();
 
         //text_chat_rp.positionCaret(text_chat_rp.getHtmlText().length());
     }
     public void addMessage(String message){
 
-        text = text.concat("<font color=\"anton\"><xmp>" + message + "</xmp></font>");
+        text = text.concat("<font color=\"anton\"><xmp>" + message + "</xmp></font><br>");
         update();
 
         //text_chat_rp.positionCaret(text_chat_rp.getHtmlText().length());
