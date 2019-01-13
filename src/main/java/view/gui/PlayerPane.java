@@ -83,7 +83,7 @@ public class PlayerPane extends ScrollPane {
         creatures_box_pp.setAlignment(Pos.CENTER_LEFT);
         creatures_box_pp.setPadding(new Insets(3));
         creatures_box_pp.setSpacing(3);
-        creatures_box_pp.setStyle(creatures_box_pp.getStyle() + "-fx-background-color: " + controller.getPlayerColor(playerNumber) + "50;");
+        //creatures_box_pp.setStyle(creatures_box_pp.getStyle() + "-fx-background-color: " + controller.getPlayerColor(playerNumber) + "50;");
         //Color.web(controller.getPlayerColor(playerNumber), 0.3).toString()
 
         playerNumberLabel = new Label(" P" + playerNumber + " ");
@@ -95,6 +95,7 @@ public class PlayerPane extends ScrollPane {
         playerNumberLabel.setFont(new Font("Arial Bolt", 16));
         playerNumberLabel.setRotate(90);
         playerNumberLabel.setStyle("-fx-border-width: 1; -fx-border-color: red");
+        playerNumberLabel.setStyle(creatures_box_pp.getStyle() + "-fx-background-color: " + controller.getPlayerColor(playerNumber) + "48;");
         //playerNumberLabel.setPrefSize(100, 50);
 
         imageBox.getChildren().add(imageView);

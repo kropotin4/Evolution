@@ -28,6 +28,7 @@ public class GamingRoom implements Serializable {
     private boolean[] playersReady;
 
     Timer dieTimer = new Timer();
+    TimerTask lastTask = null;
     boolean cancelTimer = false;
 
     public  GamingRoom(String roomName, int roomCapacity, int quarterCardCount, Server server){
@@ -66,6 +67,9 @@ public class GamingRoom implements Serializable {
     }
 
     private void startDieTimer(int sec){
+        if(lastTask != null)
+            lastTask.cancel();
+
         TimerTask dieTask = new TimerTask() {
             @Override
             public void run() {
@@ -73,6 +77,8 @@ public class GamingRoom implements Serializable {
                     controller.deleteRoom();
             }
         };
+
+        lastTask = dieTask;
 
         try {
             dieTimer.schedule(dieTask, sec * 1000);

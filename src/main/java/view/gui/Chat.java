@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -44,14 +45,17 @@ public class Chat extends VBox {
 
     @FXML
     private void initialize(){
+
         String css = null;
         try {
-            css = new String(Files.readAllBytes(Paths.get(getClass().getResource("/chat_style.css").toURI())), Charset.forName("UTF-8"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
+            InputStream is = getClass().getResourceAsStream("/chat_style.css");
+            css = new String(is.readAllBytes(), Charset.forName("UTF-8"));
+        }
+        catch (IOException e) {
+            System.out.println("Chat: file not read (IOException)");
             e.printStackTrace();
         }
+
         headerHTML =
                 "<html>" +
                         "<head>" +
