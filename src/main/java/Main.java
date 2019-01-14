@@ -8,17 +8,8 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         StartPane startPane = new StartPane(primaryStage);
         startPane.show();
-        /*Scene scene = new Scene(mainPane, Color.TRANSPARENT);
-
-        primaryStage.setMinWidth(mainPane.getPrefWidth() + 20);
-        primaryStage.setMinHeight(mainPane.getPrefHeight() + 40);
-
-        primaryStage.setTitle("Эволюция");
-
-        primaryStage.setScene(scene);
-        primaryStage.show();*/
     }
 }
