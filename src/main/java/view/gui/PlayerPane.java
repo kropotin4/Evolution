@@ -151,6 +151,19 @@ public class PlayerPane extends ScrollPane {
             creatures_box_pp.getChildren().add(imageBox);
     }
 
+    private void playSound(String sound) {
+        try {
+            System.out.print("Sound " + sound + " is playing");
+            AudioInputStream in = AudioSystem.getAudioInputStream(new File(
+                    String.valueOf(Paths.get(getClass().getResource("/sounds/" + sound).toURI()))).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(in);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //Обработка нажатий на существо при различных условиях (атакует, кормится и т.д.)
     private void setMouseClickedHandle(CreatureNode creatureNode){
         creatureNode.setOnMouseClicked(event -> {
@@ -188,28 +201,7 @@ public class PlayerPane extends ScrollPane {
                     else if(creatureNode.isGreenStyle() && controller.isFoodGetting() && !controller.isCreatureSatisfied(creatureNode)){
                         //Взятие еды из кормовой базы + Заполнение жирового запаса//!controller.isCreatureFed(creatureNode)
                         setAllCreaturesDefault();
-
-                        ///region sound
-                        try {
-                            System.out.print("Mouse sound");
-                            AudioInputStream in = AudioSystem.getAudioInputStream(new File(
-                                    String.valueOf(Paths.get(getClass().getResource("/sounds/mouse16.wav").toURI()))).getAbsoluteFile());
-                            Clip clip = AudioSystem.getClip();
-                            clip.open(in);
-                            clip.start();
-                            if (/*getGrazingActiveNumber()*/ 0 != 0){
-                                System.out.print("Grazing sound");
-                                AudioInputStream inp = AudioSystem.getAudioInputStream(new File(
-                                        String.valueOf(Paths.get(getClass().getResource("/sounds/grazing16.wav").toURI()))).getAbsoluteFile());
-                                clip = AudioSystem.getClip();
-                                clip.open(inp);
-                                clip.start();
-                            }
-                        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | URISyntaxException e) {
-                            e.printStackTrace();
-                        }
-                        ///endregion
-
+                        playSound("mouse16.wav");
                         controller.getFoodFromFodder(creatureNode);
                     }
                     else if(creatureNode.isGreenStyle() && controller.isAttackerSelecting()){
@@ -224,20 +216,7 @@ public class PlayerPane extends ScrollPane {
                         //Выбор жертвы хищника
                         System.out.println("Выбор жертвы хищника");
                         setAllCreaturesDefault();
-
-                        ///region sound
-                        try {
-                            System.out.print("Lion sound");
-                            AudioInputStream in = AudioSystem.getAudioInputStream(new File(
-                                    String.valueOf(Paths.get(getClass().getResource("/sounds/rar16.wav").toURI()))).getAbsoluteFile());
-                            Clip clip = AudioSystem.getClip();
-                            clip.open(in);
-                            clip.start();
-                        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | URISyntaxException e) {
-                            e.printStackTrace();
-                        }
-                        ///endregion
-
+                        playSound("rar16.wav");
                         controller.attackCreature(creatureNode);
                     }
                     else if(creatureNode.isGreenStyle() && controller.isPirateSelecting()){
@@ -252,20 +231,7 @@ public class PlayerPane extends ScrollPane {
                         //Выбор жертвы абардажа
                         System.out.println("Выбор жертвы абардажа");
                         setAllCreaturesDefault();
-
-                        ///region sound
-                        try {
-                            System.out.print("Seagull sound");
-                            AudioInputStream in = AudioSystem.getAudioInputStream(new File(
-                                    String.valueOf(Paths.get(getClass().getResource("/sounds/seagull16.wav").toURI()))).getAbsoluteFile());
-                            Clip clip = AudioSystem.getClip();
-                            clip.open(in);
-                            clip.start();
-                        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | URISyntaxException e) {
-                            e.printStackTrace();
-                        }
-                        ///endregion
-
+                        playSound("seagull16.wav");
                         controller.pirateCreature(creatureNode);
                     }
 
