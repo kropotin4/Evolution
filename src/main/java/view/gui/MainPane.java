@@ -75,8 +75,6 @@ public class MainPane extends BorderPane {
 
     ImageView cancelImage = new ImageView(cancel1);
 
-    Image cursorAsk = new Image("/images/cur4.png");
-
     String system = "system";
 
     CreatureNode selectedCreature;

@@ -8,6 +8,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.spi.AudioFileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -45,7 +48,7 @@ public class Chat extends VBox {
 
     @FXML
     private void initialize(){
-
+        
         String css = null;
         try {
             InputStream is = getClass().getResourceAsStream("/chat_style.css");
