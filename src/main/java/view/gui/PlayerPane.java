@@ -12,24 +12,17 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import model.Creature;
 import model.CreaturesPair;
 import model.Trait;
 
-
-import javax.sound.sampled.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class PlayerPane extends ScrollPane {
 
-    PlayerPane self = this;
     ControllerGUI controller;
     int playerNumber;
 
@@ -151,19 +144,6 @@ public class PlayerPane extends ScrollPane {
             creatures_box_pp.getChildren().add(imageBox);
     }
 
-    private void playSound(String sound) {
-        try {
-            System.out.print("Sound " + sound + " is playing");
-            AudioInputStream in = AudioSystem.getAudioInputStream(new File(
-                    String.valueOf(Paths.get(getClass().getResource("/sounds/" + sound).toURI()))).getAbsoluteFile());
-            Clip clip = AudioSystem.getClip();
-            clip.open(in);
-            clip.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     //Обработка нажатий на существо при различных условиях (атакует, кормится и т.д.)
     private void setMouseClickedHandle(CreatureNode creatureNode){
         creatureNode.setOnMouseClicked(event -> {
@@ -201,7 +181,6 @@ public class PlayerPane extends ScrollPane {
                     else if(creatureNode.isGreenStyle() && controller.isFoodGetting() && !controller.isCreatureSatisfied(creatureNode)){
                         //Взятие еды из кормовой базы + Заполнение жирового запаса//!controller.isCreatureFed(creatureNode)
                         setAllCreaturesDefault();
-                        playSound("mouse16.wav");
                         controller.getFoodFromFodder(creatureNode);
                     }
                     else if(creatureNode.isGreenStyle() && controller.isAttackerSelecting()){
@@ -216,7 +195,6 @@ public class PlayerPane extends ScrollPane {
                         //Выбор жертвы хищника
                         System.out.println("Выбор жертвы хищника");
                         setAllCreaturesDefault();
-                        playSound("rar16.wav");
                         controller.attackCreature(creatureNode);
                     }
                     else if(creatureNode.isGreenStyle() && controller.isPirateSelecting()){
@@ -231,7 +209,6 @@ public class PlayerPane extends ScrollPane {
                         //Выбор жертвы абардажа
                         System.out.println("Выбор жертвы абардажа");
                         setAllCreaturesDefault();
-                        playSound("seagull16.wav");
                         controller.pirateCreature(creatureNode);
                     }
 

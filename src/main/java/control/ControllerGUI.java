@@ -18,6 +18,7 @@ public class ControllerGUI {
 
     MainPane mainPane;
     EndGamePane endGamePane;
+    public SoundPane soundPane;
 
     GameType type;
 
@@ -31,6 +32,7 @@ public class ControllerGUI {
 
         this.mainPane = new MainPane(primaryStage, this);
         this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), 0);
+        this.soundPane = new SoundPane();
 
         type = GameType.ALONE;
 
@@ -46,6 +48,7 @@ public class ControllerGUI {
 
         this.mainPane = new MainPane(primaryStage, this);
         this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), playerNumber);
+        this.soundPane = new SoundPane();
 
         type = GameType.CLIENT;
 
@@ -152,9 +155,7 @@ public class ControllerGUI {
             );
             mainPane.updateCurrentPlayer();
 
-            //if(type == GameType.CLIENT){
-                doNextMove("Использован жировой запас");
-            //}
+            doNextMove("Использован жировой запас");
         }
     }
 
@@ -210,9 +211,7 @@ public class ControllerGUI {
             mainPane.setIsCardSelecting(false);
             mainPane.updateCurrentPlayer();
 
-            //if(type == GameType.CLIENT){
-                doNextMove("Добавили существо");
-            //}
+            doNextMove("Добавили существо");
         }
     }
 
@@ -258,9 +257,7 @@ public class ControllerGUI {
             mainPane.setIsCardSelecting(false);
             mainPane.updateCurrentPlayer();
 
-            //if(type == GameType.CLIENT){
-                doNextMove("К существу добавлено свойство");
-            //}
+            doNextMove("К существу добавлено свойство");
         }
     }
     public void addTraitToCreature(int playerNumber, CreatureNode creatureNode, CardNode cardNode, boolean isUp){
@@ -277,9 +274,7 @@ public class ControllerGUI {
             mainPane.setIsCardSelecting(false);
             mainPane.update(this.playerNumber);
 
-            //if(type == GameType.CLIENT){
-                doNextMove("К чужому существу добавлено свойство");
-            //}
+            doNextMove("К чужому существу добавлено свойство");
         }
     }
     public void addPairTraitToCreature(CreatureNode creatureNode1, CreatureNode creatureNode2, CardNode cardNode, boolean isUp){
@@ -297,10 +292,7 @@ public class ControllerGUI {
         mainPane.setIsCardSelecting(false);
         mainPane.updateCurrentPlayer();
 
-        //if(type == GameType.CLIENT){
-            doNextMove("К существам добавлено парное свойство");
-        //}
-
+        doNextMove("К существам добавлено парное свойство");
     }
     /////////////////////
 
@@ -319,10 +311,8 @@ public class ControllerGUI {
         mainPane.setIsFoodGetting(false);
         controller.getFoodFromFodder(playerNumber, creatureNode.getCreatureId());
         mainPane.updateCurrentPlayer();
-
-        //if(type == GameType.CLIENT){
-            doNextMove("Из кормовой базы взята еда");
-        //}
+        soundPane.playSound("eating");
+        doNextMove("Из кормовой базы взята еда");
     }
     public boolean isFoodGetting(){
         return mainPane.isFoodGetting();
@@ -385,6 +375,7 @@ public class ControllerGUI {
                     creatureHibernating.getCreatureId(),
                     true
             );
+            soundPane.playSound("sleeping");
             mainPane.updateCurrentPlayer();
         }
     }
@@ -430,7 +421,6 @@ public class ControllerGUI {
         mainPane.setPirateCreature(creatureNode);
     }
 
-    /// TODO: пиратсво клиента
     public void pirateCreature(CreatureNode pirateVictimCreature){
 
         controller.pirateCreature(
@@ -439,7 +429,7 @@ public class ControllerGUI {
                 mainPane.getPirateCreature().getCreatureId(),
                 pirateVictimCreature.getCreatureId()
         );
-
+        soundPane.playSound("pirating");
         mainPane.update(playerNumber);
     }
     ///endregion
@@ -511,10 +501,8 @@ public class ControllerGUI {
 
         setIsDefenderSelecting(false);
         setIsAttackerSelecting(false);
-
-        //if(type == GameType.CLIENT){
-            doNextMove("Атаковано существо");
-        //}
+        soundPane.playSound("attack");
+        doNextMove("Атаковано существо");
     }
     //endregion
 

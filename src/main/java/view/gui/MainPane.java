@@ -45,7 +45,7 @@ public class MainPane extends BorderPane {
     @FXML private HBox info_pane;
     @FXML private VBox bottom_action_box;
     @FXML private VBox top_action_box;
-
+    @FXML private MenuItem sound;
 
 
     Button showCardsButton = new Button();
@@ -166,6 +166,8 @@ public class MainPane extends BorderPane {
         info_pane.setPadding(new Insets(3));
         info_pane.setSpacing(10);
         info_pane.setAlignment(Pos.CENTER);
+
+        sound.setOnAction(event -> controler.soundPane.show());
 
         //controller.startGame();
         setPhaseElement(Phase.GROWTH);
