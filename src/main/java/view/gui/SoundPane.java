@@ -1,11 +1,6 @@
 package view.gui;
 
 import com.jfoenix.controls.JFXMasonryPane;
-import javafx.beans.InvalidationListener;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
@@ -23,7 +18,6 @@ import javafx.stage.Stage;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +53,7 @@ public class SoundPane extends JFXMasonryPane {
         void mute(){ mute = true; }
         void unmute(){mute = false; }
         void setLevel(double level) {
+            this.old = this.level;
             if (level < 0) level = 0;
             if (level > 1) level = 1;
             this.level = (float)level;
@@ -96,7 +91,7 @@ public class SoundPane extends JFXMasonryPane {
                             notifyAll();
                         }
                     }
-                    public synchronized void waitUntilDone() throws InterruptedException {
+                    synchronized void waitUntilDone() throws InterruptedException {
                         while (!done) {
                             wait();
                         }
@@ -109,14 +104,13 @@ public class SoundPane extends JFXMasonryPane {
                         super.run();
                         clip.addLineListener(listener);
                         clip.start();
-                        try { listener.waitUntilDone(); }
-                        catch (InterruptedException e) { }
-                        finally { clip.close(); }
+                        try (clip) {
+                            listener.waitUntilDone();
+                        } catch (InterruptedException ignored) { }
                     }
                 };
                 thread.start();
                 audioInputStream.close();
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
