@@ -1,6 +1,11 @@
 package view.gui;
 
 import com.jfoenix.controls.JFXMasonryPane;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
@@ -18,6 +23,7 @@ import javafx.stage.Stage;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +34,7 @@ public class SoundPane extends JFXMasonryPane {
         private boolean isDefault;
         private boolean mute;
         private float level;
+        private float old;
 
         Sound(String defaultName){
             this.defaultName = defaultName;
@@ -35,6 +42,7 @@ public class SoundPane extends JFXMasonryPane {
             this.isDefault = true;
             this.mute = false;
             this.level = 1;
+            this.old = 1;
         }
 
         void setDefault() {
@@ -117,6 +125,7 @@ public class SoundPane extends JFXMasonryPane {
     private HashMap<String, Sound> sounds = new HashMap<>(6);
 
     private static float master = 1;
+    private static float masterOld = 1;
     private static boolean masterMute = false;
 
     private Stage soundStage = new Stage();
@@ -134,7 +143,7 @@ public class SoundPane extends JFXMasonryPane {
         sounds.put("sleeping", new Sound("shh16.wav"));
         ///endregion
 
-        setPrefSize(500, 400);
+        setPrefSize(470, 400);
         setMinSize(getPrefWidth(), getPrefHeight());
         setMaxSize(getPrefWidth(), getPrefHeight());
         setStage();
@@ -144,6 +153,12 @@ public class SoundPane extends JFXMasonryPane {
         for (Sound sound : sounds.values()){
             sound.setDefault();
         }
+    }
+
+    private boolean getDefault(){
+        for (Sound sound : sounds.values()){
+            if (!sound.isDefault) return false;
+        } return true;
     }
 
     public void playSound(String sound){
@@ -200,6 +215,7 @@ public class SoundPane extends JFXMasonryPane {
         masterBox.setAlignment(Pos.CENTER_LEFT);
 
         ///region master
+        Button masterReset;
         {
             HashMap<String, ImageView> imageViews = new HashMap<>();
             for (HashMap.Entry<String, Image> e: images.entrySet()){
@@ -213,40 +229,43 @@ public class SoundPane extends JFXMasonryPane {
             hBox.setAlignment(Pos.CENTER);
             Label label = new Label("Master");
             label.setMinWidth(120);
-            Slider slider = new Slider(0, 1, .70);
-            slider.setMinSize(120, 30);
-            Button button = new Button("", imageViews.get("medium"));
+            Slider volume = new Slider(0, 1, .70);
+            volume.setMinSize(120, 30);
+            Button mute = new Button("", imageViews.get("medium"));
             Button defaulter = new Button("Reset all", imageViews.get("reset"));
-            slider.setOnMousePressed(event -> setCursor(lizardTailCursor));
-            defaulter.setOnMouseEntered(event -> setCursor(lizardTailCursor));
-            button.setOnMouseEntered(event -> setCursor(lizardTailCursor));
-            defaulter.setOnMouseExited(event -> setCursor(lizardCursor));
-            button.setOnMouseExited(event -> setCursor(lizardCursor));
-            slider.setOnMouseReleased(event -> {
-                setCursor(lizardCursor);
-                master = (float)Math.pow(slider.getValue(), 0.1);
-                if (masterMute) button.fire();
-                /**/ if (slider.getValue() > .75) button.setGraphic(imageViews.get("high"));
-                else if (slider.getValue() > .50) button.setGraphic(imageViews.get("medium"));
-                else if (slider.getValue() > .25) button.setGraphic(imageViews.get("low"));
-                else if (slider.getValue() > .00) button.setGraphic(imageViews.get("no"));
+            masterReset = defaulter;
+            ///region cursor
+            volume.setOnMousePressed(event -> setCursor(lizardTailCursor));
+            defaulter.setOnMousePressed(event -> setCursor(lizardTailCursor));
+            mute.setOnMousePressed(event -> setCursor(lizardTailCursor));
+            volume.setOnMouseReleased(event -> setCursor(lizardCursor));
+            defaulter.setOnMouseReleased(event -> setCursor(lizardCursor));
+            mute.setOnMouseReleased(event -> setCursor(lizardCursor));
+            ///endregion
+            volume.valueProperty().addListener((observable, oldValue, newValue) -> {
+                master = (float)(Math.pow(newValue.doubleValue(), 0.1));
+                masterOld = (float)(Math.pow(oldValue.doubleValue(), 0.1));
+                masterMute = false;
+                if (newValue.doubleValue() > .75) mute.setGraphic(imageViews.get("high"));
+                else if (newValue.doubleValue() > .50) mute.setGraphic(imageViews.get("medium"));
+                else if (newValue.doubleValue() > .25) mute.setGraphic(imageViews.get("low"));
+                else mute.setGraphic(imageViews.get("no"));
             });
-            defaulter.setOnAction(event -> setDefault());
-            button.setOnAction(event -> {
+            defaulter.setOnAction(event -> {
+                setDefault();
+                defaulter.setDisable(true);
+            });
+            mute.setOnAction(event -> {
                 if (!masterMute) {
-                    slider.setValue(0);
+                    volume.setValue(0);
                     masterMute = true;
-                    button.setGraphic(imageViews.get("mute"));
+                    mute.setGraphic(imageViews.get("mute"));
                 } else {
-                    slider.setValue(Math.pow(master, 10));
+                    volume.setValue(Math.pow(masterOld, 10));
                     masterMute = false;
-                    /**/ if (slider.getValue() > .75) button.setGraphic(imageViews.get("high"));
-                    else if (slider.getValue() > .50) button.setGraphic(imageViews.get("medium"));
-                    else if (slider.getValue() > .25) button.setGraphic(imageViews.get("low"));
-                    else if (slider.getValue() > .00) button.setGraphic(imageViews.get("no"));
                 }
             });
-            hBox.getChildren().addAll(label, slider, button, defaulter);
+            hBox.getChildren().addAll(label, volume, mute, defaulter);
             masterBox.getChildren().addAll(hBox, new HBox());
 
         }
@@ -267,15 +286,25 @@ public class SoundPane extends JFXMasonryPane {
             label.setMinWidth(120);
             Slider volume = new Slider(0, 1, 1);
             Button mute = new Button("", imageViews.get("high"));
-            volume.setOnMouseReleased(event -> {
-                entry.getValue().setLevel(Math.pow(volume.getValue(), 0.1));
+            Button sound = new Button("", imageViews.get("file"));
+            Button defaulter = new Button("", imageViews.get("reset"));
+            ///region cursor
+            volume.setOnMousePressed(event -> setCursor(lizardTailCursor));
+            defaulter.setOnMousePressed(event -> setCursor(lizardTailCursor));
+            mute.setOnMousePressed(event -> setCursor(lizardTailCursor));
+            volume.setOnMouseReleased(event -> setCursor(lizardCursor));
+            defaulter.setOnMouseReleased(event -> setCursor(lizardCursor));
+            mute.setOnMouseReleased(event -> setCursor(lizardCursor));
+            ///endregion
+            volume.valueProperty().addListener((observable, oldValue, newValue) -> {
+                entry.getValue().setLevel(Math.pow(newValue.doubleValue(), 0.1));
                 if (entry.getValue().mute){
                     mute.fire();
                 }
-                /**/ if (volume.getValue() > .75) mute.setGraphic(imageViews.get("high"));
-                else if (volume.getValue() > .50) mute.setGraphic(imageViews.get("medium"));
-                else if (volume.getValue() > .25) mute.setGraphic(imageViews.get("low"));
-                else if (volume.getValue() > .00) mute.setGraphic(imageViews.get("no"));
+                if (newValue.doubleValue() > .75) mute.setGraphic(imageViews.get("high"));
+                else if (newValue.doubleValue() > .50) mute.setGraphic(imageViews.get("medium"));
+                else if (newValue.doubleValue() > .25) mute.setGraphic(imageViews.get("low"));
+                else mute.setGraphic(imageViews.get("no"));
             });
             mute.setOnAction(event -> {
                 if (!entry.getValue().mute) {
@@ -283,24 +312,33 @@ public class SoundPane extends JFXMasonryPane {
                     entry.getValue().mute();
                     mute.setGraphic(imageViews.get("mute"));
                 } else {
-                    volume.setValue(Math.pow(entry.getValue().level, 10));
+                    volume.setValue(Math.pow(entry.getValue().old, 10));
                     entry.getValue().unmute();
-                    /**/ if (entry.getValue().level > .75) mute.setGraphic(imageViews.get("high"));
-                    else if (entry.getValue().level > .50) mute.setGraphic(imageViews.get("medium"));
-                    else if (entry.getValue().level > .25) mute.setGraphic(imageViews.get("low"));
-                    else if (entry.getValue().level > .00) mute.setGraphic(imageViews.get("no"));
                 }
             });
-            Button sound = new Button("", imageViews.get("file"));
+            defaulter.setDisable(true);
             sound.setOnAction(event -> {
                 FileChooser chooser = new FileChooser();
                 FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Java supported", "*.wav", ".au", ".aiff");
                 chooser.getExtensionFilters().add(extensionFilter);
                 File file = chooser.showOpenDialog(soundStage);
-                entry.getValue().setOther(file.toURI());
+                try {
+                    entry.getValue().setOther(file.toURI());
+                    masterReset.setDisable(false);
+                    defaulter.setDisable(false);
+                } catch (Exception e){
+                    entry.getValue().setDefault();
+                    defaulter.setDisable(true);
+                }
             });
-            Button defaulter = new Button("", imageViews.get("reset"));
-            defaulter.setOnAction(event -> entry.getValue().setDefault());
+            defaulter.setOnAction(event -> {
+                entry.getValue().setDefault();
+                defaulter.setDisable(true);
+                if (getDefault()) masterReset.setDisable(true);
+            });
+            masterReset.disabledProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) defaulter.setDisable(true);
+            });
             hBox.getChildren().addAll(label, volume, mute, sound, defaulter);
             masterBox.getChildren().add(hBox);
         }
