@@ -127,6 +127,8 @@ public class SoundPane extends JFXMasonryPane {
 
     private Image icon = new Image("/images/Equalizer-icon.png");
 
+    /////////////////////////
+
     public SoundPane(){
         ///region default sounds
         sounds.put("eating", new Sound("mouse16.wav"));
@@ -160,14 +162,14 @@ public class SoundPane extends JFXMasonryPane {
         sounds.get(sound).playSound();
     }
 
-        public void show(){
-        if (!isShow) {
-            isShow = true;
-            soundStage.show();
-        }
-        soundStage.setAlwaysOnTop(true);
-        soundStage.setAlwaysOnTop(false);
+    public void show(){
+    if (!isShow) {
+        isShow = true;
+        soundStage.show();
     }
+    soundStage.setAlwaysOnTop(true);
+    soundStage.setAlwaysOnTop(false);
+}
 
     public void close(){
         isShow = false;

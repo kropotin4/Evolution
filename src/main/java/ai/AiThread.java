@@ -32,7 +32,7 @@ public class AiThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("evo.main.java.ai run");
+        System.out.println("ai run");
 
         // Заглушка
         if(table.getPlayerTurn() != playerNumber)

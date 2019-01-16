@@ -35,6 +35,10 @@ public class Player implements Serializable {
     String color;
     boolean isPass = false;
 
+    boolean defendIntention = false;
+    Creature attackCreature = null;
+    Creature defendCreature = null;
+
     PlayerCardDeck playerDeck = new PlayerCardDeck();
     DropCardDeck dropDeck = new DropCardDeck();
 
@@ -63,47 +67,19 @@ public class Player implements Serializable {
     }
 
 
-    /**
-     * Ноль аргументов - абсолютная атака (нужна для клиента)
-     * Больше ноля - есть защитные trait => Полноценная атака
-     *
-     * @param attacker - attack Creature
-     * @param defender - defend Creature
-     * @param optional - optional Creature
-     * @param defendTrait - varlen Defend Traits
-     * @return - true if success attack
-     */
-    public boolean attackCreature(Creature attacker, Creature defender, Creature optional, Card ... defendTrait){
+    public boolean attackCreature(Creature attacker, Creature defender){
         if(!attacker.isAttackPossible(defender))
             return false;
 
-        if(defendTrait.length == 0 || attacker.isAbsoluteAttackPossible(defender)) {
+        if(attacker.isAbsoluteAttackPossible(defender)) {
             attacker.attack(defender);
             table.useScavenger(attacker.getPlayer().playerNumber);
             return true;
         }
 
-
-
-        if(defendTrait[0].getTrait() == Trait.RUNNING){
-            if(Dice.rollOneDice() > 3)
-                return false;
-
-            if(defendTrait.length == 1)
-                return true;
-        }
-
-        switch (defendTrait[1].getTrait()){
-            case TAIL_LOSS:
-                if(Creature.isPairTrait(defendTrait[2].getTrait()))
-                    defender.removePairTrait(defendTrait[2].getTrait(), optional);
-                else
-                    defender.removeTrait(defendTrait[2]);
-                break;
-            case MIMICRY:
-                // Наверное, обойдется без этого
-                break;
-        }
+        defender.getPlayer().defendIntention = true;
+        defender.getPlayer().attackCreature = attacker;
+        defender.getPlayer().defendCreature = defender;
 
         return true;
     }
@@ -196,8 +172,7 @@ public class Player implements Serializable {
             if(isUp != card.isUp())
                 card.turnCard();
 
-            creature.addTrait(card);
-            return true;
+            return creature.addTrait(card);
         }
         return false;
     }
@@ -257,6 +232,14 @@ public class Player implements Serializable {
         }
         return false;
     }
+    public boolean haveCreaturesToMimicry(Creature attacker){
+        int res = 0;
+        for(Creature creature : creatures){
+            if(attacker.isAttackPossible(creature))
+                ++res;
+        }
+        return res > 1;
+    }
 
     public boolean haveActiveCreatures() {
         /*for (Creature creature : creatures){
@@ -278,7 +261,15 @@ public class Player implements Serializable {
         }
         return false;
     }
-
+    public boolean isDefendIntention(){
+        return defendIntention;
+    }
+    public Creature getAttackCreature(){
+        return attackCreature;
+    }
+    public Creature getDefendCreature(){
+        return defendCreature;
+    }
     public int getGrazingActiveNumber(){
         int res = 0;
         for(Creature creature : creatures){
@@ -296,7 +287,7 @@ public class Player implements Serializable {
         return res;
     }
 
-    public void getCard(){
+    public void getCardFromCommonDeck(){
         if(table.commonDeck.getCardCount() > 0)
             playerDeck.addCard(table.getCard());
     }
@@ -316,7 +307,6 @@ public class Player implements Serializable {
         return playerDeck;
     }
 
-    // TODO:Дописать //на мой взгляд, всё нормально
     public boolean canMove(){
         return !(isPass ||
                 ((table.getCurrentPhase() == Phase.GROWTH && playerDeck.getCardsNumber() == 0) ||

@@ -173,7 +173,7 @@ public class MainPane extends BorderPane {
         setPhaseElement(Phase.GROWTH);
 
         ///temp
-        //DefenseOrderPane defenseOrderPane = new DefenseOrderPane(controller);
+        //DefensePane defenseOrderPane = new DefensePane(controller);
         //ArrayList<Trait> traits = new ArrayList<>();
         //traits.add(Trait.FAT_TISSUE);
         //traits.add(Trait.CAMOUFLAGE);

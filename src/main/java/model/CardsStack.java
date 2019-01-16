@@ -3,6 +3,8 @@ package model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+// Стек одинаковых карт для DeckPane.
+
 public class CardsStack implements Serializable {
 
     ArrayList<Card> cards = new ArrayList<>();
@@ -10,6 +12,9 @@ public class CardsStack implements Serializable {
 
     public CardsStack(Card card){
         cards.add(card);
+    }
+    public CardsStack(){
+
     }
 
     public void add(Card card){
@@ -26,7 +31,7 @@ public class CardsStack implements Serializable {
     public Card getCard(){
         return cards.get(0);
     }
-    public int getNumber(){
+    public int getCardsNumber(){
         return cards.size();
     }
 }

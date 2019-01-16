@@ -19,6 +19,7 @@ public class ControllerGUI {
     MainPane mainPane;
     EndGamePane endGamePane;
     public SoundPane soundPane;
+    DefensePane defensePane;
 
     GameType type;
 
@@ -33,6 +34,7 @@ public class ControllerGUI {
         this.mainPane = new MainPane(primaryStage, this);
         this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), 0);
         this.soundPane = new SoundPane();
+        this.defensePane = new DefensePane(this);
 
         type = GameType.ALONE;
 
@@ -49,6 +51,7 @@ public class ControllerGUI {
         this.mainPane = new MainPane(primaryStage, this);
         this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), playerNumber);
         this.soundPane = new SoundPane();
+        this.defensePane = new DefensePane(this);
 
         type = GameType.CLIENT;
 
@@ -95,6 +98,17 @@ public class ControllerGUI {
             if (controller.isGameOver()) {
                 endGamePane.setInfo(new EndGameInfo(controller));
                 endGamePane.show();
+            }
+
+            Player player = controller.hasIntention();
+            if(player != null){ // Есть кто-то с намереньем защиты
+                System.out.println("Intention exist");
+                blockActions = true;
+                if(player.getPlayerNumber() == playerNumber){ // Это ты
+                    System.out.println("Show DefensePane");
+                    defensePane.setDefensePlayer(player);
+                    defensePane.show();
+                }
             }
 
             mainPane.update(playerNumber);
@@ -327,7 +341,7 @@ public class ControllerGUI {
     }
 
     //public boolean findCard(CreatureNode creatureNode, CardNode cardNode){
-    //   return controller.findCard(playerTurn, creatureNode.getCreatureId(), cardNode.getCard());
+    //   return controller.findCard(playerTurn, creatureNode.getCreatureId(), cardNode.getCardFromCommonDeck());
     //}
     public void selectCard(CardNode cardNode){
         mainPane.setSelectedCard(cardNode);

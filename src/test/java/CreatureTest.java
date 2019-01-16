@@ -13,13 +13,13 @@ public class CreatureTest {
     Player p = new Player(t, "login", 1);
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         ++count;
         System.out.print("Creature test #" + count + ": testing... ");
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         System.out.print("finished.\n");
     }
 

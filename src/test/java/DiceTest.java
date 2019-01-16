@@ -3,23 +3,24 @@
 import model.Dice;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import static java.lang.Math.*;
 import static org.junit.Assert.*;
 
 public class DiceTest {
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         System.out.print("Dice tests: testing... ");
     }
 
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         System.out.print("finished.\n");
     }
 
-    @org.junit.Test
+    @Test
     public void rollOneDice() {
         int i = Dice.rollOneDice();
         assertTrue("Dice logic failed (impossible!)", i >= 1 && i <= 6);

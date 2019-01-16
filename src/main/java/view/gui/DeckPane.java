@@ -50,7 +50,7 @@ public class DeckPane extends JFXMasonryPane {
         PlayerCardDeck playerCardDeck = controler.getPlayerCardDeck();
 
         for(CardsStack cardsStack : playerCardDeck.getCardDeck()){
-            CardNode cardNode = new CardNode(cardsStack.getCard(), cardsStack.getNumber());
+            CardNode cardNode = new CardNode(cardsStack.getCard(), cardsStack.getCardsNumber());
 
             cardNode.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override

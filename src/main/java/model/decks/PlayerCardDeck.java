@@ -23,11 +23,10 @@ public class PlayerCardDeck implements Serializable {
         }
         deck.add(new CardsStack(card));
     }
-
     public boolean removeCard(Card card){
         for(CardsStack cardsStack : deck){
             if(cardsStack.getCard() == card){
-                if(cardsStack.getNumber() == 1){
+                if(cardsStack.getCardsNumber() == 1){
                     return deck.remove(cardsStack);
                 }
                 else{
@@ -39,7 +38,15 @@ public class PlayerCardDeck implements Serializable {
         return false;
     }
 
+    public Card getCard(){
+        return deck.get(0).getCard();
+    }
+
     public int getCardsNumber(){
-        return deck.size();
+        int res = 0;
+        for(CardsStack cardsStack : deck){
+            res += cardsStack.getCardsNumber();
+        }
+        return res;
     }
 }

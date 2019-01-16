@@ -77,7 +77,7 @@ public class Creature implements Serializable {
 
         /*according to rules you can not put two equal cards (except fat tissue) to the same creature*/
         for(Card c : cards) {
-            if(c == card)
+            if(c == card || c.getTrait() == card.getTrait())
                 return false;
         }
 
@@ -85,7 +85,7 @@ public class Creature implements Serializable {
         if smb puts a predator card to scavenger or scavenger card to predator
         the last card should be removed from the animal*/
         if ((isScavenger && (card.getTrait() == Trait.PREDATOR)) || (isPredator && (card.getTrait() == Trait.SCAVENGER)))
-            return true; //actually has not added any traits
+            return false; //actually has not added any traits
 
         if(card.getTrait() == Trait.SCAVENGER){
             if(!player.haveCreaturesWithActiveScavenger())
@@ -389,13 +389,13 @@ public class Creature implements Serializable {
         isAttacked = true;
     }
 
-    public boolean isAttackPossible(Creature creature){
+    public boolean isAttackPossible(Creature victim){
         if (!this.isPredator
-        || (creature.isCamouflaged && !this.isSharp)
-        || (creature.isBurrowing && creature.isFed())
-        || (!creature.crocodileList.isEmpty())
-        || (this.isSwimming != creature.isSwimming)
-        || (creature.isBig && !this.isBig))
+        || (victim.isCamouflaged && !this.isSharp)
+        || (victim.isBurrowing && victim.isFed())
+        || (!victim.crocodileList.isEmpty())
+        || (this.isSwimming != victim.isSwimming)
+        || (victim.isBig && !this.isBig))
             return false;
 
         return true;
@@ -415,17 +415,19 @@ public class Creature implements Serializable {
         return true;
     }
 
-    boolean defend(Trait trait, Card card){
-        //TODO: И так понятно
+    public ArrayList<Trait> defend(Creature attacker){
+        ArrayList<Trait> defenseTraits = new ArrayList<>();
 
-        if(trait == Trait.RUNNING){
-            if(Dice.rollOneDice() <= 3){
-                return false;
-            }
-        }
+        if(isTailLossable)
+            defenseTraits.add(Trait.TAIL_LOSS);
+        if(isMimetic && player.haveCreaturesToMimicry(attacker))
+            defenseTraits.add(Trait.MIMICRY);
+        if(isRunning)
+            defenseTraits.add(Trait.RUNNING);
 
-        return true;
+        return defenseTraits;
     }
+
 
     public boolean getFood (){
         if (player.table.isFodderBaseEmpty()) return false;

@@ -272,6 +272,9 @@ public class Controller {
         pPlayer.pirateCreature(pirate, victim);
     }
 
+    public Player hasIntention(){
+        return table.hasIntention();
+    }
     public boolean isAttackPossible(int attackerPlayer, int defenderPlayer, int attackerCreatureID, int defenderCreatureID){
         Player aPlayer = findPlayer(attackerPlayer);
         Player dPlayer = findPlayer(defenderPlayer);
@@ -293,26 +296,16 @@ public class Controller {
 
         System.out.println("Controller: attackCreature: " + aPlayer  + " (" + attacker + ") " + dPlayer + " (" + defender + ")");
 
-        if(attacker.isAbsoluteAttackPossible(defender)){
-            aPlayer.attackCreature(attacker, defender, null);
-            return true;
-        }
+        //if(attacker.isAbsoluteAttackPossible(defender)){
+        return aPlayer.attackCreature(attacker, defender);
+        //    return true;
+        //}
 
-        return false;
+        //return false;
     }
-    public void defendCreature(int attackerPlayer, int defenderPlayer, int attackerCreature, int defenderCreature, Card[] defendTraits){
-        Player aPlayer = findPlayer(attackerPlayer);
-        Player dPlayer = findPlayer(defenderPlayer);
-
-        Card[] cards = null;
-
-        aPlayer.attackCreature(
-                aPlayer.findCreature(attackerCreature),
-                dPlayer.findCreature(defenderCreature),
-                null,
-                cards
-        );
-    }
+//    public ArrayList<Trait> getDefendTrait(Creature attacker, Creature defender){
+//
+//    }
 
     public ArrayList<Creature> getCreatures(int playerNumber){
         Player player = findPlayer(playerNumber);

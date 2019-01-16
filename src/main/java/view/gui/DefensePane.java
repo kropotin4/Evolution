@@ -1,7 +1,6 @@
 package view.gui;
 
 import control.ControllerGUI;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -17,14 +16,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
+import model.Creature;
+import model.Player;
 import model.Trait;
 
 import java.util.ArrayList;
 
-public class DefenseOrderPane extends VBox {
+public class DefensePane extends VBox {
 
-    DefenseOrderPane self = this;
+    DefensePane self = this;
 
     Stage stage = new Stage();
 
@@ -37,7 +37,7 @@ public class DefenseOrderPane extends VBox {
     Image downImage = new Image("/images/down.png", 40, 40, true, true);
     Image downImage2 = new Image("/images/down_2.png",35, 35, true, true);
 
-    public DefenseOrderPane(ControllerGUI controller){
+    public DefensePane(ControllerGUI controller){
         this.setPrefSize(300, 300);
         this.setMinSize(getPrefWidth(), getPrefHeight());
 
@@ -49,8 +49,8 @@ public class DefenseOrderPane extends VBox {
         setStage();
     }
 
-    public void setDefenseTraits(ArrayList<Trait> defenseTraits){
-        this.defenseTraits = defenseTraits;
+    public void setDefensePlayer(Player player){
+        this.defenseTraits = player.getDefendCreature().defend(player.getAttackCreature());
         update();
     }
 
@@ -283,12 +283,7 @@ public class DefenseOrderPane extends VBox {
 
         stage.setScene(scene);
 
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                close();
-            }
-        });
+        stage.setOnCloseRequest(event -> close());
     }
     private void updateStage(){
         stage.setHeight(this.getPrefHeight());

@@ -12,14 +12,14 @@ import static org.junit.Assert.assertTrue;
 public class CardDeckTest {
     static int count = 0;
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         ++count;
         System.out.print("Desk test #" + count + ": testing... ");
     }
 
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         System.out.print("finished.\n");
     }
 
@@ -29,7 +29,7 @@ public class CardDeckTest {
         DropCardDeck d = new DropCardDeck();
         Card q = c.getCard();
         d.addCard(q);
-        assertTrue("Test failed: getCard", d.getCardDeck().contains(q));
+        assertTrue("Test failed: getCardFromCommonDeck", d.getCardDeck().contains(q));
     }
 
     @Test

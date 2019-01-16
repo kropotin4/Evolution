@@ -32,14 +32,14 @@ public class Table implements Serializable {
         //TODO: передавать в стол готовую колоду, чтобы можно было выбирать карты поштучно
         players = new ArrayList<>(playerCount);
         for(int i = 0; i < playerCount; ++i){
-            addPlayer("");
+            addPlayer("player " + (i + 1));
         }
 
         if(commonDeck.getCardCount() > 0)
             for(int i = 0; i < initCardsNumber; ++i){
                 for(Player player : players) {
                     if(commonDeck.getCardCount() <= 0) break;
-                    player.getCard();
+                    player.getCardFromCommonDeck();
                 }
             }
 
@@ -49,6 +49,11 @@ public class Table implements Serializable {
 
     public void doNextMove(){
         System.out.println("doNextMove: cards = " + commonDeck.getCardCount());
+
+        if(hasIntention() != null){
+            System.out.println("doNextMove: hasIntention");
+            return;
+        }
 
         boolean allPass = true;
         int i = 0, oldTurn = playerTurn;
@@ -188,7 +193,7 @@ public class Table implements Serializable {
             i = 0;
             for(Player player : players){
                 if(player_cards[i] > g)
-                    player.getCard();
+                    player.getCardFromCommonDeck();
                 ++i;
             }
         }
@@ -230,7 +235,13 @@ public class Table implements Serializable {
         }
         return result - best;
     }
-
+    public Player hasIntention(){
+        for(Player player : players) {
+            if (player.isDefendIntention())
+                return player;
+        }
+        return null;
+    }
     public Phase getCurrentPhase(){
         return curPhase;
     }

@@ -13,6 +13,9 @@ public class DropCardDeck implements Serializable {
     public ArrayList<Card> getCardDeck(){
         return deck;
     }
+    public int getCardsNumber(){
+        return deck.size();
+    }
 
     public void addCard(Card card){
         deck.add(card);
