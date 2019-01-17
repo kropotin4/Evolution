@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<fx:root prefHeight="400.0" prefWidth="600.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="400.0" prefWidth="600.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="348.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="250.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black; -fx-background-color: rgb(255,255,255,0.6);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="348.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Label text="Список комнат">
                     <font>
@@ -29,7 +29,7 @@
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
             </padding>
         </VBox>
-        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="344.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="344.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black; -fx-background-color: rgb(255,255,255,0.6);" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
             <padding>
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
             </padding>

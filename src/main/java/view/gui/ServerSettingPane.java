@@ -31,11 +31,7 @@ public class ServerSettingPane extends AnchorPane {
     @FXML ImageView check_image;
     @FXML Button back_button_ssp;
 
-    BackgroundSize backgroundSize;
-    BackgroundImage backgroundImage;
-    Background background;
 
-    Image serverImage = new Image("/images/drops.jpg");
     Image lizardTailImage = new Image("/images/lizard_tail.png");
     Image lizardImage = new Image("/images/lizard_cursor.png");
     Image checkOkImage = new Image("/images/checkOk_100.png");
@@ -112,10 +108,13 @@ public class ServerSettingPane extends AnchorPane {
         port_text_field_ssp.setOnAction(event -> controller.startServer());
         back_button_ssp.setOnAction(event -> controller.getStartPane().show());
 
-        backgroundSize = new BackgroundSize(serverImage.getWidth(), serverImage.getHeight(), false, false, true, true);
-        backgroundImage = new BackgroundImage(serverImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        background = new Background(backgroundImage);
+        ///region background
+        Image serverImage = new Image("/images/drops.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(serverImage.getWidth(), serverImage.getHeight(), false, false, true, true);
+        BackgroundImage backgroundImage = new BackgroundImage(serverImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
         setBackground(background);
+        ///endregion
     }
 
 

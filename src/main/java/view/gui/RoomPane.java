@@ -9,9 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import server.message.ChatMessage;
@@ -82,6 +80,14 @@ public class RoomPane extends AnchorPane {
         AnchorPane.setRightAnchor(chat, 3.0);
         AnchorPane.setBottomAnchor(chat, 3.0);
         AnchorPane.setLeftAnchor(chat, 3.0);
+
+        ///region background
+        Image grass = new Image("/images/grass_960_640.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
+        BackgroundImage backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        setBackground(background);
+        ///endregion
     }
 
     public Chat getChat(){

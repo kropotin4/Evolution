@@ -22,7 +22,7 @@
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
          </padding>
          <children>
-              <VBox alignment="TOP_CENTER" prefHeight="5000.0" prefWidth="5000.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black;">
+              <VBox alignment="TOP_CENTER" prefHeight="5000.0" prefWidth="5000.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black; -fx-background-color: rgb(255,255,255,0.6);">
                   <children>
                       <Label text="Список комнат">
                           <font>
@@ -42,7 +42,7 @@
                 <Button fx:id="back_button" mnemonicParsing="false" text="Выход" />
          </children>
       </VBox>
-        <VBox alignment="TOP_CENTER" prefHeight="130.0" prefWidth="100.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="252.0" AnchorPane.topAnchor="0.0">
+        <VBox alignment="TOP_CENTER" prefHeight="130.0" prefWidth="100.0" spacing="10.0" style="-fx-border-width: 1; -fx-border-color: black; -fx-background-color: rgb(255,255,255,0.6);" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="252.0" AnchorPane.topAnchor="0.0">
             <padding>
                 <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
             </padding>
@@ -76,7 +76,7 @@
                 </GridPane>
             </children>
         </VBox>
-        <TabPane prefHeight="200.0" prefWidth="200.0" rotateGraphic="true" style="-fx-border-width: 1; -fx-border-color: black;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="254.0" AnchorPane.topAnchor="135.0">
+        <TabPane prefHeight="200.0" prefWidth="200.0" rotateGraphic="true" style="-fx-border-width: 1; -fx-border-color: black; -fx-background-color: rgb(255,255,255,0.6);" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="254.0" AnchorPane.topAnchor="135.0">
             <tabs>
                 <Tab text="Чат">
                     <content>

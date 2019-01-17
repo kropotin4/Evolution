@@ -86,6 +86,14 @@ public class ServerPane extends AnchorPane {
                 e.printStackTrace();
             }
         });
+
+        ///region background
+        Image serverImage = new Image("/images/drops.jpg");
+        BackgroundSize backgroundSize = new BackgroundSize(serverImage.getWidth(), serverImage.getHeight(), false, false, true, true);
+        BackgroundImage backgroundImage = new BackgroundImage(serverImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        setBackground(background);
+        ///endregion
     }
 
     public void update(){
