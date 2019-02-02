@@ -160,6 +160,7 @@ public class Table implements Serializable {
 
                 creature.setAttacked(false);
                 creature.setMimicked(false);
+                creature.setLossTail(false);
 
                 if(creature.isPirated())
                     creature.setPirated(false);

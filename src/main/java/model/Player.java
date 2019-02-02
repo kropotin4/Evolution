@@ -109,6 +109,7 @@ public class Player implements Serializable {
             if(victim.removeTrait(lostCard)){
                 attacker.addFood();
                 attacker.setAttacked(true);
+                victim.setLossTail(true);
                 victim.getPlayer().defendIntention = false;
                 victim.getPlayer().defendCreature = null;
                 victim.getPlayer().attackCreature = null;
@@ -120,6 +121,7 @@ public class Player implements Serializable {
             if(removePairTraitFromCreatures(victim, creatures[0], lostCard.getTrait())){
                 attacker.addFood();
                 attacker.setAttacked(true);
+                victim.setLossTail(true);
                 victim.getPlayer().defendIntention = false;
                 victim.getPlayer().defendCreature = null;
                 victim.getPlayer().attackCreature = null;
@@ -156,6 +158,15 @@ public class Player implements Serializable {
             victim.getPlayer().defendCreature = null;
             victim.getPlayer().attackCreature = null;
             return true;
+        }
+
+        if(((victim.isMimetic() == victim.isMimicked())
+                && victim.isTailLossable()) == victim.isLossTail())
+        {
+            attacker.attack(victim);
+            victim.getPlayer().defendIntention = false;
+            victim.getPlayer().defendCreature = null;
+            victim.getPlayer().attackCreature = null;
         }
 
         return false;

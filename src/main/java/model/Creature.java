@@ -27,6 +27,7 @@ public class Creature implements Serializable {
     private boolean isPirated = false; // Взял ли кого-то на абардаж
     private boolean isActiveScavenger = false;
     private boolean isMimicked = false; // Использовал ли мимикрию
+    private boolean isLossTail = false;
 
     private boolean isPredator = false;
     private boolean isBig = false;
@@ -200,25 +201,33 @@ public class Creature implements Serializable {
     }
     boolean switchTrait(Trait trait, boolean turnOn){
         switch (trait){
-            case PREDATOR: isPredator = turnOn;
+            case PREDATOR:
+                isPredator = turnOn;
+                if(!turnOn) isAttacked = false;
                 break;
             case HIGH_BODY: isBig = turnOn;
                 break;
             case RUNNING: isRunning = turnOn;
                 break;
-            case MIMICRY: isMimetic = turnOn;
+            case MIMICRY:
+                isMimetic = turnOn;
+                if(!turnOn) isMimicked = false;
                 break;
             case GRAZING: isGrazing = turnOn;
                 break;
             case POISONOUS: isPoisonous = turnOn;
                 break;
-            case TAIL_LOSS: isTailLossable = turnOn;
+            case TAIL_LOSS:
+                isTailLossable = turnOn;
+                if(!turnOn) isLossTail = false;
                 break;
             case HIBERNATION: isHibernatable = turnOn;
                 break;
             case SCAVENGER: isScavenger = turnOn;
                 break;
-            case PIRACY: isPirate = turnOn;
+            case PIRACY:
+                isPirate = turnOn;
+                if(!turnOn) isPirated = false;
                 break;
             case BURROWING: isBurrowing = turnOn;
                 break;
@@ -402,6 +411,15 @@ public class Creature implements Serializable {
     public boolean isRunning() {
         return isRunning;
     }
+    public boolean isTailLossable() {
+        return isTailLossable;
+    }
+    public boolean isLossTail() {
+        return isLossTail;
+    }
+    public void setLossTail(boolean lossTail) {
+        isLossTail = lossTail;
+    }
 
     public boolean pirate(Creature victim){
         setPirated(true);
@@ -438,13 +456,13 @@ public class Creature implements Serializable {
     }
     // Проверка необходима, чтобы выявить те случаи, когда защищающийся ничего не может сделать
     // ==>> Не нужно присылать ему сообщения
-    public boolean isAbsoluteAttackPossible(Creature creature){
-        if(!isAttackPossible(creature))
+    public boolean isAbsoluteAttackPossible(Creature victim){
+        if(!isAttackPossible(victim))
             return false;
 
-        if(creature.isTailLossable
-        || creature.isMimetic
-        || creature.isRunning)
+        if((victim.isTailLossable && !victim.isLossTail)
+        || (victim.isMimetic && victim.getPlayer().haveCreaturesToMimicry(this) && !victim.isMimicked)
+        || victim.isRunning)
             return false;
 
         return true;
@@ -454,9 +472,9 @@ public class Creature implements Serializable {
     public ArrayList<Trait> getDefenseTraitList(Creature attacker){
         ArrayList<Trait> defenseTraits = new ArrayList<>();
 
-        if(isTailLossable)
+        if(isTailLossable && !isLossTail)
             defenseTraits.add(Trait.TAIL_LOSS);
-        if(isMimetic && player.haveCreaturesToMimicry(attacker))
+        if(isMimetic && player.haveCreaturesToMimicry(attacker) && !isMimicked)
             defenseTraits.add(Trait.MIMICRY);
         if(isRunning)
             defenseTraits.add(Trait.RUNNING);

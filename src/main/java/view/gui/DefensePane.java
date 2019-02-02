@@ -176,7 +176,7 @@ public class DefensePane extends VBox {
             }
         }
         if(creature.getCrocodileList().size() > 0){
-
+            //TODO: доделать
         }
         if(creature.getBirdList().size() > 0){
 
@@ -199,16 +199,22 @@ public class DefensePane extends VBox {
     private void running(){
         this.getChildren().clear();
 
+        defenseTraits.remove(Trait.RUNNING);
+
         Label label = new Label("Быстрое");
         Label label2 = new Label("Бог рандома бросает кости");
+
         JFXSpinner spinner = new JFXSpinner();
+        spinner.setRadius(20);
 
         Timer timer = new Timer();
+
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     self.getChildren().remove(spinner);
+
                     Label label1 = new Label();
                     boolean trueRes = true;
                     if(controller.doRunning(player.getAttackCreature(), player.getDefendCreature())){
@@ -224,8 +230,8 @@ public class DefensePane extends VBox {
                         if(finalTrueRes)
                             close();
                         else{
-                            if(defenseTraits.size() > 1)
-                                defenseOrder();
+                            if(defenseTraits.size() >= 1)
+                                update();
                             else
                                 close();
                         }
@@ -235,10 +241,6 @@ public class DefensePane extends VBox {
             }
         };
         timer.schedule(timerTask, 3000);
-
-
-        spinner.setRadius(20);
-
 
         this.getChildren().addAll(label, label2, spinner);
     }
