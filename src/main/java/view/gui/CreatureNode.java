@@ -26,20 +26,29 @@ public class CreatureNode extends VBox {
     private int creatureId;
     private int number;
 
-    Image poisoned  = new Image("/images/skull.png");
+    Image poisonedImage = new Image("/images/skull.png");
     Image dreamB = new Image("/images/dream_17b.png");
     Image dreamW = new Image("/images/dream_17w.png");
 
-    BackgroundSize backgroundSize;
-    BackgroundImage backgroundImage;
-    Background background;
+    Background poisonedBG;
 
     private HBox bottomBox = new HBox();
 
     private Button eatButton = new Button();
     private String eatButtonStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: transparent;";
 
-    private HBox leftBox = new HBox();
+    private VBox leftBox = new VBox();
+    private HBox firstBox = new HBox();
+    private HBox secondBox = new HBox();
+    Image crocodile = new Image("/images/crocodile_20.png");
+    Image bird = new Image("/images/bird_20.png");
+    Image crocodileBGImage = new Image("/images/crocodile_96.png");
+    Background crocodileBG;
+    Image birdBGImage = new Image("/images/bird_96.png");
+    Background birdBG;
+    private static final String symbStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-background-color: transparent;";
+    private static final String symbStyleFull = "-fx-border-width: 1; -fx-border-color: green; -fx-background-color: rgba(0,255,0,0.4);";
+
 
     private VBox rightBox = new VBox();
     private HBox commBox = new HBox();
@@ -49,9 +58,9 @@ public class CreatureNode extends VBox {
     private static final String coopStyle = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: transparent;";
     private static final String coopStyleFull = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: rgba(0,0,255,0.4); -fx-background-radius: 30;";
 
-    ContextMenu traitContextMenu = new ContextMenu();
-
     private int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack, 4 - parasite, 5 - poisoned
+    // 6 - crocodile, 7 - bird
+
     ///endregion
 
     public CreatureNode(PlayerPane playerPane, int creatureId, int creatureNumber){
@@ -96,24 +105,39 @@ public class CreatureNode extends VBox {
         bottomBox.setAlignment(Pos.CENTER);
         bottomBox.setPrefSize(this.getMinWidth(), 10);
 
+        ///region leftBox (symb)
         leftBox.setAlignment(Pos.CENTER);
         leftBox.setPrefSize(30, 10);
 
+        firstBox.setPrefSize(30, 5);
+        secondBox.setPrefSize(30, 5);
+
+        leftBox.getChildren().addAll(firstBox, secondBox);
+        ///endregion
+
+        ///region rightBox (coop & comm)
         rightBox.setAlignment(Pos.CENTER);
         rightBox.setPrefSize(30, 10);
         commBox.setPrefSize(30, 5);
         coopBox.setPrefSize(30, 5);
 
-
         rightBox.getChildren().addAll(commBox, coopBox);
+        ///endregion
 
         bottomBox.getChildren().addAll(leftBox, eatButton, rightBox);
 
-        backgroundSize = new BackgroundSize(this.getMinWidth() - 20, this.getPrefHeight(), false, false, true, false);
-        backgroundImage = new BackgroundImage(poisoned, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        background = new Background(backgroundImage);
+        ///region backgrounds
+        BackgroundSize backgroundSize = new BackgroundSize(this.getMinWidth() - 20, this.getPrefHeight(), false, false, true, false);
 
-        traitContextMenu.getItems().add(new MenuItem());
+        BackgroundImage backgroundImage = new BackgroundImage(poisonedImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        poisonedBG = new Background(backgroundImage);
+
+        BackgroundImage backgroundImage2 = new BackgroundImage(crocodileBGImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        crocodileBG = new Background(backgroundImage2);
+
+        BackgroundImage backgroundImage3 = new BackgroundImage(birdBGImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        birdBG = new Background(backgroundImage3);
+        ///endregion
     }
 
     public void update(){
@@ -293,11 +317,6 @@ public class CreatureNode extends VBox {
             label.setOnMouseEntered(event -> traitTooltip.setShowDuration(Duration.INDEFINITE));
             label.setOnMouseExited(event -> traitTooltip.setShowDuration(Duration.ZERO));
 
-            label.setOnContextMenuRequested(event -> { //это велосипед
-                traitContextMenu.getItems().get(0).setText(trait.getDescription());
-                traitContextMenu.show(finalLabel, event.getScreenX(), event.getScreenY());
-            });
-
             this.getChildren().add(hBox);
         }
 
@@ -326,6 +345,8 @@ public class CreatureNode extends VBox {
         label.setFont(new Font(9));
         label.setStyle(commStyle);
 
+
+
         commBox.getChildren().add(label);
 
         return label;
@@ -343,8 +364,35 @@ public class CreatureNode extends VBox {
 
         return label;
     }
-    public void addSymbiosisLink(int linkNumber, boolean isCrocodile){
+    public Label addSymbiosisLink(int linkNumber, boolean isCrocodile){
+        if(firstBox.getChildren().size() == 0){
+            ImageView imageView = new ImageView(isCrocodile ? crocodile : bird);
 
+            Label label = new Label(Integer.toString(linkNumber));
+
+            label.setAlignment(Pos.CENTER);
+            label.setTextAlignment(TextAlignment.CENTER);
+            label.setPrefSize(15, 5);
+            label.setFont(new Font(9));
+            label.setStyle(symbStyle);
+
+            firstBox.getChildren().addAll(imageView, label);
+            return label;
+        }
+        else{
+            ImageView imageView = new ImageView(isCrocodile ? crocodile : bird);
+
+            Label label = new Label(Integer.toString(linkNumber));
+
+            label.setAlignment(Pos.CENTER);
+            label.setTextAlignment(TextAlignment.CENTER);
+            label.setPrefSize(15, 5);
+            label.setFont(new Font(9));
+            label.setStyle(symbStyle);
+
+            secondBox.getChildren().addAll(label, imageView);
+            return label;
+        }
     }
 
     public static void setCommStyle(Node node, boolean isFull){
@@ -361,6 +409,14 @@ public class CreatureNode extends VBox {
         }
         else{
             node.setStyle(coopStyle);
+        }
+    }
+    public static void setSymbStyle(Node node, boolean isFull){
+        if(isFull){
+            node.setStyle(symbStyleFull);
+        }
+        else{
+            node.setStyle(symbStyle);
         }
     }
 
@@ -413,6 +469,12 @@ public class CreatureNode extends VBox {
             case 5:
                 setPoisonedStyle();
                 break;
+            case 6:
+                setCrocodileStyle();
+                break;
+            case 7:
+                setBirdStyle();
+                break;
             default:
                 this.setStyle("");
                 setBorder("hotpink", 2.5);
@@ -424,11 +486,23 @@ public class CreatureNode extends VBox {
         return styleType;
     }
 
+    private void setCrocodileStyle(){
+        this.setStyle("");
+        setBorder("green", 2.5);
+        //this.setStyle(this.getStyle() + "-fx-background-color: rgba(0,255,127,0.3);");
+        setBackground(crocodileBG);
+    }
+    private void setBirdStyle(){
+        this.setStyle("");
+        setBorder("green", 2.5);
+        //this.setStyle(this.getStyle() + "-fx-background-color: rgba(0,255,127,0.3);");
+        setBackground(birdBG);
+    }
     private void setPoisonedStyle(){
         this.setStyle("");
         setBorder("violet", 2.5);
 
-        setBackground(background);
+        setBackground(poisonedBG);
     }
     private void setParasiteStyle(){
         this.setStyle("");
@@ -455,6 +529,12 @@ public class CreatureNode extends VBox {
         setBorder("green", 1);
     }
 
+    public boolean isCrocodileStyle(){
+        return styleType == 6;
+    }
+    public boolean isBirdStyle(){
+        return styleType == 7;
+    }
     public boolean isDefaultStyle(){
         return styleType == 0;
     }

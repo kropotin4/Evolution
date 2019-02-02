@@ -1,7 +1,6 @@
 package view.gui;
 
 import control.ControllerGUI;
-import javafx.beans.NamedArg;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -9,13 +8,16 @@ import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import model.Creature;
 import model.CreaturesPair;
+import model.SymbiosisPair;
 import model.Trait;
 
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 public class PlayerPane extends ScrollPane {
 
     ControllerGUI controller;
+    MainPane mainPane;
     int playerNumber;
 
     @FXML HBox creatures_box_pp;
@@ -54,6 +57,7 @@ public class PlayerPane extends ScrollPane {
     public PlayerPane(ControllerGUI controller, int playerNumber){
         this.controller = controller;
         this.playerNumber = playerNumber;
+        this.mainPane = controller.getMainPane();
 
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/fxml/PlayerPane.fxml")
@@ -147,7 +151,8 @@ public class PlayerPane extends ScrollPane {
     //Обработка нажатий на существо при различных условиях (атакует, кормится и т.д.)
     private void setMouseClickedHandle(CreatureNode creatureNode){
         creatureNode.setOnMouseClicked(event -> {
-            controller.selectCreature(creatureNode);
+            //controller.selectCreature(creatureNode);
+            mainPane.setSelectedCreature(creatureNode);
             //System.out.println("Select creature: " + creatureNode.getCreatureId());
 
             if(event.getClickCount() == 1){
@@ -157,14 +162,22 @@ public class PlayerPane extends ScrollPane {
             else{
                 endTime = System.nanoTime();
                 if(endTime - startTime >= 250){ // Окончание выбора карты + закрытие DeckPane
-                    if((creatureNode.isGreenStyle() || creatureNode.isPoisonStyle()) && controller.isCardSelected()){
+                    if((creatureNode.isGreenStyle()
+                            || creatureNode.isPoisonStyle()
+                            || creatureNode.isCrocodileStyle()
+                            || creatureNode.isBirdStyle())
+                            && mainPane.isCardSelected()
+                    ){
                         //Добавление свойства
-                        if(controller.isPairTraitSelected()){
+                        if(mainPane.isPairTraitSelected()){
                             if (isFirstSelected) { // Первое существо уже выбрано
                                 secondCreature = creatureNode;
                                 setAllCreaturesDefault();
                                 isFirstSelected = false;
-                                controller.addPairTraitToCreature(firstCreature, creatureNode, controller.getSelectedCard(), controller.isUpTrait());
+                                if(controller.getSelectedCard().getCard().getTrait(controller.isUpTrait()) == Trait.SYMBIOSIS)
+                                    controller.addSymbiosisTraitToCreature(firstCreature, creatureNode, controller.getSelectedCard(), controller.isUpTrait());
+                                else
+                                    controller.addPairTraitToCreature(firstCreature, creatureNode, controller.getSelectedCard(), controller.isUpTrait());
                                 firstCreature = null;
                             } else { // Выбирается первое существо
                                 firstCreature = creatureNode;
@@ -178,12 +191,12 @@ public class PlayerPane extends ScrollPane {
                             controller.addTraitToCreature(controller.getPlayerTurn(), creatureNode, controller.getSelectedCard(), controller.isUpTrait());
                         }
                     }
-                    else if(creatureNode.isGreenStyle() && controller.isFoodGetting() && !controller.isCreatureSatisfied(creatureNode)){
+                    else if(creatureNode.isGreenStyle() && mainPane.isFoodGetting() && controller.isCreatureCanEat(creatureNode)){
                         //Взятие еды из кормовой базы + Заполнение жирового запаса//!controller.isCreatureFed(creatureNode)
                         setAllCreaturesDefault();
                         controller.getFoodFromFodder(creatureNode);
                     }
-                    else if(creatureNode.isGreenStyle() && controller.isAttackerSelecting()){
+                    else if(creatureNode.isGreenStyle() && mainPane.isAttackerSelecting()){
                         //Выбор атакующего существа
                         System.out.println("Выбор атакующего существа");
                         setAllCreaturesDefault();
@@ -191,13 +204,13 @@ public class PlayerPane extends ScrollPane {
 
                         controller.setAttackerCreature(creatureNode);
                     }
-                    else if(creatureNode.isGreenStyle() && controller.isDefenderSelecting()){
+                    else if(creatureNode.isGreenStyle() && mainPane.isDefenderSelecting()){
                         //Выбор жертвы хищника
                         System.out.println("Выбор жертвы хищника");
                         setAllCreaturesDefault();
                         controller.attackCreature(creatureNode);
                     }
-                    else if(creatureNode.isGreenStyle() && controller.isPirateSelecting()){
+                    else if(creatureNode.isGreenStyle() && mainPane.isPirateSelecting()){
                         //Выбор пирата
                         System.out.println("Выбор пирата");
                         setAllCreaturesDefault();
@@ -205,11 +218,17 @@ public class PlayerPane extends ScrollPane {
 
                         controller.setPirateCreature(creatureNode);
                     }
-                    else if(creatureNode.isGreenStyle() && controller.isPirateVictimSelecting()){
+                    else if(creatureNode.isGreenStyle() && mainPane.isPirateVictimSelecting()){
                         //Выбор жертвы абардажа
                         System.out.println("Выбор жертвы абардажа");
                         setAllCreaturesDefault();
                         controller.pirateCreature(creatureNode);
+                    }
+                    else if(creatureNode.isGreenStyle() && mainPane.isMimicryTargetSelecting()){
+                        //Выбор жертвы мимикрии
+                        System.out.println("Выбор жертвы мимикрии");
+                        setAllCreaturesDefault();
+                        controller.doMimicry(creatureNode);
                     }
 
                 }
@@ -220,6 +239,7 @@ public class PlayerPane extends ScrollPane {
     }
     //Добавление парных traits -> + обработка наведения
     private void setPairTraits(){
+        ///region communication
         Label label1 = null;
         Label label2 = null;
         int pairNumber = 1;
@@ -233,29 +253,48 @@ public class PlayerPane extends ScrollPane {
                 }
             }
 
+            Tooltip traitTooltip1 = new Tooltip(Trait.COMMUNICATION.getDescription());
+            label1.setTooltip(traitTooltip1);
+            traitTooltip1.setShowDelay(Duration.ZERO);
+
+            Tooltip traitTooltip2 = new Tooltip(Trait.COMMUNICATION.getDescription());
+            label2.setTooltip(traitTooltip2);
+            traitTooltip2.setShowDelay(Duration.ZERO);
+
+
             Label finalLabel1 = label1;
             Label finalLabel2 = label2;
             finalLabel1.setOnMouseEntered(event -> {
                 CreatureNode.setCommStyle(finalLabel1, true);
                 CreatureNode.setCommStyle(finalLabel2, true);
+
+                traitTooltip1.setShowDuration(Duration.INDEFINITE);
             });
             finalLabel1.setOnMouseExited(event -> {
                 CreatureNode.setCommStyle(finalLabel1, false);
                 CreatureNode.setCommStyle(finalLabel2, false);
+
+                traitTooltip1.setShowDuration(Duration.ZERO);
             });
 
             finalLabel2.setOnMouseEntered(event -> {
                 CreatureNode.setCommStyle(finalLabel1, true);
                 CreatureNode.setCommStyle(finalLabel2, true);
+
+                traitTooltip2.setShowDuration(Duration.INDEFINITE);
             });
             finalLabel2.setOnMouseExited(event -> {
                 CreatureNode.setCommStyle(finalLabel1, false);
                 CreatureNode.setCommStyle(finalLabel2, false);
+
+                traitTooltip2.setShowDuration(Duration.ZERO);
             });
 
             ++pairNumber;
         }
+        ///endregion
 
+        ///region cooperation
         label1 = null;
         label2 = null;
         pairNumber = 1;
@@ -269,32 +308,102 @@ public class PlayerPane extends ScrollPane {
                 }
             }
 
+            Tooltip traitTooltip1 = new Tooltip(Trait.COOPERATION.getDescription());
+            label1.setTooltip(traitTooltip1);
+            traitTooltip1.setShowDelay(Duration.ZERO);
+
+            Tooltip traitTooltip2 = new Tooltip(Trait.COOPERATION.getDescription());
+            label2.setTooltip(traitTooltip2);
+            traitTooltip2.setShowDelay(Duration.ZERO);
+
             Label finalLabel1 = label1;
             Label finalLabel2 = label2;
             finalLabel1.setOnMouseEntered(event -> {
                 CreatureNode.setCoopStyle(finalLabel1, true);
                 CreatureNode.setCoopStyle(finalLabel2, true);
+
+                traitTooltip1.setShowDuration(Duration.INDEFINITE);
             });
             finalLabel1.setOnMouseExited(event -> {
                 CreatureNode.setCoopStyle(finalLabel1, false);
                 CreatureNode.setCoopStyle(finalLabel2, false);
+
+                traitTooltip1.setShowDuration(Duration.ZERO);
             });
 
             finalLabel2.setOnMouseEntered(event -> {
                 CreatureNode.setCoopStyle(finalLabel1, true);
                 CreatureNode.setCoopStyle(finalLabel2, true);
+
+                traitTooltip2.setShowDuration(Duration.INDEFINITE);
             });
             finalLabel2.setOnMouseExited(event -> {
                 CreatureNode.setCoopStyle(finalLabel1, false);
                 CreatureNode.setCoopStyle(finalLabel2, false);
+
+                traitTooltip2.setShowDuration(Duration.ZERO);
             });
             ++pairNumber;
         }
+        ///endregion
+
+        ///region symbiosis
+        label1 = null;
+        label2 = null;
+        pairNumber = 1;
+        for(SymbiosisPair symbiosisPair : controller.getSymbiosisCreatures(playerNumber)){
+            for(CreatureNode creatureNode : creatureNodes){
+                if(creatureNode.getCreatureId() == symbiosisPair.crocodile.getId()){
+                    label1 = creatureNode.addSymbiosisLink(pairNumber, true);
+                }
+                else if(creatureNode.getCreatureId() == symbiosisPair.bird.getId()){
+                    label2 = creatureNode.addSymbiosisLink(pairNumber, false);
+                }
+            }
+
+            Tooltip traitTooltip1 = new Tooltip(Trait.SYMBIOSIS.getDescription());
+            label1.setTooltip(traitTooltip1);
+            traitTooltip1.setShowDelay(Duration.ZERO);
+
+            Tooltip traitTooltip2 = new Tooltip(Trait.SYMBIOSIS.getDescription());
+            label2.setTooltip(traitTooltip2);
+            traitTooltip2.setShowDelay(Duration.ZERO);
+
+            Label finalLabel1 = label1;
+            Label finalLabel2 = label2;
+            finalLabel1.setOnMouseEntered(event -> {
+                CreatureNode.setSymbStyle(finalLabel1, true);
+                CreatureNode.setSymbStyle(finalLabel2, true);
+
+                traitTooltip1.setShowDuration(Duration.INDEFINITE);
+            });
+            finalLabel1.setOnMouseExited(event -> {
+                CreatureNode.setSymbStyle(finalLabel1, false);
+                CreatureNode.setSymbStyle(finalLabel2, false);
+
+                traitTooltip1.setShowDuration(Duration.ZERO);
+            });
+
+            finalLabel2.setOnMouseEntered(event -> {
+                CreatureNode.setSymbStyle(finalLabel1, true);
+                CreatureNode.setSymbStyle(finalLabel2, true);
+
+                traitTooltip2.setShowDuration(Duration.INDEFINITE);
+            });
+            finalLabel2.setOnMouseExited(event -> {
+                CreatureNode.setSymbStyle(finalLabel1, false);
+                CreatureNode.setSymbStyle(finalLabel2, false);
+
+                traitTooltip2.setShowDuration(Duration.ZERO);
+            });
+            ++pairNumber;
+        }
+        ///endregion
     }
 
     ///Различные стили CreatureNode под разные задачи
     ///Стили служать одним из параметров при обработке нажатия
-    public void setPiracyAvailableCreaturesTrue(@NamedArg("exceptCreature") CreatureNode exceptCreature){
+    public void setPiracyAvailableCreaturesTrue(CreatureNode exceptCreature){
         int hunger, satiety;
         for(CreatureNode creatureNode : creatureNodes){
             if(creatureNode == exceptCreature) continue;
@@ -316,14 +425,20 @@ public class PlayerPane extends ScrollPane {
     public void setCanGettingTraitCreaturesTrue(Trait trait){
         for(CreatureNode creatureNode : creatureNodes){
             if(controller.canAddTrait(creatureNode, trait)){
-                creatureNode.setStyleType(1);
+                if(trait == Trait.SYMBIOSIS)
+                    creatureNode.setStyleType(6);
+                else
+                    creatureNode.setStyleType(1);
             }
         }
     }
     public void setCanGettingPairTraitCreaturesTrue(Trait trait, CreatureNode firstCreature){
         for(CreatureNode creatureNode : creatureNodes){
             if(controller.canAddPairTrait(firstCreature, creatureNode, trait)){
-                creatureNode.setStyleType(1);
+                if(trait == Trait.SYMBIOSIS)
+                    creatureNode.setStyleType(7);
+                else
+                    creatureNode.setStyleType(1);
             }
         }
     }
@@ -357,9 +472,15 @@ public class PlayerPane extends ScrollPane {
     }
     public void setHungerCreaturesTrue(){
         for(CreatureNode creatureNode : creatureNodes){
-            if(!controller.isCreatureSatisfied(creatureNode)){
+            if(controller.isCreatureCanEat(creatureNode)){
                 creatureNode.setStyleType(1);
             }
+        }
+    }
+    public void setMimicryTargetTrue(Creature attacker, Creature mimicry){
+        for(CreatureNode creatureNode : creatureNodes){
+            if(creatureNode.getCreatureId() == mimicry.getId()) continue;
+            //if(attacker.isAttackPossible(creatureNode))
         }
     }
 

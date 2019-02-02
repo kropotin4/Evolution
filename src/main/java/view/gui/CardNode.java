@@ -1,10 +1,14 @@
 package view.gui;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import model.Card;
 
 public class CardNode extends HBox {
@@ -30,7 +34,6 @@ public class CardNode extends HBox {
         traits_box.setPrefSize(100, 100);
         traits_box.setAlignment(Pos.CENTER);
         traits_box.setFillWidth(true);
-
 
         card_number = new Label("x1");
         card_number.setWrapText(true);
@@ -62,6 +65,12 @@ public class CardNode extends HBox {
 
             CreatureNode.switchTraitStyle(label, card.getTrait());
 
+            Tooltip traitTooltip = new Tooltip(card.getTrait().getDescription());
+            label.setTooltip(traitTooltip);
+            traitTooltip.setShowDelay(Duration.ZERO);
+            label.setOnMouseEntered(event -> traitTooltip.setShowDuration(Duration.INDEFINITE));
+            label.setOnMouseExited(event -> traitTooltip.setShowDuration(Duration.ZERO));
+
             traits_box.getChildren().add(label);
             traits_box.setVisible(true);
         }
@@ -83,6 +92,18 @@ public class CardNode extends HBox {
 
             CreatureNode.switchTraitStyle(labelUp, card.getTrait(true));
             CreatureNode.switchTraitStyle(labelDown, card.getTrait(false));
+
+            Tooltip traitUpTooltip = new Tooltip(card.getTrait(true).getDescription());
+            labelUp.setTooltip(traitUpTooltip);
+            traitUpTooltip.setShowDelay(Duration.ZERO);
+            labelUp.setOnMouseEntered(event -> traitUpTooltip.setShowDuration(Duration.INDEFINITE));
+            labelUp.setOnMouseExited(event -> traitUpTooltip.setShowDuration(Duration.ZERO));
+
+            Tooltip traitDownTooltip = new Tooltip(card.getTrait(false).getDescription());
+            labelDown.setTooltip(traitDownTooltip);
+            traitDownTooltip.setShowDelay(Duration.ZERO);
+            labelDown.setOnMouseEntered(event -> traitDownTooltip.setShowDuration(Duration.INDEFINITE));
+            labelDown.setOnMouseExited(event -> traitDownTooltip.setShowDuration(Duration.ZERO));
 
             //CreatureNode.switchTraitStyle(labelUp, card.getTrait(true));
             //CreatureNode.switchTraitStyle(labelDown, card.getTrait(false));

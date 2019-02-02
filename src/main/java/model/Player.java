@@ -62,10 +62,24 @@ public class Player implements Serializable {
     public ArrayList<Creature> getCreatures() {
         return creatures;
     }
+
     void setFodder(){
         table.setFodder();
     }
+    public boolean getFoodFromFodder(int creatureID){
+        Creature creature = findCreature(creatureID);
+        if(!table.isFodderBaseEmpty() && !creature.isSatisfied()) {
+            creature.addFood();
 
+            //if(creature.isGrazingActive())
+            //    table.getFood(2);
+            //else
+            table.getFood(1 + getGrazingActiveNumber());
+
+            return true;
+        }
+        return false;
+    }
 
     public boolean attackCreature(Creature attacker, Creature defender){
         if(!attacker.isAttackPossible(defender))
@@ -81,21 +95,70 @@ public class Player implements Serializable {
         defender.getPlayer().attackCreature = attacker;
         defender.getPlayer().defendCreature = defender;
 
-        return true;
-    }
-    public boolean defendCreature(Creature defending, Trait  trait){
-        //TODO:
-        return true;
+        return false;
     }
     public boolean pirateCreature(Creature pirate, Creature victim){
         if(pirate.isPirated() || victim.getTotalSatiety() == 0 || victim.isFed()) return false;
+        return pirate.pirate(victim);
+    }
 
-        pirate.setPirated(true);
+    public boolean doTailLoss(Card lostCard, Creature attacker, Creature victim, Creature ... creatures){
+        if(!victim.findCard(lostCard)) return false;
 
-        pirate.addFood();
-        victim.reduceFood();
+        if(!Trait.isPairTrait(lostCard.getTrait())){
+            if(victim.removeTrait(lostCard)){
+                attacker.addFood();
+                attacker.setAttacked(true);
+                victim.getPlayer().defendIntention = false;
+                victim.getPlayer().defendCreature = null;
+                victim.getPlayer().attackCreature = null;
+                //table.doNextMove();
+                return true;
+            }
+        }
+        else if(creatures.length == 1){
+            if(removePairTraitFromCreatures(victim, creatures[0], lostCard.getTrait())){
+                attacker.addFood();
+                attacker.setAttacked(true);
+                victim.getPlayer().defendIntention = false;
+                victim.getPlayer().defendCreature = null;
+                victim.getPlayer().attackCreature = null;
+                //table.doNextMove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean doMimicry(Creature victim){
+        return doMimicry(attackCreature, defendCreature, victim);
+    }
+    public boolean doMimicry(Creature attacker, Creature mimetic, Creature victim){
+        if(mimetic.getPlayer() != victim.getPlayer() || !mimetic.isMimetic() || mimetic.isMimicked()) return false;
+
+        mimetic.setMimicked(true);
+        if(attackCreature(attacker, victim)){
+
+            mimetic.getPlayer().defendIntention = false;
+            mimetic.getPlayer().defendCreature = null;
+            mimetic.getPlayer().attackCreature = null;
+            return true;
+        }
 
         return true;
+    }
+    public boolean doRunning(Creature attacker, Creature victim){
+        if(!victim.isRunning()) return false;
+
+        if(Dice.rollOneDice() > 3){
+            attacker.setAttacked(true);
+            victim.getPlayer().defendIntention = false;
+            victim.getPlayer().defendCreature = null;
+            victim.getPlayer().attackCreature = null;
+            return true;
+        }
+
+        return false;
     }
 
     public boolean killCreature(Creature creature){
@@ -179,9 +242,9 @@ public class Player implements Serializable {
     public boolean addPairTraitToCreature(Creature creature1, Creature creature2, Card card, boolean isUp){
         if(playerDeck.removeCard(card)){
             if(card.getTrait(isUp) == Trait.COOPERATION)
-                cooperationCreatures.add(new CreaturesPair(creature1, creature2));
+                cooperationCreatures.add(new CreaturesPair(creature1, creature2, card));
             else if(card.getTrait(isUp) == Trait.COMMUNICATION)
-                communicationCreatures.add(new CreaturesPair(creature1, creature2));
+                communicationCreatures.add(new CreaturesPair(creature1, creature2, card));
 
             creature1.addPairTrait(card.getTrait(isUp), creature2);
             creature2.addPairTrait(card.getTrait(isUp), creature1);
@@ -194,7 +257,7 @@ public class Player implements Serializable {
             if(card.getTrait(isUp) != Trait.SYMBIOSIS)
                 return false;
 
-            symbiosisCreatures.add(new SymbiosisPair(crocodile, bird));
+            symbiosisCreatures.add(new SymbiosisPair(crocodile, bird, card));
 
             crocodile.addSymbiosisTrait(bird, false);
             bird.addSymbiosisTrait(crocodile, true);
@@ -202,21 +265,41 @@ public class Player implements Serializable {
         }
         return false;
     }
+    public boolean removePairTraitFromCreatures(Creature creature1, Creature creature2, Trait trait){
 
-    public boolean getFoodFromFodder(int creatureID){
-        Creature creature = findCreature(creatureID);
-        if(!table.isFodderBaseEmpty() && !creature.isSatisfied()) {
-            creature.addFood();
-
-            //if(creature.isGrazingActive())
-            //    table.getFood(2);
-            //else
-            table.getFood(1 + getGrazingActiveNumber());
-
-            return true;
+        switch (trait){
+            case COOPERATION:
+                for (CreaturesPair creaturesPair : cooperationCreatures){
+                    if(creaturesPair.haveCreature(creature1) && creaturesPair.haveCreature(creature2)){
+                        creature1.removePairTrait(trait, creature2);
+                        creature2.removePairTrait(trait, creature1);
+                        return cooperationCreatures.remove(creaturesPair);
+                    }
+                }
+                break;
+            case COMMUNICATION:
+                for (CreaturesPair creaturesPair : communicationCreatures){
+                    if(creaturesPair.haveCreature(creature1) && creaturesPair.haveCreature(creature2)){
+                        creature1.removePairTrait(trait, creature2);
+                        creature2.removePairTrait(trait, creature1);
+                        return communicationCreatures.remove(creaturesPair);
+                    }
+                }
+                break;
+            case SYMBIOSIS:
+                for (SymbiosisPair symbiosisPair : symbiosisCreatures){
+                    if(symbiosisPair.haveCreature(creature1) && symbiosisPair.haveCreature(creature2)){
+                        creature1.removePairTrait(trait, creature2);
+                        creature2.removePairTrait(trait, creature1);
+                        return symbiosisCreatures.remove(symbiosisPair);
+                    }
+                }
+                break;
         }
+
         return false;
     }
+
 
     public boolean haveCreaturesWithTrait(Trait trait){
         for(Creature creature : creatures){
@@ -305,6 +388,36 @@ public class Player implements Serializable {
     }
     public PlayerCardDeck getPlayerCardDeck(){
         return playerDeck;
+    }
+    public boolean findCardWithPairTrait(Card card){
+        Trait trait = Trait.isPairTrait(card.getTrait(true)) ? card.getTrait(true) : card.getTrait(false);
+        if(!Trait.isPairTrait(trait)) return false;
+
+        switch (trait){
+            case COOPERATION:
+                for (CreaturesPair creaturesPair : cooperationCreatures){
+                    if(creaturesPair.card == card){
+                        return true;
+                    }
+                }
+                break;
+            case COMMUNICATION:
+                for (CreaturesPair creaturesPair : communicationCreatures){
+                    if(creaturesPair.card == card){
+                        return true;
+                    }
+                }
+                break;
+            case SYMBIOSIS:
+                for (SymbiosisPair symbiosisPair : symbiosisCreatures){
+                    if(symbiosisPair.card == card){
+                        return true;
+                    }
+                }
+                break;
+        }
+
+        return false;
     }
 
     public boolean canMove(){

@@ -3,7 +3,6 @@ package view.gui;
 import com.jfoenix.controls.JFXRadioButton;
 import control.ControllerGUI;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
@@ -12,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -26,21 +24,18 @@ import java.io.IOException;
 public class MainPane extends BorderPane {
 
     ///region field
-    Image cancel1 = new Image("/images/cancel1.png");
-    Image cancel2 = new Image("/images/cancel2.png");
-    Image cancel3 = new Image("/images/cancel3.png");
-    Image cancel4 = new Image("/images/cancel4.png");
+    private Image cancel1 = new Image("/images/cancel1.png");
+    private Image cancel2 = new Image("/images/cancel2.png");
+    private Image cancel3 = new Image("/images/cancel3.png");
+    private Image cancel4 = new Image("/images/cancel4.png");
 
     @FXML private AnchorPane pane;
     @FXML private VBox players_pane;
 
     @FXML private AnchorPane chat_pane_mp;
-//    @FXML private TextArea text_chat;
-//    @FXML private TextField text_input;
-//    @FXML private Button send_button_chat;
 
     @FXML private AnchorPane playing_pane;
-    PlayerPane playerPane;
+    private PlayerPane playerPane;
 
     @FXML private HBox info_pane;
     @FXML private VBox bottom_action_box;
@@ -48,51 +43,55 @@ public class MainPane extends BorderPane {
     @FXML private MenuItem sound;
 
 
-    Button showCardsButton = new Button();
-    Button addTraitButton = new Button();
-    HBox eatButtonBox = new HBox();
-    Button getEatButton = new Button();
-    ImageView cancelEatImage = new ImageView(cancel3);
-    HBox attackButtonBox = new HBox();
-    Button attackButton = new Button();
-    ImageView cancelAttackImage = new ImageView(cancel3);
-    Button passButton = new Button();
-    HBox piracyButtonBox = new HBox();
-    Button piracyButton = new Button();
-    ImageView cancelPiracyImage = new ImageView(cancel3);
+    private Button showCardsButton = new Button();
+    private Button addTraitButton = new Button();
+    private HBox eatButtonBox = new HBox();
+    private Button getEatButton = new Button();
+    private ImageView cancelEatImage = new ImageView(cancel3);
+    private HBox attackButtonBox = new HBox();
+    private Button attackButton = new Button();
+    private ImageView cancelAttackImage = new ImageView(cancel3);
+    private Button passButton = new Button();
+    private HBox piracyButtonBox = new HBox();
+    private Button piracyButton = new Button();
+    private ImageView cancelPiracyImage = new ImageView(cancel3);
 
-    Label foodLabel = new Label();
-    Label phaseLabel = new Label();
+    private Label foodLabel = new Label();
+    private Label phaseLabel = new Label();
 
-    ControllerGUI controler;
-    Stage primaryStage;
+    private ControllerGUI controler;
+    private Stage primaryStage;
 
-    AddTraitPane addTraitPane;
-    boolean pressedCreatureNode = false;
+    private AddTraitPane addTraitPane;
+    private boolean pressedCreatureNode = false;
     public DeckPane deckPane;
-    boolean pressedPlusImage = false;
-    Chat chat;
+    private boolean pressedPlusImage = false;
+    private Chat chat;
 
-    ImageView cancelImage = new ImageView(cancel1);
+    private ImageView cancelImage = new ImageView(cancel1);
 
-    String system = "system";
+    private CreatureNode selectedCreature;
+    private CreatureNode attackerCreature;
+    private int attackerCreatureId;
+    private int attackerPlayerNumber;
+    private CreatureNode defenderCreature;
+    private int defenderCreatureId;
+    private int defenderPlayerNumber;
+    private CreatureNode pirateCreature;
+    private CardNode selectedCard;
 
-    CreatureNode selectedCreature;
-    CreatureNode attackerCreature;
-    CreatureNode pirateCreature;
-    CardNode selectedCard;
+    private boolean isMimicryTargetSelecting = false; // Выбираем жертву вместо мимикрии
+    private boolean isPirateSelecting = false; // Выбираем пирата
+    private boolean isPirateVictimSelecting = false; // Выбираем жертву пирата
+    private boolean isFoodGetting = false; // Нажали на "Взять еду из кормовой базы"
+    private boolean isAttackerSelecting = false; // Нажали на "Атака" и выбирают атакующее существо
+    private boolean isDefenderSelecting = false; // Выбирают кого атаковать
 
-    boolean isPirateSelecting = false; // Выбираем пирата
-    boolean isPirateVictimSelecting = false; // Выбираем жертву пирата
-    boolean isFoodGetting = false; // Нажали на "Взять еду из кормовой базы"
-    boolean isAttackerSelecting = false; // Нажали на "Атака" и выбирают атакующее существо
-    boolean isDefenderSelecting = false; // Выбирают кого атаковать
-
-    boolean isCardSelecting = false; // Выбор карты (нажали "Положить свойство")
-    boolean isCardSelected = false; // Выбрали карту
-    boolean isPairTraitSelected = false; // Хотят положить парное свойство
-    boolean isUp = false; // Выбрано верхнее/нижнее свойство на двойной карте
-    boolean isCreatureAdding = false; // Нажали на большой зеленый плюс
+    private boolean isCardSelecting = false; // Выбор карты (нажали "Положить свойство")
+    private boolean isCardSelected = false; // Выбрали карту
+    private boolean isPairTraitSelected = false; // Хотят положить парное свойство
+    private boolean isUp = false; // Выбрано верхнее/нижнее свойство на двойной карте
+    private boolean isCreatureAdding = false; // Нажали на большой зеленый плюс
     ///endregion
 
     public MainPane(Stage primaryStage, ControllerGUI controller){
@@ -375,6 +374,8 @@ public class MainPane extends BorderPane {
     }
     public void setAttackerCreature(CreatureNode creatureNode){
         this.attackerCreature = creatureNode;
+        attackerCreatureId = creatureNode.getCreatureId();
+        attackerPlayerNumber = creatureNode.getPlayerPane().getPlayerNumber();
     }
     public void setPirateCreature(CreatureNode creatureNode){
         this.pirateCreature = creatureNode;
@@ -382,7 +383,28 @@ public class MainPane extends BorderPane {
     public void setSelectedCard(CardNode cardNode){
         selectedCard = cardNode;
     }
+    public void setDefenderCreature(CreatureNode defenderCreature) {
+        this.defenderCreature = defenderCreature;
+        defenderCreatureId = defenderCreature.getCreatureId();
+        defenderPlayerNumber = defenderCreature.getPlayerPane().getPlayerNumber();
+    }
 
+    public int getAttackerCreatureId() {
+        return attackerCreatureId;
+    }
+    public int getAttackerPlayerNumber() {
+        return attackerPlayerNumber;
+    }
+    public int getDefenderCreatureId() {
+        return defenderCreatureId;
+    }
+    public int getDefenderPlayerNumber() {
+        return defenderPlayerNumber;
+    }
+
+    public CreatureNode getDefenderCreature() {
+        return defenderCreature;
+    }
     public CreatureNode getSelectedCreature(){
         return selectedCreature;
     }
@@ -408,6 +430,7 @@ public class MainPane extends BorderPane {
             cardBox.setAlignment(Pos.CENTER);
             CardNode cardNode = new CardNode(selectedCard.card, 1);
 
+            // Два свойтсва на карте
             if(selectedCard.card.getTrait(true) != selectedCard.card.getTrait(false)){
                 ToggleGroup group = new ToggleGroup();
 
@@ -419,7 +442,7 @@ public class MainPane extends BorderPane {
                 firstTrait.setOnMouseClicked(event -> {
                     isUp = true;
                     System.out.print("MainPain: firstTrait -> ");
-                    if(Creature.isPairTrait(cardNode.getCard().getTrait(true)))
+                    if(Trait.isPairTrait(cardNode.getCard().getTrait(true)))
                         isPairTraitSelected = true;
                     else
                         isPairTraitSelected = false;
@@ -442,7 +465,7 @@ public class MainPane extends BorderPane {
                 secondTrait.setOnMouseClicked(event -> {
                     isUp = false;
                     System.out.print("MainPain: secondTrait -> ");
-                    if(Creature.isPairTrait(cardNode.getCard().getTrait(false)))
+                    if(Trait.isPairTrait(cardNode.getCard().getTrait(false)))
                         isPairTraitSelected = true;
                     else
                         isPairTraitSelected = false;
@@ -470,9 +493,9 @@ public class MainPane extends BorderPane {
                 radioBox.getChildren().addAll(firstTrait, secondTrait);
                 cardBox.getChildren().addAll(radioBox, cardNode, cancelImage);
             }
-            else {
+            else { // Одно свойство на карте
 
-                if(Creature.isPairTrait(cardNode.getCard().getTrait(true)))
+                if(Trait.isPairTrait(cardNode.getCard().getTrait(true)))
                     isPairTraitSelected = true;
                 else
                     isPairTraitSelected = false;
@@ -532,6 +555,12 @@ public class MainPane extends BorderPane {
         return isPairTraitSelected;
     }
 
+    public boolean isMimicryTargetSelecting() {
+        return isMimicryTargetSelecting;
+    }
+    public void setMimicryTargetSelecting(boolean isMimicryTargetSelecting) {
+        this.isMimicryTargetSelecting = isMimicryTargetSelecting;
+    }
     public boolean isPirateSelecting() {
         return isPirateSelecting;
     }
@@ -563,7 +592,7 @@ public class MainPane extends BorderPane {
         this.isDefenderSelecting = isDefenderSelecting;
     }
 
-    public void showAddTraitPane(CreatureNode selectedCreature, double X, double Y){
+    public void showAddTraitPane(CreatureNode selectedCreature){
         addTraitPane.show();
         addTraitPane.setCardNode(selectedCard);
         addTraitPane.setCreatureNode(selectedCreature);

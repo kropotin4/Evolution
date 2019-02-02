@@ -23,7 +23,6 @@ public class Controller {
     }
 
 
-
     public int doNextMove(){
         table.doNextMove();
 
@@ -81,6 +80,16 @@ public class Controller {
                 isUp
         );
     }
+    public void addSymbiosisTraitToCreature(int playerNumber, int crocodile1ID, int birdID, Card card, boolean isUp){
+        player = findPlayer(playerNumber);
+        player.addSymbiosisTraitToCreature(
+                player.findCreature(crocodile1ID),
+                player.findCreature(birdID),
+                card,
+                isUp
+        );
+    }
+
     public ArrayList<Card> getCreatureCards(int playerNumber, int creatureID){
         player = findPlayer(playerNumber);
         return (ArrayList<Card>)player.findCreature(creatureID).getCards().clone();
@@ -181,6 +190,11 @@ public class Controller {
         player = findPlayer(playerNumber);
         return player.findCreature(creatureID).isSatisfied();
     }
+    public boolean isCreatureCanEat(int playerNumber, int creatureID){
+        player = findPlayer(playerNumber);
+
+        return player.findCreature(creatureID).canEat();
+    }
 
     public void setGrazingActive(int playerNumber, int creatureID, boolean isActive){
         System.out.println("Controller: setGrazingActive: " + creatureID + " " +isActive);
@@ -276,16 +290,17 @@ public class Controller {
         return table.hasIntention();
     }
     public boolean isAttackPossible(int attackerPlayer, int defenderPlayer, int attackerCreatureID, int defenderCreatureID){
-        Player aPlayer = findPlayer(attackerPlayer);
-        Player dPlayer = findPlayer(defenderPlayer);
+        Creature attacker = findPlayer(attackerPlayer).findCreature(attackerCreatureID);
+        Creature defender = findPlayer(defenderPlayer).findCreature(defenderCreatureID);
 
-        Creature attacker = aPlayer.findCreature(attackerCreatureID);
-        Creature defender = dPlayer.findCreature(defenderCreatureID);
+        if(attacker == null){
+            System.err.println("Controller: isAttackPossible: null attacker");
+        }
+        if(defender == null){
+            System.err.println("Controller: isAttackPossible: null defender");
+        }
 
-        if(attacker.isAttackPossible(defender))
-            return true;
-
-        return false;
+        return attacker.isAttackPossible(defender);
     }
     public boolean attackCreature(int attackerPlayer, int defenderPlayer, int attackerCreatureID, int defenderCreatureID){
         Player aPlayer = findPlayer(attackerPlayer);
@@ -306,6 +321,33 @@ public class Controller {
 //    public ArrayList<Trait> getDefendTrait(Creature attacker, Creature defender){
 //
 //    }
+
+    public boolean doTailLoss(Card lostCard, Creature attacker, Creature victim, Creature ... creatures){
+        return victim.getPlayer().doTailLoss(
+                lostCard,
+                attacker,
+                victim,
+                creatures
+        );
+    }
+    public boolean doMimicry(int defenderPlayer, int victimCreatureID){
+        Player dPlayer = table.findPlayer(defenderPlayer);
+
+        Creature victim = dPlayer.findCreature(victimCreatureID);
+
+        if(victim == null){
+            System.err.println("Controller: doMimicry: null victim");
+        }
+
+        return victim.getPlayer().doMimicry(victim);
+    }
+
+    public boolean doRunning(Creature attacker, Creature victim){
+        return victim.getPlayer().doRunning(
+                attacker,
+                victim
+        );
+    }
 
     public ArrayList<Creature> getCreatures(int playerNumber){
         Player player = findPlayer(playerNumber);

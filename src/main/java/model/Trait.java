@@ -101,7 +101,6 @@ public enum Trait implements Serializable {
         public String getDescription() {
             return "Когда животное с этим свойством атаковано хищником, следует сбросить это или другое имеющееся у " +
                     "\nживотного свойство. Хищник получает одну единицу пищи, а животное выживает.";
-
         }
 
         @Override
@@ -173,7 +172,6 @@ public enum Trait implements Serializable {
             return "Использовать в свою фазу питания. Получить фишку еды, забрав её у другого животного, которое" +
                     "\n уже получило хотя бы одну фишку еды, но ещё не накормлено. Животное может использовать " +
                     "\nсвойство ПИРАТСТВО только один раз за ход.";
-
         }
 
         @Override
@@ -185,7 +183,6 @@ public enum Trait implements Serializable {
         @Override
         public String getDescription() {
             return "Парное свойство. Когда одно животное получает еду, второе может получает единицу еды.";
-
         }
 
         @Override
@@ -197,7 +194,6 @@ public enum Trait implements Serializable {
         @Override
         public String getDescription() {
             return "Когда животное НАКОРМЛЕНО, оно не может быть атаковано хищником.";
-
         }
 
         @Override
@@ -209,7 +205,6 @@ public enum Trait implements Serializable {
         @Override
         public String getDescription() {
             return "Животное может быть атаковано только хищником со свойством ОСТРОЕ ЗРЕНИЕ.";
-
         }
 
         @Override
@@ -277,5 +272,13 @@ public enum Trait implements Serializable {
 
     public String getDescription(){
         return "";
+    }
+    public static boolean isPairTrait(Trait trait){
+        if(trait == Trait.COMMUNICATION
+                || trait == Trait.COOPERATION
+                || trait == Trait.SYMBIOSIS)
+            return true;
+
+        return false;
     }
 }

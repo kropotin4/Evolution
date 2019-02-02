@@ -32,13 +32,13 @@ public class ControllerGUI {
         this.playerNumber = playerNumber;
 
         this.mainPane = new MainPane(primaryStage, this);
-        this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), 0);
+        this.endGamePane = new EndGamePane(primaryStage, this, new EndGameInfo(controller), 0);
         this.soundPane = new SoundPane();
         this.defensePane = new DefensePane(this);
 
         type = GameType.ALONE;
 
-        controller.getPlayers().get(1).setAI(true);
+        //controller.getPlayers().get(1).setAI(true);
 
         //mainPane.setPhaseElement(Phase.GROWTH);
         //startGame();
@@ -49,7 +49,7 @@ public class ControllerGUI {
         this.playerNumber = playerNumber;
 
         this.mainPane = new MainPane(primaryStage, this);
-        this.endGamePane = new EndGamePane(primaryStage, new EndGameInfo(controller), playerNumber);
+        this.endGamePane = new EndGamePane(primaryStage, this, new EndGameInfo(controller), playerNumber);
         this.soundPane = new SoundPane();
         this.defensePane = new DefensePane(this);
 
@@ -104,7 +104,7 @@ public class ControllerGUI {
             if(player != null){ // Есть кто-то с намереньем защиты
                 System.out.println("Intention exist");
                 blockActions = true;
-                if(player.getPlayerNumber() == playerNumber){ // Это ты
+                if(player.getPlayerNumber() == playerNumber || type == GameType.ALONE){ // Это ты
                     System.out.println("Show DefensePane");
                     defensePane.setDefensePlayer(player);
                     defensePane.show();
@@ -114,6 +114,7 @@ public class ControllerGUI {
             mainPane.update(playerNumber);
         }
     }
+
     public boolean isBlockActions(){
         return blockActions;
     }
@@ -173,6 +174,9 @@ public class ControllerGUI {
         }
     }
 
+    public MainPane getMainPane(){
+        return mainPane;
+    }
 
     public ArrayList<CreaturesPair> getCommunicationCreatures(int playerNumber){
         return controller.getCommunicationCreatures(playerNumber);
@@ -199,9 +203,10 @@ public class ControllerGUI {
     public boolean isCreatureFed(CreatureNode creatureNode){
         return controller.isCreatureFed(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
-    public boolean isCreatureSatisfied(CreatureNode creatureNode){
-        return controller.isCreatureSatisfied(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
+    public boolean isCreatureCanEat(CreatureNode creatureNode){
+        return controller.isCreatureCanEat(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId());
     }
+
 
     public void setGrazingActive(CreatureNode creatureNode, boolean isActive){
         controller.setGrazingActive(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), isActive);
@@ -254,8 +259,8 @@ public class ControllerGUI {
     public boolean isPairTraitSelected(){
         return mainPane.isPairTraitSelected();
     }
-    public void showAddTraitPane(CreatureNode selectedCreature, double X, double Y){
-        mainPane.showAddTraitPane(selectedCreature, X, Y);
+    public void showAddTraitPane(CreatureNode selectedCreature){
+        mainPane.showAddTraitPane(selectedCreature);
     }
 
     public void addTraitToCreature(CreatureNode creatureNode, CardNode cardNode, boolean isUp){
@@ -307,6 +312,23 @@ public class ControllerGUI {
         mainPane.updateCurrentPlayer();
 
         doNextMove("К существам добавлено парное свойство");
+    }
+    public void addSymbiosisTraitToCreature(CreatureNode crocodileNode, CreatureNode birdNode, CardNode cardNode, boolean isUp){
+
+        controller.addSymbiosisTraitToCreature(
+                playerNumber,
+                crocodileNode.getCreatureId(),
+                birdNode.getCreatureId(),
+                cardNode.getCard(),
+                isUp
+        );
+
+        mainPane.showSelectedCard(false);
+        mainPane.setIsCreatureAdding(false);
+        mainPane.setIsCardSelecting(false);
+        mainPane.updateCurrentPlayer();
+
+        doNextMove("Мир приветствует нового паразита");
     }
     /////////////////////
 
@@ -477,7 +499,6 @@ public class ControllerGUI {
 
                     creatureNode1.setStyleType(1);
                 }
-
             }
         }
 
@@ -502,8 +523,14 @@ public class ControllerGUI {
         showDefenderSelecting(creatureNode);
         mainPane.setAttackerCreature(creatureNode);
     }
+    public  void setDefenderCreature(CreatureNode creatureNode){
+        System.out.println("ControllerGUI: setDefenderCreature: " + creatureNode);
+        mainPane.setDefenderCreature(creatureNode);
+    }
     ///
     public void attackCreature(CreatureNode defender){
+        setDefenderCreature(defender);
+
         controller.attackCreature(
                 mainPane.getAttackerCreature().getPlayerPane().getPlayerNumber(),
                 defender.getPlayerPane().getPlayerNumber(),
@@ -519,6 +546,74 @@ public class ControllerGUI {
         doNextMove("Атаковано существо");
     }
     //endregion
+
+    public void doTailLoss(Card lostCard, Creature attacker, Creature victim, Creature ... creatures){
+        if(controller.doTailLoss(lostCard, attacker, victim, creatures)){
+            doNextMove("Отбрасование хвоста");
+        }
+        else{
+            doNextMove("Отбрасование хвоста не удалось");
+        }
+    }
+
+    public boolean isMimicryTargetSelecting() {
+        return mainPane.isMimicryTargetSelecting();
+    }
+    public void setMimicryTargetSelecting(boolean isMimicryTargetSelecting) {
+        mainPane.setMimicryTargetSelecting(isMimicryTargetSelecting);
+    }
+    public void showMimicryTargets(int attackerPlayer, int defenderPlayer, int attackerCreatureID, int defenderCreatureID){
+
+        PlayerPane defPlayerPane = null;
+        for(Node node : mainPane.getPlayersPane()){
+            PlayerPane playerPane = (PlayerPane) node;
+            if(playerPane.getPlayerNumber() == defenderPlayer){
+                defPlayerPane = playerPane;
+            }
+        }
+
+        if(defPlayerPane == null){
+            defPlayerPane = mainPane.getCurrentPlayerPane();
+        }
+
+        for(CreatureNode creatureNode1 : defPlayerPane.getCreatureNodes()){
+            if(defenderCreatureID == creatureNode1.getCreatureId()) continue;
+
+            if (controller.isAttackPossible(
+                    attackerPlayer,
+                    defenderPlayer,
+                    attackerCreatureID,
+                    creatureNode1.getCreatureId())) {
+
+                creatureNode1.setStyleType(1);
+            }
+        }
+        setMimicryTargetSelecting(true);
+    }
+    public void doMimicry(CreatureNode victim){
+        if(controller.doMimicry(
+                victim.getPlayerPane().getPlayerNumber(),
+                victim.getCreatureId())
+        ){
+            setMimicryTargetSelecting(false);
+            doNextMove("Мимикрия сработала");
+        }
+        else {
+            setMimicryTargetSelecting(false);
+            doNextMove("Мимикрия не сработала");
+        }
+    }
+
+    public boolean doRunning(Creature attacker, Creature victim){
+        if(controller.doRunning(attacker, victim)){
+            doNextMove("Побег удался");
+            return true;
+        }
+        else {
+            doNextMove("Побег не удался");
+            return false;
+        }
+    }
 
     public void setDeckPaneTop(){
         mainPane.deckPane.setTop();

@@ -48,7 +48,7 @@ public class CreatureTest {
             if (c.getTrait().equals(Trait.COOPERATION)) break;
             if (c.getTrait().equals(Trait.SYMBIOSIS)) break;
         }
-        assertTrue("Test failed: addTrait", Creature.isPairTrait(c.getTrait()));
+        assertTrue("Test failed: addTrait", Trait.isPairTrait(c.getTrait()));
     }
 
     @Test

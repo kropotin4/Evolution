@@ -1,12 +1,15 @@
 package view.gui;
 
+import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXSpinner;
 import control.ControllerGUI;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -16,11 +19,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.Creature;
-import model.Player;
-import model.Trait;
+import model.*;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DefensePane extends VBox {
 
@@ -30,6 +33,7 @@ public class DefensePane extends VBox {
 
     ControllerGUI controller;
 
+    Player player;
     ArrayList<Trait> defenseTraits;
 
     Image upImage = new Image("/images/up2.png", 40, 40, true, true);
@@ -41,7 +45,7 @@ public class DefensePane extends VBox {
         this.setPrefSize(300, 300);
         this.setMinSize(getPrefWidth(), getPrefHeight());
 
-        //this.setSpacing(20);
+        this.setSpacing(10);
         this.setAlignment(Pos.CENTER);
 
         this.controller = controller;
@@ -50,11 +54,277 @@ public class DefensePane extends VBox {
     }
 
     public void setDefensePlayer(Player player){
-        this.defenseTraits = player.getDefendCreature().defend(player.getAttackCreature());
+        this.player = player;
+        this.defenseTraits = player.getDefendCreature().getDefenseTraitList(player.getAttackCreature());
         update();
     }
 
+
     private void update(){
+
+        if(defenseTraits.size() == 1){
+            switch (defenseTraits.get(0)){
+                case TAIL_LOSS:
+                    tailLoss(player.getDefendCreature());
+                    break;
+                case MIMICRY:
+                    mimicry();
+                    break;
+                case RUNNING:
+                    running();
+                default:
+                    break;
+            }
+        }
+        else{
+            defenseOrder();
+        }
+
+    }
+
+    private void tailLoss(Creature creature){
+        this.getChildren().clear();
+
+        int height =  creature.getCards().size() + creature.getPlayer().getCooperationCreatures().size()
+                + creature.getPlayer().getCommunicationCreatures().size() + creature.getCrocodileList().size()
+                + creature.getBirdList().size();
+        this.setPrefSize(300, height * (80 + 5) + 60);
+        updateStage();
+
+        ArrayList<JFXRadioButton> radioButtons = new ArrayList<>();
+        ArrayList<Card> cardsList = new ArrayList<>();
+        ToggleGroup group = new ToggleGroup();
+        for(Card card : creature.getCards()){
+
+            HBox traitBox = new HBox();
+            traitBox.setPrefSize(this.getPrefWidth(), 80);
+            traitBox.setMinSize(traitBox.getPrefWidth(), traitBox.getPrefHeight());
+            traitBox.setMaxSize(traitBox.getPrefWidth(), traitBox.getPrefHeight());
+            traitBox.setAlignment(Pos.CENTER);
+            traitBox.setPadding(new Insets(2, 3, 2, 3));
+
+            Label traitLabel = new Label(card.getTrait().toString());
+            traitLabel.setPrefSize(traitBox.getPrefWidth() - 100, traitBox.getPrefHeight());
+            traitLabel.setMinSize(traitBox.getPrefWidth() - 100, traitBox.getPrefHeight());
+            traitLabel.setFont(new Font(15));
+            traitLabel.setAlignment(Pos.CENTER);
+            traitLabel.setTextAlignment(TextAlignment.CENTER);
+
+            JFXRadioButton radioButton = new JFXRadioButton();
+            radioButton.setToggleGroup(group);
+            radioButtons.add(radioButton);
+            cardsList.add(card);
+
+            traitBox.getChildren().addAll(radioButton, traitLabel);
+            this.getChildren().add(traitBox);
+        }
+
+        if(creature.getCooperationList().size() > 0){
+            int num = 0;
+            for(CreaturesPair creaturesPair : creature.getPlayer().getCooperationCreatures()){
+                if(creaturesPair.haveCreature(creature)){
+                    HBox traitBox = new HBox();
+                    traitBox.setPrefSize(this.getPrefWidth(), 80);
+                    traitBox.setMinSize(traitBox.getPrefWidth(), traitBox.getPrefHeight());
+                    traitBox.setMaxSize(traitBox.getPrefWidth(), traitBox.getPrefHeight());
+                    traitBox.setAlignment(Pos.CENTER);
+                    traitBox.setPadding(new Insets(2, 3, 2, 3));
+
+                    Label traitLabel = new Label(Trait.COOPERATION.toString() + " " + ++num);
+                    traitLabel.setPrefSize(traitBox.getPrefWidth() - 100, traitBox.getPrefHeight());
+                    traitLabel.setMinSize(traitBox.getPrefWidth() - 100, traitBox.getPrefHeight());
+                    traitLabel.setFont(new Font(15));
+                    traitLabel.setAlignment(Pos.CENTER);
+                    traitLabel.setTextAlignment(TextAlignment.CENTER);
+
+                    JFXRadioButton radioButton = new JFXRadioButton();
+                    radioButton.setToggleGroup(group);
+                    radioButtons.add(radioButton);
+                    cardsList.add(creaturesPair.card);
+
+                    traitBox.getChildren().addAll(radioButton, traitLabel);
+                    this.getChildren().add(traitBox);
+                }
+            }
+        }
+        if(creature.getCommunicationList().size() > 0){
+            int num = 0;
+            for(CreaturesPair creaturesPair : creature.getPlayer().getCommunicationCreatures()){
+                if(creaturesPair.haveCreature(creature)){
+                    HBox traitBox = new HBox();
+                    traitBox.setPrefSize(this.getPrefWidth(), 80);
+                    traitBox.setMinSize(traitBox.getPrefWidth(), traitBox.getPrefHeight());
+                    traitBox.setMaxSize(traitBox.getPrefWidth(), traitBox.getPrefHeight());
+                    traitBox.setAlignment(Pos.CENTER);
+                    traitBox.setPadding(new Insets(2, 3, 2, 3));
+
+                    Label traitLabel = new Label(Trait.COMMUNICATION.toString() + " " + ++num);
+                    traitLabel.setPrefSize(traitBox.getPrefWidth() - 100, traitBox.getPrefHeight());
+                    traitLabel.setMinSize(traitBox.getPrefWidth() - 100, traitBox.getPrefHeight());
+                    traitLabel.setFont(new Font(15));
+                    traitLabel.setAlignment(Pos.CENTER);
+                    traitLabel.setTextAlignment(TextAlignment.CENTER);
+
+                    JFXRadioButton radioButton = new JFXRadioButton();
+                    radioButton.setToggleGroup(group);
+                    radioButtons.add(radioButton);
+                    cardsList.add(creaturesPair.card);
+
+                    traitBox.getChildren().addAll(radioButton, traitLabel);
+                    this.getChildren().add(traitBox);
+                }
+            }
+        }
+        if(creature.getCrocodileList().size() > 0){
+
+        }
+        if(creature.getBirdList().size() > 0){
+
+        }
+
+        radioButtons.get(0).setSelected(true);
+
+        Button lossButton = new Button("Отбросить свойство");
+        lossButton.setOnMouseClicked(event -> {
+            for(int i = 0; i < radioButtons.size(); ++i){
+                if(radioButtons.get(i).isSelected()){
+                    controller.doTailLoss(cardsList.get(i), player.getAttackCreature(), player.getDefendCreature());
+                    close();
+                    break;
+                }
+            }
+        });
+        this.getChildren().add(lossButton);
+    }
+    private void running(){
+        this.getChildren().clear();
+
+        Label label = new Label("Быстрое");
+        Label label2 = new Label("Бог рандома бросает кости");
+        JFXSpinner spinner = new JFXSpinner();
+
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    self.getChildren().remove(spinner);
+                    Label label1 = new Label();
+                    boolean trueRes = true;
+                    if(controller.doRunning(player.getAttackCreature(), player.getDefendCreature())){
+                        label1.setText("Существо сбежало!");
+                    }
+                    else{
+                        label1.setText("Побег не удался.");
+                        trueRes = false;
+                    }
+                    Button button = new Button("Ok");
+                    boolean finalTrueRes = trueRes;
+                    button.setOnMouseClicked(event -> {
+                        if(finalTrueRes)
+                            close();
+                        else{
+                            if(defenseTraits.size() > 1)
+                                defenseOrder();
+                            else
+                                close();
+                        }
+                    });
+                    self.getChildren().addAll(label1, button);
+                });
+            }
+        };
+        timer.schedule(timerTask, 3000);
+
+
+        spinner.setRadius(20);
+
+
+        this.getChildren().addAll(label, label2, spinner);
+    }
+    private void mimicry(){
+        this.getChildren().clear();
+
+        Label label = new Label("Мимикрия");
+        Label label2 = new Label("Выберите существо, на которое перенаправите атаку.");
+        Button button = new Button("Выбрать");
+
+        button.setOnMouseClicked(event -> {
+            Platform.runLater(() -> {
+                controller.showMimicryTargets(
+                        player.getAttackCreature().getPlayer().getPlayerNumber(),
+                        player.getDefendCreature().getPlayer().getPlayerNumber(),
+                        player.getAttackCreature().getId(),
+                        player.getDefendCreature().getId()
+                );
+                close();
+            });
+
+        });
+
+        this.getChildren().addAll(label, label2, button);
+    }
+    private void defenseOrder(){
+        int num = 1;
+        this.getChildren().clear();
+
+        this.setPrefSize(300, defenseTraits.size() * (80 + 5) + 60);
+        updateStage();
+
+
+        ArrayList<JFXRadioButton> radioButtons = new ArrayList<>();
+        ToggleGroup group = new ToggleGroup();
+        for(Trait trait : defenseTraits){
+
+            HBox traitBox = new HBox();
+            traitBox.setPrefSize(this.getPrefWidth(), 80);
+            traitBox.setMinSize(traitBox.getPrefWidth(), traitBox.getPrefHeight());
+            traitBox.setMaxSize(traitBox.getPrefWidth(), traitBox.getPrefHeight());
+            traitBox.setAlignment(Pos.CENTER);
+            traitBox.setPadding(new Insets(2, 3, 2, 3));
+
+            Label traitLabel = new Label(trait.toString());
+            traitLabel.setPrefSize(traitBox.getPrefWidth() - 100, traitBox.getPrefHeight());
+            traitLabel.setMinSize(traitBox.getPrefWidth() - 100, traitBox.getPrefHeight());
+            traitLabel.setFont(new Font(15));
+            traitLabel.setAlignment(Pos.CENTER);
+            traitLabel.setTextAlignment(TextAlignment.CENTER);
+
+            JFXRadioButton radioButton = new JFXRadioButton();
+            radioButton.setToggleGroup(group);
+            radioButtons.add(radioButton);
+
+            traitBox.getChildren().addAll(radioButton, traitLabel);
+            this.getChildren().add(traitBox);
+
+        }
+
+        Button okButton = new Button("OK");
+
+        okButton.setOnMouseClicked(event -> {
+
+            for(int i = 0; i < radioButtons.size(); ++i){
+                if(radioButtons.get(i).isSelected()){
+                    switch (defenseTraits.get(i)){
+                        case TAIL_LOSS:
+                            tailLoss(player.getDefendCreature());
+                            break;
+                        case MIMICRY:
+                            mimicry();
+                            break;
+                        case RUNNING:
+                            running();
+                            break;
+                    }
+                }
+            }
+
+        });
+
+        this.getChildren().add(okButton);
+    }
+
+    private void defenseOrderOld(){
         int num = 1;
 
         this.setPrefSize(300, defenseTraits.size() * (80 + 5) + 60);
@@ -187,58 +457,6 @@ public class DefensePane extends VBox {
 
             this.getChildren().add(traitBox);
 
-            ///region drag waste
-            /*int finalNum = num;
-            traitBox.setOnDragDetected(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    System.out.println("DragDetected: " + traitBox);
-                    Point2D offSet = new Point2D(event.getX(), event.getY());
-
-
-
-                    self.setOnDragOver(new EventHandler<DragEvent>() {
-                        @Override
-                        public void handle(DragEvent event) {
-                            System.out.println("DragOver: " + traitBox);
-                            event.acceptTransferModes(TransferMode.ANY);
-
-                            Point2D localCoords = self.sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY()));
-                            traitBox.relocate(localCoords.getX() - offSet.getX(), localCoords.getY() - offSet.getY());
-
-                            event.consume();
-                        }
-                    });
-
-                    self.setOnDragDropped(new EventHandler<DragEvent>() {
-                        @Override
-                        public void handle(DragEvent event) {
-                            System.out.println("DragDropped: " + traitBox);
-                            self.setOnDragOver(null);
-                            self.setOnDragDropped(null);
-
-                            event.setDropCompleted(true);
-
-                            event.consume();
-                        }
-                    });
-
-                    Point2D localCoords = self.sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY()));
-                    traitBox.relocate(localCoords.getX() - offSet.getX(), localCoords.getY() - offSet.getY());
-
-                    ClipboardContent content = new ClipboardContent();
-
-                    content.put(new DataFormat(String.valueOf(dragID++)), String.valueOf(finalNum));
-                    //content.put(DragContainer.DragNode, container);
-
-                    ///Начало перемещения
-                    startDragAndDrop (TransferMode.ANY).setContent(content);
-                    event.consume();
-
-                }
-            });*/
-            ///endregion
-
             ++num;
         }
 
@@ -249,24 +467,6 @@ public class DefensePane extends VBox {
         });
 
         this.getChildren().add(okButton);
-    }
-
-    void relocateToPoint (Point2D p, Point2D offSet) {
-        Point2D localCoords = this.sceneToLocal(p);
-
-        int x = (int) (localCoords.getX() - offSet.getX());
-        int y = (int) (localCoords.getY() - offSet.getY());
-
-
-        relocate (x, y);
-    }
-
-
-    public void show(){
-        stage.show();
-    }
-    public void close(){
-        stage.close();
     }
 
     private void setStage(){
@@ -294,4 +494,11 @@ public class DefensePane extends VBox {
         stage.setMaxWidth(this.getPrefWidth());
     }
 
+
+    public void show(){
+        stage.show();
+    }
+    public void close(){
+        stage.close();
+    }
 }

@@ -1,5 +1,6 @@
 package view.gui;
 
+import control.ControllerGUI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
@@ -33,19 +34,9 @@ public class EndGamePane extends AnchorPane {
     EndGameInfo info;
     int player;
 
-    public void setInfo(EndGameInfo info) {
-        this.info = info;
-        int i = 0;
-        for (Player player : this.info.players){
-            if (player.getPlayerNumber() == i){
-                this.player = i;
-                break;
-            }
-            ++i;
-        }
-    }
 
-    public EndGamePane(Stage primaryStage, EndGameInfo info, int player){
+
+    public EndGamePane(Stage primaryStage, ControllerGUI controller, EndGameInfo info, int player){
         this.primaryStage = primaryStage;
         this.player = player;
         this.info = info;
@@ -69,6 +60,20 @@ public class EndGamePane extends AnchorPane {
     @FXML
     private void initialize(){
         primaryStage.setOnCloseRequest(event -> close());
+
+
+    }
+
+    public void setInfo(EndGameInfo info) {
+        this.info = info;
+        int i = 0;
+        for (Player player : this.info.players){
+            if (player.getPlayerNumber() == i){
+                this.player = i;
+                break;
+            }
+            ++i;
+        }
     }
 
     public void show(){
@@ -91,7 +96,7 @@ public class EndGamePane extends AnchorPane {
             pieChartData.add(new PieChart.Data((player.getLogin() +
                     (player.getPlayerNumber() == this.player ? " (you)" : "") +
                     " — " + player.getScore() + " point" +
-                    (player.getScore() == 11? "s" : player.getScore() % 10 == 1? "" : "s")), player.getScore()));
+                    (player.getScore() == 11? "s" : player.getScore() % 10 == 1? "" : "s")), player.getScore() + 1));
         }
 
         chart.setData(pieChartData);
@@ -101,7 +106,7 @@ public class EndGamePane extends AnchorPane {
         int winner = info.players.get(0).getScore();
         int total = 0;
         for (Player player : info.players){
-            total += player.getScore();
+            total += player.getScore() + 1;
         }
         float angle = (float)winner / (float)total;
         chart.setStartAngle(angle * 180);

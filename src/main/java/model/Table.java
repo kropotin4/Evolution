@@ -8,19 +8,21 @@ import java.util.ArrayList;
 
 public class Table implements Serializable {
 
-    Phase curPhase;
-    public int step = 0;
-    int playerTurn = 0;
-    boolean gameOver = false;
+    private Phase curPhase;
+    private int step = 0;
+    private int moveNumber = 1; // Количество ходов
+    private int playerTurn = 0; // Чей ход во время отдельной фазы
+    private int phasePlayerTurn = 0; // Запоминаем, кто ходит в начале следующей фазы
+    private boolean gameOver = false;
 
-    int fodder = 0;
+    private int fodder = 0; // Кормовая база
 
     CommonCardDeck commonDeck;
 
-    Dice dice;
-    int initCardsNumber;
+    private Dice dice;
+    private int initCardsNumber; // Количество раздаваемых карт в начале/нет существ и карт
 
-    ArrayList<Player> players;
+    private ArrayList<Player> players;
     int passNumber;
 
     //Создание общей колоды + создание игроков + раздача им карт + определение кубика
@@ -29,7 +31,6 @@ public class Table implements Serializable {
         setDice(playerCount);
         initCardsNumber = 8;
 
-        //TODO: передавать в стол готовую колоду, чтобы можно было выбирать карты поштучно
         players = new ArrayList<>(playerCount);
         for(int i = 0; i < playerCount; ++i){
             addPlayer("player " + (i + 1));
@@ -44,7 +45,6 @@ public class Table implements Serializable {
             }
 
         curPhase = Phase.GROWTH;
-
     }
 
     public void doNextMove(){
@@ -60,11 +60,15 @@ public class Table implements Serializable {
         step++;
         switch (curPhase){
             case GROWTH:
+                ///region GROWTH
                 if(passNumber == players.size()){
                     curPhase = Phase.EATING;
                     setFodder();
 
-                    playerTurn = (playerTurn + 1) % players.size();
+                    //playerTurn = (playerTurn + 1) % players.size();
+                    phasePlayerTurn = (phasePlayerTurn + 1) % players.size();
+                    playerTurn = phasePlayerTurn;
+
                     for(Player player : players)
                         player.setPass(false);
                     break;
@@ -83,19 +87,24 @@ public class Table implements Serializable {
                     curPhase = Phase.EATING;
                     setFodder();
 
-                    playerTurn = (oldTurn + 1) % players.size();
+                    //playerTurn = (oldTurn + 1) % players.size();
+                    phasePlayerTurn = (phasePlayerTurn + 1) % players.size();
+                    playerTurn = phasePlayerTurn;
                     for(Player player : players)
                         player.setPass(false);
                     break;
                 }
-
                 break;
+                ///endregion GROWTH
             case EATING:
+                ///region EATING
                 if(passNumber == players.size()){
-                    doExtinction();
+                    doExtinctionAndDealing();
                     curPhase = Phase.GROWTH;
 
-                    playerTurn = (playerTurn + 1) % players.size();
+                    //playerTurn = (playerTurn + 1) % players.size();
+                    phasePlayerTurn = (phasePlayerTurn + 1) % players.size();
+                    playerTurn = phasePlayerTurn;
                     for(Player player : players)
                         player.setPass(false);
                     break;
@@ -110,16 +119,18 @@ public class Table implements Serializable {
                     }
                 }
                 if(allPass){
-                    doExtinction();
+                    doExtinctionAndDealing();
                     curPhase = Phase.GROWTH;
 
-                    playerTurn = (oldTurn + 1) % players.size();
+                    //playerTurn = (oldTurn + 1) % players.size();
+                    phasePlayerTurn = (phasePlayerTurn + 1) % players.size();
+                    playerTurn = phasePlayerTurn;
                     for(Player player : players)
                         player.setPass(false);
                     break;
                 }
-
                 break;
+                ///endregion EATING
         }
 
         if(players.get(playerTurn).isAi){
@@ -134,7 +145,8 @@ public class Table implements Serializable {
             }
         }
     }
-    private void doExtinction(){
+    private void doExtinctionAndDealing(){
+        ++moveNumber;
         Creature creature = null;
         for (Player player : players) {
             for (int g = 0; g < player.getCreatures().size(); ++g) {
@@ -145,6 +157,9 @@ public class Table implements Serializable {
                     player.killCreature(creature);
                     g--;
                 }
+
+                creature.setAttacked(false);
+                creature.setMimicked(false);
 
                 if(creature.isPirated())
                     creature.setPirated(false);

@@ -20,12 +20,13 @@ public class Creature implements Serializable {
     private int fatCapacity = 0; // Max жировой запас
     private int fatQuantity = 0; // Текущий жировой запас
 
-    private boolean isHibernating = false;
+    private boolean isHibernating = false; // В спячке ли
     private int wasHibernating = 0;
-    private boolean isAttacked = false;
-    private boolean isPoisoned = false;
-    private boolean isPirated = false;
+    private boolean isAttacked = false; // Атаковал ли
+    private boolean isPoisoned = false; // Отравлен ли
+    private boolean isPirated = false; // Взял ли кого-то на абардаж
     private boolean isActiveScavenger = false;
+    private boolean isMimicked = false; // Использовал ли мимикрию
 
     private boolean isPredator = false;
     private boolean isBig = false;
@@ -114,13 +115,26 @@ public class Creature implements Serializable {
             case PARASITE: return isInfected;
             case SWIMMING: return isSwimming;
             case FAT_TISSUE: return fatCapacity > 0;
+            case COMMUNICATION: return communicationList.size() > 0;
+            case COOPERATION: return cooperationList.size() > 0;
+            case SYMBIOSIS: return crocodileList.size() > 0 || birdList.size() > 0;
         }
         return false;
+    }
+    public Card findCard(Trait trait){
+        if(!findTrait(trait)) return null;
+
+        for(Card card : cards){
+            if(card.getTrait() == trait)
+                return card;
+        }
+
+        return null;
     }
     public boolean canAddTrait(Trait trait){
         if(trait == Trait.FAT_TISSUE)
             return true;
-        else if(isPairTrait(trait)){
+        else if(Trait.isPairTrait(trait)){
             switch (trait){
                 case COOPERATION:
                     if(cooperationList.size() >= 2) return false;
@@ -258,17 +272,9 @@ public class Creature implements Serializable {
 
                 if (!crocodileList.remove(creature))
                     return birdList.remove(creature);
+                else return true;
 
-                return true;
         }
-        return false;
-    }
-    public static boolean isPairTrait(Trait trait){
-        if(trait == Trait.COMMUNICATION
-        || trait == Trait.COOPERATION
-        || trait == Trait.SYMBIOSIS)
-            return true;
-
         return false;
     }
 
@@ -324,6 +330,17 @@ public class Creature implements Serializable {
     public boolean isFed(){
         return totalSatiety == totalHunger;
     }
+    public boolean canEat(){
+        boolean birdFlag = false;
+        for(Creature creature : crocodileList){
+            if(creature.isHungry()){
+                birdFlag = true;
+                break;
+            }
+        }
+
+        return !isSatisfied() && !birdFlag;
+    }
 
     public boolean setGrazingActive(boolean isActive){
         if(!isGrazing) return false;
@@ -367,6 +384,24 @@ public class Creature implements Serializable {
         if ((victim.totalSatiety == 0) || victim.isFed()) return false;
         return true;
     }
+    public boolean isMimetic() {
+        return isMimetic;
+    }
+    public boolean isMimicked(){
+        return  isMimicked;
+    }
+    public void setMimicked(boolean mimicked) {
+        isMimicked = mimicked;
+    }
+    public void setAttacked(boolean attacked) {
+        isAttacked = attacked;
+    }
+    public boolean isAttacked() {
+        return isAttacked;
+    }
+    public boolean isRunning() {
+        return isRunning;
+    }
 
     public boolean pirate(Creature victim){
         setPirated(true);
@@ -395,7 +430,8 @@ public class Creature implements Serializable {
         || (victim.isBurrowing && victim.isFed())
         || (!victim.crocodileList.isEmpty())
         || (this.isSwimming != victim.isSwimming)
-        || (victim.isBig && !this.isBig))
+        || (victim.isBig && !this.isBig)
+        || isAttacked)
             return false;
 
         return true;
@@ -407,15 +443,15 @@ public class Creature implements Serializable {
             return false;
 
         if(creature.isTailLossable
-        || creature.isMimetic)
+        || creature.isMimetic
+        || creature.isRunning)
             return false;
-
-        //TODO: Дописать все свойства
 
         return true;
     }
 
-    public ArrayList<Trait> defend(Creature attacker){
+
+    public ArrayList<Trait> getDefenseTraitList(Creature attacker){
         ArrayList<Trait> defenseTraits = new ArrayList<>();
 
         if(isTailLossable)
@@ -427,7 +463,6 @@ public class Creature implements Serializable {
 
         return defenseTraits;
     }
-
 
     public boolean getFood (){
         if (player.table.isFodderBaseEmpty()) return false;
@@ -455,10 +490,23 @@ public class Creature implements Serializable {
     }
 
     public boolean findCard(Card card){
-        return cards.contains(card);
+        return cards.contains(card) || player.findCardWithPairTrait(card);
     }
     public ArrayList<Card> getCards(){
         return cards;
+    }
+
+    public ArrayList<Creature> getCommunicationList() {
+        return communicationList;
+    }
+    public ArrayList<Creature> getCooperationList() {
+        return cooperationList;
+    }
+    public ArrayList<Creature> getCrocodileList() {
+        return crocodileList;
+    }
+    public ArrayList<Creature> getBirdList() {
+        return birdList;
     }
 
     @Override
