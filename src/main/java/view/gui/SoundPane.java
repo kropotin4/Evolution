@@ -50,7 +50,7 @@ public class SoundPane extends JFXMasonryPane {
             mute = false;
         }
 
-        void mute(){ mute = true; }
+        void mute(){ mute = true; } 
         void unmute(){mute = false; }
         void setLevel(double level) {
             this.old = this.level;
