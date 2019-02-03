@@ -224,19 +224,24 @@ public class DefensePane extends VBox {
                         label1.setText("Побег не удался.");
                         trueRes = false;
                     }
-                    Button button = new Button("Ok");
+                    Button button = new Button(trueRes ? "Ok :)" : "Ok :(");
                     boolean finalTrueRes = trueRes;
                     button.setOnMouseClicked(event -> {
-                        if(finalTrueRes)
+                        if(finalTrueRes) {
+                            self.getChildren().addAll(label1, button);
                             close();
+                        }
                         else{
-                            if(defenseTraits.size() >= 1)
+                            if(defenseTraits.size() >= 1) {
+                                self.getChildren().addAll(label1);
                                 update();
-                            else
+                            }
+                            else {
+                                self.getChildren().addAll(label1, button);
                                 close();
+                            }
                         }
                     });
-                    self.getChildren().addAll(label1, button);
                 });
             }
         };

@@ -160,8 +160,8 @@ public class Player implements Serializable {
             return true;
         }
 
-        if(((victim.isMimetic() == victim.isMimicked())
-                && victim.isTailLossable()) == victim.isLossTail())
+        if((victim.isMimetic() == victim.isMimicked())
+                && victim.isTailLossable() == victim.isLossTail())
         {
             attacker.attack(victim);
             victim.getPlayer().defendIntention = false;
