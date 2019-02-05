@@ -29,20 +29,22 @@ public class CreatureNode extends AnchorPane {
     private int creatureId;
     private int number;
 
-    @FXML VBox traits_box_cn;
+    @FXML private VBox traits_box_cn;
 
-
-    JFXButton commButton = new JFXButton();
-    JFXButton coopButton = new JFXButton();
+    private JFXButton commButton = new JFXButton();
+    private JFXButton coopButton = new JFXButton();
 
     int commLinksNumber = 0;
     int coopLinksNumber = 0;
 
-    Image poisonedImage = new Image("/images/skull.png");
-    Image dreamB = new Image("/images/dream_17b.png");
-    Image dreamW = new Image("/images/dream_17w.png");
+    private Image poisonedImage = new Image("/images/skull.png");
+    private Background poisonedBG;
+    private Image dreamB = new Image("/images/dream_17b.png");
+    private Image dreamW = new Image("/images/dream_17w.png");
 
-    Background poisonedBG;
+    private Image creatureImage = new Image("/images/creature.png", 110, 190, false, true);
+    private Background creatureBG;
+
 
     private HBox bottomBox = new HBox();
 
@@ -52,12 +54,12 @@ public class CreatureNode extends AnchorPane {
     private VBox leftBox = new VBox();
     private HBox firstBox = new HBox();
     private HBox secondBox = new HBox();
-    Image crocodile = new Image("/images/crocodile_20.png");
-    Image bird = new Image("/images/bird_20.png");
-    Image crocodileBGImage = new Image("/images/crocodile_96.png");
-    Background crocodileBG;
-    Image birdBGImage = new Image("/images/bird_96.png");
-    Background birdBG;
+    private Image crocodile = new Image("/images/crocodile_20.png");
+    private Image bird = new Image("/images/bird_20.png");
+    private Image crocodileBGImage = new Image("/images/crocodile_96.png");
+    private Background crocodileBG;
+    private Image birdBGImage = new Image("/images/bird_96.png");
+    private Background birdBG;
     private static final String symbStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-background-color: transparent;";
     private static final String symbStyleFull = "-fx-border-width: 1; -fx-border-color: green; -fx-background-color: rgba(0,255,0,0.4);";
 
@@ -140,7 +142,7 @@ public class CreatureNode extends AnchorPane {
         bottomBox.getChildren().addAll(leftBox, eatButton, rightBox);
 
         ///region backgrounds
-        BackgroundSize backgroundSize = new BackgroundSize(this.getMinWidth() - 20, this.getPrefHeight(), false, false, true, false);
+        BackgroundSize backgroundSize = new BackgroundSize(this.getMinWidth() - 20, this.getPrefHeight(), false, true, true, false);
 
         BackgroundImage backgroundImage = new BackgroundImage(poisonedImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         poisonedBG = new Background(backgroundImage);
@@ -150,6 +152,9 @@ public class CreatureNode extends AnchorPane {
 
         BackgroundImage backgroundImage3 = new BackgroundImage(birdBGImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         birdBG = new Background(backgroundImage3);
+
+        BackgroundImage backgroundImage4 = new BackgroundImage(creatureImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        creatureBG = new Background(backgroundImage4);
         ///endregion
 
         ///region comm & coop buttons
@@ -187,6 +192,9 @@ public class CreatureNode extends AnchorPane {
         if(playerPane.controller.isPoisoned(this)){
             //setPoisonedStyle();
             setStyleType(5);
+        }
+        else{
+            setDefaultStyle();
         }
 
         ArrayList<Card> cards = playerPane.controller.getCreatureCards(this);
@@ -655,7 +663,7 @@ public class CreatureNode extends AnchorPane {
     private void setDefaultStyle(){
         this.setStyle("");
         setBorder("green", 1);
-        setBackground(Background.EMPTY);
+        setBackground(creatureBG);
     }
 
     public boolean isCrocodileStyle(){
