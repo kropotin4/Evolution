@@ -24,6 +24,9 @@ import java.io.IOException;
 public class MainPane extends BorderPane {
 
     ///region field
+    private ControllerGUI controler;
+    private Stage primaryStage;
+
     private Image cancel1 = new Image("/images/cancel1.png");
     private Image cancel2 = new Image("/images/cancel2.png");
     private Image cancel3 = new Image("/images/cancel3.png");
@@ -59,10 +62,7 @@ public class MainPane extends BorderPane {
     private Label foodLabel = new Label();
     private Label phaseLabel = new Label();
 
-    private ControllerGUI controler;
-    private Stage primaryStage;
 
-    private AddTraitPane addTraitPane;
     private boolean pressedCreatureNode = false;
     public DeckPane deckPane;
     private boolean pressedPlusImage = false;
@@ -72,14 +72,11 @@ public class MainPane extends BorderPane {
 
     private CreatureNode selectedCreature;
     private CreatureNode attackerCreature;
-    private int attackerCreatureId;
-    private int attackerPlayerNumber;
     private CreatureNode defenderCreature;
-    private int defenderCreatureId;
-    private int defenderPlayerNumber;
     private CreatureNode pirateCreature;
     private CardNode selectedCard;
 
+    private boolean isEaten = false;
     private boolean isMimicryTargetSelecting = false; // Выбираем жертву вместо мимикрии
     private boolean isPirateSelecting = false; // Выбираем пирата
     private boolean isPirateVictimSelecting = false; // Выбираем жертву пирата
@@ -128,7 +125,6 @@ public class MainPane extends BorderPane {
     @FXML
     private void initialize(){
 
-        addTraitPane = new AddTraitPane(controler);
         deckPane = new DeckPane(controler);
 
         chat = new Chat();
@@ -212,6 +208,7 @@ public class MainPane extends BorderPane {
         getEatButton.setOnMouseClicked(event -> {
             isFoodGetting = true;
             playerPane.setHungerCreaturesTrue();
+            getEatButton.setDisable(true);
             if(eatButtonBox.getChildren().size() < 2)
                 eatButtonBox.getChildren().add(cancelEatImage);
         });
@@ -219,7 +216,12 @@ public class MainPane extends BorderPane {
         cancelEatImage.setOnMouseClicked(event -> {
             isFoodGetting = false;
             playerPane.setAllCreaturesDefault();
+            getEatButton.setDisable(false);
             eatButtonBox.getChildren().remove(1);
+
+            if(isEaten){
+                controler.endFoodDistribution();
+            }
         });
 
         cancelEatImage.setOnMousePressed(event -> cancelEatImage.setImage(cancel4));
@@ -374,8 +376,6 @@ public class MainPane extends BorderPane {
     }
     public void setAttackerCreature(CreatureNode creatureNode){
         this.attackerCreature = creatureNode;
-        attackerCreatureId = creatureNode.getCreatureId();
-        attackerPlayerNumber = creatureNode.getPlayerPane().getPlayerNumber();
     }
     public void setPirateCreature(CreatureNode creatureNode){
         this.pirateCreature = creatureNode;
@@ -385,21 +385,6 @@ public class MainPane extends BorderPane {
     }
     public void setDefenderCreature(CreatureNode defenderCreature) {
         this.defenderCreature = defenderCreature;
-        defenderCreatureId = defenderCreature.getCreatureId();
-        defenderPlayerNumber = defenderCreature.getPlayerPane().getPlayerNumber();
-    }
-
-    public int getAttackerCreatureId() {
-        return attackerCreatureId;
-    }
-    public int getAttackerPlayerNumber() {
-        return attackerPlayerNumber;
-    }
-    public int getDefenderCreatureId() {
-        return defenderCreatureId;
-    }
-    public int getDefenderPlayerNumber() {
-        return defenderPlayerNumber;
     }
 
     public CreatureNode getDefenderCreature() {
@@ -418,6 +403,12 @@ public class MainPane extends BorderPane {
         return selectedCard;
     }
 
+    public boolean isEaten() {
+        return isEaten;
+    }
+    public void setEaten(boolean eaten) {
+        isEaten = eaten;
+    }
 
     public void showSelectedCard(boolean isShow){
         bottom_action_box.getChildren().clear();
@@ -592,13 +583,6 @@ public class MainPane extends BorderPane {
         this.isDefenderSelecting = isDefenderSelecting;
     }
 
-    public void showAddTraitPane(CreatureNode selectedCreature){
-        addTraitPane.show();
-        addTraitPane.setCardNode(selectedCard);
-        addTraitPane.setCreatureNode(selectedCreature);
-        pressedCreatureNode = true;
-        addTraitPane.setTop(true);
-    }
     private void showDeckPane(){
         deckPane.update();
         deckPane.show();
@@ -620,7 +604,7 @@ public class MainPane extends BorderPane {
         }
     }
 
-    // playerNumber - evo.main player
+    // playerNumber -  player
     public void update(int playerNumber){
         players_pane.getChildren().clear();
         playing_pane.getChildren().clear();
@@ -653,6 +637,7 @@ public class MainPane extends BorderPane {
         checkAddImage();
         checkInfoPane();
         checkShowCardsButton();
+        setEaten(false);
     }
     /*Плюсик в фазе GROWTH для удобного добавления существа
     * + обработка нажатия на него*/
@@ -680,7 +665,7 @@ public class MainPane extends BorderPane {
             playerPane.showAddIcon(false);
         }
     }
-    private void checkInfoPane(){
+    public void checkInfoPane(){
         info_pane.getChildren().clear();
         phaseLabel.setText(controler.getCurrentPhase().toString());
         info_pane.getChildren().add(phaseLabel);

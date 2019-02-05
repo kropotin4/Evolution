@@ -1,6 +1,6 @@
 package model;
 
-import ai.AiThread;
+import model.ai.AiThread;
 import model.decks.CommonCardDeck;
 
 import java.io.Serializable;
@@ -178,12 +178,21 @@ public class Table implements Serializable {
                     g--;
                 }
             }
+
+            for(CreaturesPair creaturesPair : player.getCommunicationCreatures()){
+                creaturesPair.card.setUsed(false);
+            }
+            for(CreaturesPair creaturesPair : player.getCooperationCreatures()){
+                creaturesPair.card.setUsed(false);
+            }
         }
 
         // До раздачи карт
         if(isEndMove()){
             gameOver = true;
         }
+
+
 
         ///region Раздача карт
 

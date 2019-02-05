@@ -1,4 +1,4 @@
-package ai;
+package model.ai;
 
 import control.Controller;
 import model.*;
@@ -51,8 +51,8 @@ public class AiThread extends Thread {
                         break;
 
                     case 2:
-                        first.addPairTrait(card.getTrait(), second);
-                        second.addPairTrait(card.getTrait(), first);
+                        first.addPairTrait(card, second);
+                        second.addPairTrait(card, first);
                         table.getPlayers().get(playerNumber).getPlayerCardDeck().removeCard(card);
                         break;
 

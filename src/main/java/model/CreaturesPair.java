@@ -17,4 +17,16 @@ public class CreaturesPair implements Serializable {
     public boolean haveCreature(Creature creature){
         return creature == firstCreature || creature == secondCreature;
     }
+    public boolean haveCreatures(Creature creature1, Creature creature2){
+        return haveCreature(creature1) && haveCreature(creature2);
+    }
+    public Creature getAnotherCreature(Creature creature){
+        if(creature == firstCreature){
+            return secondCreature;
+        }
+        else if(creature == secondCreature){
+            return firstCreature;
+        }
+        return null;
+    }
 }

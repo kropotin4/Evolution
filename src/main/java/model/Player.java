@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 public class Player implements Serializable {
 
+    ///region fields
     Table table;
 
     String login;
@@ -47,7 +48,7 @@ public class Player implements Serializable {
     ArrayList<CreaturesPair> communicationCreatures = new ArrayList<>();
     ArrayList<CreaturesPair> cooperationCreatures = new ArrayList<>();
     ArrayList<SymbiosisPair> symbiosisCreatures = new ArrayList<>();
-
+    ///endregion
 
     public Player(Table table, String login, int playerNumber){
         this.table = table;
@@ -63,20 +64,45 @@ public class Player implements Serializable {
         return creatures;
     }
 
-    void setFodder(){
-        table.setFodder();
-    }
     public boolean getFoodFromFodder(int creatureID){
         Creature creature = findCreature(creatureID);
         if(!table.isFodderBaseEmpty() && !creature.isSatisfied()) {
             creature.addFood();
 
-            //if(creature.isGrazingActive())
-            //    table.getFood(2);
-            //else
             table.getFood(1 + getGrazingActiveNumber());
 
             return true;
+        }
+        return false;
+    }
+    public boolean getFoodFromCooperation(Creature creature, Creature otherCreature){
+        //Creature creature = findCreature(creatureID);
+        //Creature otherCreature = findCreature(otherCreatureID);
+        if(!creature.isSatisfied()){
+
+            for(CreaturesPair creaturesPair : cooperationCreatures){
+                if(!creaturesPair.card.isUsed() && creaturesPair.haveCreatures(creature, otherCreature)){
+                    creaturesPair.card.setUsed(true);
+                    creature.addFood();
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+    public boolean getFoodFromCommunication(Creature creature, Creature otherCreature){
+        //Creature creature = findCreature(creatureID);
+        //Creature otherCreature = findCreature(otherCreatureID);
+        if(!table.isFodderBaseEmpty() && !creature.isSatisfied()){
+            for(CreaturesPair creaturesPair : communicationCreatures){
+                if(!creaturesPair.card.isUsed() && creaturesPair.haveCreatures(creature, otherCreature)){
+                    creaturesPair.card.setUsed(true);
+                    creature.addFood();
+                    table.getFood(1);
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -252,13 +278,16 @@ public class Player implements Serializable {
     }
     public boolean addPairTraitToCreature(Creature creature1, Creature creature2, Card card, boolean isUp){
         if(playerDeck.removeCard(card)){
+            if(isUp != card.isUp())
+                card.turnCard();
+
             if(card.getTrait(isUp) == Trait.COOPERATION)
                 cooperationCreatures.add(new CreaturesPair(creature1, creature2, card));
             else if(card.getTrait(isUp) == Trait.COMMUNICATION)
                 communicationCreatures.add(new CreaturesPair(creature1, creature2, card));
 
-            creature1.addPairTrait(card.getTrait(isUp), creature2);
-            creature2.addPairTrait(card.getTrait(isUp), creature1);
+            creature1.addPairTrait(card, creature2);
+            creature2.addPairTrait(card, creature1);
             return true;
         }
         return false;

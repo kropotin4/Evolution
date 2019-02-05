@@ -44,7 +44,7 @@ public enum Trait implements Serializable {
             return "Большой";
         }
     },
-    RUNNING {
+    RUNNING { //Ok
         @Override
         public String getDescription() {
             return "Когда это животное атаковано хищником, атака срывается с вероятностью 1/2. " +
@@ -57,7 +57,7 @@ public enum Trait implements Serializable {
             return "Быстрый";
         }
     },
-    MIMICRY { //? один раз или всегда? нечёткие правила!
+    MIMICRY { // Ok (Один раз за ход)
         @Override
         public String getDescription() {
             return "Когда это животное атаковано хищником, владелец животного должен перенаправить атаку хищника на " +
@@ -96,7 +96,7 @@ public enum Trait implements Serializable {
             return "Ядовитый";
         }
     },
-    TAIL_LOSS {
+    TAIL_LOSS { //Ok
         @Override
         public String getDescription() {
             return "Когда животное с этим свойством атаковано хищником, следует сбросить это или другое имеющееся у " +
@@ -153,7 +153,7 @@ public enum Trait implements Serializable {
             return "Падальщик";
         }
     },
-    SYMBIOSIS {
+    SYMBIOSIS { //Ok
         @Override
         public String getDescription() {
             return "Парное свойство. ПТИЦА не может быть атакована хищником, пока жив КРОКОДИЛ, " +

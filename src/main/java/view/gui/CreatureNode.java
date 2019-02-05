@@ -1,5 +1,7 @@
 package view.gui;
 
+import com.jfoenix.controls.JFXButton;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -9,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
@@ -19,12 +22,21 @@ import model.Trait;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CreatureNode extends VBox {
+public class CreatureNode extends AnchorPane {
     ///region fields
     private PlayerPane playerPane;
 
     private int creatureId;
     private int number;
+
+    @FXML VBox traits_box_cn;
+
+
+    JFXButton commButton = new JFXButton();
+    JFXButton coopButton = new JFXButton();
+
+    int commLinksNumber = 0;
+    int coopLinksNumber = 0;
 
     Image poisonedImage = new Image("/images/skull.png");
     Image dreamB = new Image("/images/dream_17b.png");
@@ -72,7 +84,7 @@ public class CreatureNode extends VBox {
                 getClass().getResource("/fxml/CreatureNode.fxml")
         );
 
-        //fxmlLoader.setRoot(this);
+        fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
 
         try {
@@ -90,15 +102,16 @@ public class CreatureNode extends VBox {
         this.setMaxWidth(110);
         this.setMinWidth(110);
         this.setPrefWidth(this.getMinWidth());
-        this.setAlignment(Pos.BOTTOM_CENTER);
-        this.setPadding(new Insets(2));
-        this.setSpacing(1);
+        //this.getChildren().addAll(traits_box_cn);
+        traits_box_cn.setAlignment(Pos.BOTTOM_CENTER);
+        traits_box_cn.setPadding(new Insets(2));
+        traits_box_cn.setSpacing(1);
 
         bottomBox.setPrefSize(500, 15);
 
         eatButton.setAlignment(Pos.CENTER);
         eatButton.setTextAlignment(TextAlignment.CENTER);
-        eatButton.setPrefSize(50, 4);
+        eatButton.setPrefSize(45, 4);
         eatButton.setFont(new Font(12));
         eatButton.setStyle(eatButtonStyle);
 
@@ -138,10 +151,38 @@ public class CreatureNode extends VBox {
         BackgroundImage backgroundImage3 = new BackgroundImage(birdBGImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         birdBG = new Background(backgroundImage3);
         ///endregion
+
+        ///region comm & coop buttons
+        commButton.setStyle(
+                "     -jfx-button-type: RAISED;\n" +
+                        "     -fx-background-color: rgba(255,99,71,0.4);\n" +
+                        "     -fx-text-fill: white;\n" +
+                        "     -fx-text-alignment: center;\n" +
+                        "     -fx-wrap-text: true;\n" +
+                        "     -fx-font-size: 12;");
+        AnchorPane.setLeftAnchor(commButton, 1.0);
+        AnchorPane.setTopAnchor(commButton, 1.0);
+        AnchorPane.setRightAnchor(commButton, 1.0);
+
+        coopButton.setStyle(
+                "     -jfx-button-type: RAISED;\n" +
+                        "     -fx-background-color: rgba(0,0,255,0.4);\n" +
+                        "     -fx-text-fill: white;\n" +
+                        "     -fx-text-alignment: center;\n" +
+                        "     -fx-wrap-text: true;\n" +
+                        "     -fx-font-size: 12;");
+        AnchorPane.setLeftAnchor(coopButton, 1.0);
+        AnchorPane.setRightAnchor(coopButton, 1.0);
+        AnchorPane.setBottomAnchor(coopButton, 1.0);
+        ///endregion
     }
 
     public void update(){
-        this.getChildren().clear();
+        //this.getChildren().clear();
+        //this.getChildren().addAll(traits_box_cn);
+        traits_box_cn.getChildren().clear();
+
+
 
         if(playerPane.controller.isPoisoned(this)){
             //setPoisonedStyle();
@@ -237,7 +278,7 @@ public class CreatureNode extends VBox {
                 //endregion
             }
             else if(trait == Trait.PREDATOR || trait == Trait.HIGH_BODY){
-                //region PREDATOR
+                //region PREDATOR & HIGH_BODY
                 Label plusOne = new Label("+1");
                 plusOne.setMinSize(15, 15);
                 plusOne.setMaxSize(15, 15);
@@ -317,10 +358,14 @@ public class CreatureNode extends VBox {
             label.setOnMouseEntered(event -> traitTooltip.setShowDuration(Duration.INDEFINITE));
             label.setOnMouseExited(event -> traitTooltip.setShowDuration(Duration.ZERO));
 
-            this.getChildren().add(hBox);
+            traits_box_cn.getChildren().add(hBox);
         }
 
+        updateEatButton();
 
+        traits_box_cn.getChildren().add(bottomBox);
+    }
+    public void updateEatButton(){
         int satiety = playerPane.controller.getCreatureSatiety(this);
         int hunger = playerPane.controller.getCreatureHunger(this);
         eatButton.setText(satiety + "/" + hunger);
@@ -330,10 +375,6 @@ public class CreatureNode extends VBox {
             eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,255,127,0.2); -fx-background-radius: 30;");
         else
             eatButton.setStyle(eatButtonStyle);
-
-
-        this.getChildren().add(bottomBox);
-
     }
 
     public Label addCommunicationLink(int linkNumber){
@@ -344,8 +385,6 @@ public class CreatureNode extends VBox {
         label.setPrefSize(15, 5);
         label.setFont(new Font(9));
         label.setStyle(commStyle);
-
-
 
         commBox.getChildren().add(label);
 
@@ -393,6 +432,95 @@ public class CreatureNode extends VBox {
             secondBox.getChildren().addAll(label, imageView);
             return label;
         }
+    }
+
+    // 0 - all, 1 - comm (up), 2 - coop (down)
+    private void setFoodStyle(){
+        setFoodStyle(commLinksNumber, coopLinksNumber);
+    }
+    public void setFoodStyle(int commLinksNumber, int coopLinksNumber){
+        this.getChildren().clear();
+        this.getChildren().add(traits_box_cn);
+
+        if(commLinksNumber <= 0 && coopLinksNumber <= 0){ // Ничего нет
+
+        }
+        else if(commLinksNumber > 0 && coopLinksNumber <= 0){ // Только comm
+            commButton.setText(commLinksNumber == 1 ? "Взаимодействие" : "Взаимодействие X" + commLinksNumber);
+
+            this.getChildren().add(commButton);
+            AnchorPane.setLeftAnchor(commButton, 1.0);
+            AnchorPane.setTopAnchor(commButton, 1.0);
+            AnchorPane.setRightAnchor(commButton, 1.0);
+            AnchorPane.setBottomAnchor(commButton, 1.0);
+        }
+        else if (commLinksNumber <= 0){ // Только coop
+            coopButton.setText(coopLinksNumber == 1 ? "Сотрудничество" : "Сотрудничество X" + coopLinksNumber);
+
+            this.getChildren().add(coopButton);
+            AnchorPane.setLeftAnchor(coopButton, 1.0);
+            AnchorPane.setTopAnchor(coopButton, 1.0);
+            AnchorPane.setRightAnchor(coopButton, 1.0);
+            AnchorPane.setBottomAnchor(coopButton, 1.0);
+        }
+        else{ // Все есть
+            commButton.setText(commLinksNumber == 1 ? "Взаимодействие" : "Взаимодействие X" + commLinksNumber);
+            commButton.setPrefHeight(92);
+
+            this.getChildren().add(commButton);
+            AnchorPane.clearConstraints(commButton);
+            AnchorPane.setLeftAnchor(commButton, 1.0);
+            AnchorPane.setTopAnchor(commButton, 1.0);
+            AnchorPane.setRightAnchor(commButton, 1.0);
+
+            coopButton.setText(coopLinksNumber == 1 ? "Сотрудничество" : "Сотрудничество X" + coopLinksNumber);
+            coopButton.setPrefHeight(92);
+
+            this.getChildren().add(coopButton);
+            AnchorPane.clearConstraints(coopButton);
+            AnchorPane.setLeftAnchor(coopButton, 1.0);
+            AnchorPane.setRightAnchor(coopButton, 1.0);
+            AnchorPane.setBottomAnchor(coopButton, 1.0);
+        }
+
+    }
+    public void addFoodStyle(int type){
+        updateEatButton();
+        switch (type){
+            case 0:
+                ++commLinksNumber;
+                ++coopLinksNumber;
+                break;
+            case 1:
+                ++commLinksNumber;
+                break;
+            case 2:
+                ++coopLinksNumber;
+                break;
+        }
+        setFoodStyle();
+    }
+    public void deleteFoodStyle(int type){
+        updateEatButton();
+        switch (type){
+            case 0:
+                --commLinksNumber;
+                --coopLinksNumber;
+                break;
+            case 1:
+                --commLinksNumber;
+                break;
+            case 2:
+                --coopLinksNumber;
+                break;
+        }
+        setFoodStyle();
+    }
+    public Button getCommButton(){
+        return commButton;
+    }
+    public Button getCoopButton(){
+        return coopButton;
     }
 
     public static void setCommStyle(Node node, boolean isFull){
@@ -527,6 +655,7 @@ public class CreatureNode extends VBox {
     private void setDefaultStyle(){
         this.setStyle("");
         setBorder("green", 1);
+        setBackground(Background.EMPTY);
     }
 
     public boolean isCrocodileStyle(){

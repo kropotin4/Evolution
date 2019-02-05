@@ -46,19 +46,28 @@ public class Creature implements Serializable {
     private boolean isInfected = false;
     private boolean isSwimming = false;
 
+    private class PairTraitElement implements Serializable{
+        final Creature otherCreature;
+        final Card card;
 
-    ArrayList<Creature> communicationList = new ArrayList<>();
-    ArrayList<Creature> cooperationList = new ArrayList<>();
+        public PairTraitElement(Creature otherCreature, Card card){
+            this.otherCreature = otherCreature;
+            this.card = card;
+        }
+    }
+
+    private ArrayList<PairTraitElement> communicationList = new ArrayList<>();
+    private ArrayList<PairTraitElement> cooperationList = new ArrayList<>();
 
     //crocodiles: this creature can not eat if any symbiont is hungry; this creature can not be eaten if any symbiont is alive
-    ArrayList<Creature> crocodileList = new ArrayList<>();
+    private ArrayList<Creature> crocodileList = new ArrayList<>();
 
     //birds: can not eat if this creature is hungry; can not be eaten if this animal is alive
-    ArrayList<Creature> birdList = new ArrayList<>();
+    private ArrayList<Creature> birdList = new ArrayList<>();
 
 
     //Creature`s traits list (in order of obtaining)
-    ArrayList<Card> cards = new ArrayList<>();
+    private ArrayList<Card> cards = new ArrayList<>();
 
     ///endregion
 
@@ -158,8 +167,8 @@ public class Creature implements Serializable {
                     if(creaturesPair.haveCreature(this) && creaturesPair.haveCreature(secondCreature))
                         return false;
                 }*/
-                for(Creature creature : cooperationList){
-                    if(creature == secondCreature)
+                for(PairTraitElement pairTraitElement : cooperationList){
+                    if(pairTraitElement.otherCreature == secondCreature)
                         return false;
                 }//Старая версия
                 break;
@@ -168,8 +177,8 @@ public class Creature implements Serializable {
                     if(creaturesPair.haveCreature(this) && creaturesPair.haveCreature(secondCreature))
                         return false;
                 }*/
-                for(Creature creature : communicationList){
-                    if(creature == secondCreature)
+                for(PairTraitElement pairTraitElement : communicationList){
+                    if(pairTraitElement.otherCreature == secondCreature)
                         return false;
                 }//Старая версия
                 break;
@@ -199,7 +208,7 @@ public class Creature implements Serializable {
         totalHunger -= card.getTrait().getHunger();
         return switchTrait(card.getTrait(), false);
     }
-    boolean switchTrait(Trait trait, boolean turnOn){
+    private boolean switchTrait(Trait trait, boolean turnOn){
         switch (trait){
             case PREDATOR:
                 isPredator = turnOn;
@@ -242,15 +251,21 @@ public class Creature implements Serializable {
         }
         return true;
     }
-    public boolean addPairTrait(Trait trait, Creature creature){
-        switch (trait) {
+    public boolean addPairTrait(Card card, Creature creature){
+        switch (card.getTrait()) {
             case COOPERATION:
-                if (cooperationList.contains(creature)) return false;
-                cooperationList.add(creature);
+                for(PairTraitElement pairTraitElement : cooperationList){
+                    if(pairTraitElement.otherCreature == creature)
+                        return false;
+                }
+                cooperationList.add(new PairTraitElement(creature, card));
                 return true;
             case COMMUNICATION:
-                if (communicationList.contains(creature)) return false;
-                communicationList.add(creature);
+                for(PairTraitElement pairTraitElement : communicationList){
+                    if(pairTraitElement.otherCreature == creature)
+                        return false;
+                }
+                communicationList.add(new PairTraitElement(creature, card));
                 return true;
         }
         return false;
@@ -285,6 +300,31 @@ public class Creature implements Serializable {
 
         }
         return false;
+    }
+
+    // 0 - comm, 1 - coop
+    public ArrayList[] getCommAndCoopLists(){
+        ArrayList[] arrayLists = new ArrayList[2];
+
+        arrayLists[0] = new ArrayList<>();
+        arrayLists[1] = new ArrayList<>();
+
+        //int[] links = new int[2];
+
+        for(PairTraitElement pairTraitElement : communicationList){
+            if(!pairTraitElement.card.isUsed()){
+                arrayLists[0].add(pairTraitElement.otherCreature);
+                //++links[0];
+            }
+        }
+        for(PairTraitElement pairTraitElement : cooperationList){
+            if(!pairTraitElement.card.isUsed()){
+                arrayLists[1].add(pairTraitElement.otherCreature);
+                //++links[1];
+            }
+        }
+
+        return arrayLists;
     }
 
     public void addFood(){
@@ -514,11 +554,11 @@ public class Creature implements Serializable {
         return cards;
     }
 
-    public ArrayList<Creature> getCommunicationList() {
-        return communicationList;
+    public int getCommunicationListSize() {
+        return communicationList.size();
     }
-    public ArrayList<Creature> getCooperationList() {
-        return cooperationList;
+    public int getCooperationListSize() {
+        return cooperationList.size();
     }
     public ArrayList<Creature> getCrocodileList() {
         return crocodileList;
@@ -538,16 +578,16 @@ public class Creature implements Serializable {
         str.append("\tFatness: " + fatQuantity + "\\" + fatCapacity + "\n");
         if (!cooperationList.isEmpty()) {
             str.append("\tCooperated with: ");
-            for (Creature creature : cooperationList) {
-                str.append(creature.id + " ");
+            for (PairTraitElement pairTraitElement : cooperationList) {
+                str.append(pairTraitElement.otherCreature.id + " ");
             }
             str.append("\n");
         }
 
         if (!communicationList.isEmpty()) {
             str.append("\tCommunicated with: ");
-            for (Creature creature : communicationList) {
-                str.append(creature.id + " ");
+            for (PairTraitElement pairTraitElement : communicationList) {
+                str.append(pairTraitElement.otherCreature.id + " ");
             }
             str.append("\n");
         }

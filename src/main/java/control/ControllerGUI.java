@@ -1,6 +1,7 @@
 package control;
 
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import model.*;
 import model.decks.PlayerCardDeck;
@@ -26,6 +27,195 @@ public class ControllerGUI {
     boolean blockActions = false;
 
     int playerNumber; // doNextMove()
+
+    private class CommAndCoopLinks{
+
+        private class CreatureLinks{
+
+            CreatureNode creatureNode;
+            Creature creature;
+            Creature otherCreature;
+
+            boolean wasClicked = false;
+
+            int commLinksNumber = 0;
+            int coopLinksNumber = 0;
+
+            void addCommLinks(int linkNumber){
+                if(linkNumber <= 0 || linkNumber > 2)
+                    throw new RuntimeException("CreatureLinks: addCommLinks");
+
+                commLinksNumber += linkNumber;
+            }
+            void deleteCommLinks(int linkNumber){
+                if(linkNumber <= 0 || linkNumber > 2)
+                    throw new RuntimeException("CreatureLinks: deleteCommLinks");
+
+                commLinksNumber -= linkNumber;
+            }
+
+            void addCoopLinks(int linkNumber){
+                if(linkNumber <= 0 || linkNumber > 2)
+                    throw new RuntimeException("CreatureLinks: addCoopLinks");
+
+                coopLinksNumber += linkNumber;
+            }
+            void deleteCoopLinks(int linkNumber){
+                if(linkNumber <= 0 || linkNumber > 2)
+                    throw new RuntimeException("CreatureLinks: deleteCoopLinks");
+
+                coopLinksNumber -= linkNumber;
+            }
+        }
+
+        private ArrayList<CreatureLinks> creatures = new ArrayList<>();
+
+        public void add(CreatureNode creatureNode){
+            Creature creature = controller.getPlayPlayer().findCreature(creatureNode.getCreatureId());
+            ArrayList[] arrayLists = creature.getCommAndCoopLists();
+
+            boolean isFind = false;
+            for(Creature creature1 : (ArrayList<Creature>)arrayLists[0]){
+                isFind = false;
+                for(CreatureLinks creatureLinks : creatures){
+                    if(creatureLinks.creature == creature1){
+                        creatureLinks.addCommLinks(1);
+                        isFind = true;
+                        break;
+                    }
+                }
+                if(!isFind){
+                    CreatureLinks creatureLinks = new CreatureLinks();
+                    creatureLinks.creature = creature1;
+                    creatureLinks.otherCreature = creature;
+                    creatureLinks.creatureNode = creatureNode.getPlayerPane().findCreatureNode(creature1.getId());
+                    creatureLinks.addCommLinks(1);
+                    creatures.add(creatureLinks);
+                }
+            }
+            for(Creature creature1 : (ArrayList<Creature>)arrayLists[1]){
+                isFind = false;
+                for(CreatureLinks creatureLinks : creatures){
+                    if(creatureLinks.creature == creature1){
+                        creatureLinks.addCoopLinks(1);
+                        isFind = true;
+                        break;
+                    }
+                }
+                if(!isFind){
+                    CreatureLinks creatureLinks = new CreatureLinks();
+                    creatureLinks.creature = creature1;
+                    creatureLinks.otherCreature = creature;
+                    creatureLinks.creatureNode = creatureNode.getPlayerPane().findCreatureNode(creature1.getId());;
+                    creatureLinks.addCoopLinks(1);
+                    creatures.add(creatureLinks);
+                }
+            }
+        }
+
+        public void delete(Creature creature, boolean isCoomLink){
+            for(CreatureLinks creatureLinks : creatures){
+                if(creatureLinks.creature == creature){
+                    if(isCoomLink)
+                        creatureLinks.deleteCommLinks(1);
+                    else
+                        creatureLinks.deleteCoopLinks(1);
+                    return;
+                }
+            }
+        }
+
+        public void deleteCreature(Creature creature){
+            for(CreatureLinks creatureLinks : creatures){
+                if(creatureLinks.creature == creature){
+                    creatures.remove(creatureLinks);
+                    return;
+                }
+            }
+        }
+
+        public void showButtons(){
+            int activeButtonsNumber = 0;
+            for(CreatureLinks creatureLinks : creatures){
+                if(controller.isCreatureSatisfied(
+                        creatureLinks.creatureNode.getPlayerPane().getPlayerNumber(),
+                        creatureLinks.creatureNode.getCreatureId())
+                ){
+                    creatureLinks.commLinksNumber = 0;
+                    creatureLinks.coopLinksNumber = 0;
+                    creatureLinks.creatureNode.setFoodStyle(0, 0);
+                    continue;
+                }
+
+                if(controller.getFoodNumber() == 0){
+                    creatureLinks.commLinksNumber = 0;
+                }
+
+                creatureLinks.creatureNode.setFoodStyle(creatureLinks.commLinksNumber, creatureLinks.coopLinksNumber);
+
+                if(creatureLinks.commLinksNumber > 0){
+                    activeButtonsNumber++;
+                    creatureLinks.creatureNode.getCommButton().setOnMouseClicked(event -> {
+                        creatureLinks.creature.getPlayer().getFoodFromCommunication(creatureLinks.creature,creatureLinks.otherCreature);
+                        creatureLinks.creatureNode.updateEatButton();
+                        mainPane.checkInfoPane();
+                        creatureLinks.commLinksNumber--;
+
+                        creatureLinks.creatureNode.setFoodStyle(creatureLinks.commLinksNumber, creatureLinks.coopLinksNumber);
+
+                        if(!creatureLinks.wasClicked){
+                            creatureLinks.wasClicked = true;
+                            add(creatureLinks.creatureNode);
+                            showButtons();
+                        }
+
+                        boolean endFlag = true;
+                        for(CreatureLinks creatureLinks1 : creatures){
+                            if(creatureLinks1.coopLinksNumber > 0 || creatureLinks1.commLinksNumber > 0) {
+                                endFlag = false;
+                                break;
+                            }
+                        }
+                        if(endFlag)
+                            endFoodDistribution();
+                    });
+                }
+                if(creatureLinks.coopLinksNumber > 0){
+                    activeButtonsNumber++;
+                    creatureLinks.creatureNode.getCoopButton().setOnMouseClicked(event -> {
+                        creatureLinks.creature.getPlayer().getFoodFromCooperation(creatureLinks.creature,creatureLinks.otherCreature);
+                        creatureLinks.creatureNode.updateEatButton();
+                        mainPane.checkInfoPane();
+                        creatureLinks.coopLinksNumber--;
+
+                        creatureLinks.creatureNode.setFoodStyle(creatureLinks.commLinksNumber, creatureLinks.coopLinksNumber);
+
+                        if(!creatureLinks.wasClicked){
+                            creatureLinks.wasClicked = true;
+                            add(creatureLinks.creatureNode);
+                            showButtons();
+                        }
+
+                        boolean endFlag = true;
+                        for(CreatureLinks creatureLinks1 : creatures){
+                            if(creatureLinks1.coopLinksNumber > 0 || creatureLinks1.commLinksNumber > 0) {
+                                endFlag = false;
+                                break;
+                            }
+                        }
+                        if(endFlag)
+                            endFoodDistribution();
+                    });
+                }
+            }
+            if(activeButtonsNumber == 0)
+                endFoodDistribution();
+        }
+        public void clear(){
+            creatures.clear();
+        }
+    }
+    CommAndCoopLinks commAndCoopLinks = new CommAndCoopLinks();
 
     public ControllerGUI(Stage primaryStage, Controller controller, int playerNumber){
         this.controller = controller;
@@ -256,12 +446,6 @@ public class ControllerGUI {
     public boolean isUpTrait(){
         return mainPane.isUpTrait();
     }
-    public boolean isPairTraitSelected(){
-        return mainPane.isPairTraitSelected();
-    }
-    public void showAddTraitPane(CreatureNode selectedCreature){
-        mainPane.showAddTraitPane(selectedCreature);
-    }
 
     public void addTraitToCreature(CreatureNode creatureNode, CardNode cardNode, boolean isUp){
         if(controller.canAddTrait(creatureNode.getPlayerPane().getPlayerNumber(), creatureNode.getCreatureId(), cardNode.getCard().getTrait(isUp))) {
@@ -343,11 +527,33 @@ public class ControllerGUI {
         return controller.getPlayers().get(playerNumber).getColor();
     }
 
+
     public void getFoodFromFodder(CreatureNode creatureNode){
-        mainPane.setIsFoodGetting(false);
         controller.getFoodFromFodder(playerNumber, creatureNode.getCreatureId());
+        mainPane.setEaten(true);
+
+        Creature eatCreature = controller.getPlayPlayer().findCreature(creatureNode.getCreatureId());
+        if(eatCreature.getCommunicationListSize() > 0 || eatCreature.getCooperationListSize() > 0){
+            startFoodDistribution(creatureNode);
+        }
+        else{
+            mainPane.setIsFoodGetting(false);
+            mainPane.updateCurrentPlayer();
+            soundPane.playSound("eating");
+            doNextMove("Из кормовой базы взята еда");
+        }
+    }
+    private void startFoodDistribution(CreatureNode creatureNode){
+        creatureNode.update();
+        mainPane.checkInfoPane();
+        commAndCoopLinks.clear();
+        commAndCoopLinks.add(creatureNode);
+        commAndCoopLinks.showButtons();
+    }
+    public void endFoodDistribution(){
+        mainPane.setEaten(false);
+        mainPane.setIsFoodGetting(false);
         mainPane.updateCurrentPlayer();
-        soundPane.playSound("eating");
         doNextMove("Из кормовой базы взята еда");
     }
     public boolean isFoodGetting(){

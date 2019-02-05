@@ -10,6 +10,7 @@ public class Card implements Serializable {
     private int id = idCounter;
 
     private boolean fat = false;
+    private boolean used = false;
 
     private Trait up;
     private Trait down;
@@ -47,6 +48,13 @@ public class Card implements Serializable {
         return fat;
     }
 
+    public boolean isUsed() {
+        return used;
+    }
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+
     public int getId(){
         return id;
     }
@@ -62,11 +70,8 @@ public class Card implements Serializable {
 
         //if(card.getId() != id) return false; // !!!!!!!!!!!!!
 
-        if((card.up == up && card.down == down)
-                || (card.up == down && card.down == up))
-            return true;
-
-        return false;
+        return (card.up == up && card.down == down)
+                || (card.up == down && card.down == up);
     }
 
     @Override

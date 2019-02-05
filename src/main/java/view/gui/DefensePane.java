@@ -119,7 +119,7 @@ public class DefensePane extends VBox {
             this.getChildren().add(traitBox);
         }
 
-        if(creature.getCooperationList().size() > 0){
+        if(creature.getCooperationListSize() > 0){
             int num = 0;
             for(CreaturesPair creaturesPair : creature.getPlayer().getCooperationCreatures()){
                 if(creaturesPair.haveCreature(creature)){
@@ -147,7 +147,7 @@ public class DefensePane extends VBox {
                 }
             }
         }
-        if(creature.getCommunicationList().size() > 0){
+        if(creature.getCommunicationListSize() > 0){
             int num = 0;
             for(CreaturesPair creaturesPair : creature.getPlayer().getCommunicationCreatures()){
                 if(creaturesPair.haveCreature(creature)){

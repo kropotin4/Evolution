@@ -514,6 +514,13 @@ public class PlayerPane extends ScrollPane {
     public ArrayList<CreatureNode> getCreatureNodes(){
         return creatureNodes;
     }
+    public CreatureNode findCreatureNode(int creatureID){
+        for(CreatureNode creatureNode : creatureNodes){
+            if(creatureNode.getCreatureId() == creatureID)
+                return creatureNode;
+        }
+        return null;
+    }
 
     public void clear(){
         creatures_box_pp.getChildren().clear();
