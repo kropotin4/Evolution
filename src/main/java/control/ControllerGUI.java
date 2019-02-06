@@ -257,6 +257,19 @@ public class ControllerGUI {
 
     public void startGame(){
         System.out.println("ControllerGUI: start game (player number = " + playerNumber + ")");
+
+        if(type == GameType.ALONE){
+            controller = new Controller(aiGameSettingPane.getQuarterCardCount(), aiGameSettingPane.getPlayersNumber());
+
+            int playerNumber = 0;
+            for(Player player : controller.getPlayers()){
+                player.setLogin(aiGameSettingPane.getLogin(playerNumber));
+                player.setAI(aiGameSettingPane.isAi(playerNumber));
+                ++playerNumber;
+            }
+
+        }
+
         mainPane.show();
         mainPane.update(playerNumber);
     }

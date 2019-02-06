@@ -22,6 +22,7 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class AiGameSettingPane extends VBox {
 
@@ -33,6 +34,16 @@ public class AiGameSettingPane extends VBox {
     @FXML Button start_button_agsp;
 
     int playerNumber = 0;
+
+    JFXButton addButton01;
+    JFXButton addButton11;
+
+    private class PlayerInfo{
+        JFXTextField login;
+        JFXToggleButton isAi;
+        JFXSlider aiDif;
+    }
+    ArrayList<PlayerInfo> playerInfos = new ArrayList<>();
 
     public AiGameSettingPane(ControllerGUI controller, Stage primaryStage){
         this.primaryStage = primaryStage;
@@ -56,21 +67,53 @@ public class AiGameSettingPane extends VBox {
 
     @FXML
     private void initialize(){
-        addPlayer();
-        addPlayer();
+        addPlayer(0, 0);
+        addPlayer(1, 0);
+
+        addButton01 = new JFXButton("Добавить");
+        addButton01.setPrefSize(90, 50);
+        addButton01.setStyle(
+                "     -jfx-button-type: RAISED;\n" +
+                        "     -fx-background-color: green;\n" +
+                        "     -fx-text-fill: white;\n" +
+                        "     -fx-text-alignment: center;\n" +
+                        "     -fx-wrap-text: true;\n" +
+                        "     -fx-font-size: 14;");
+        addButton01.setOnMouseClicked(event -> {
+            grid_agsp.getChildren().remove(addButton01);
+            addPlayer(0, 1);
+        });
+        grid_agsp.add(addButton01, 0, 1);
+
+        addButton11 = new JFXButton("Добавить");
+        addButton11.setPrefSize(90, 50);
+        addButton11.setStyle(
+                "     -jfx-button-type: RAISED;\n" +
+                        "     -fx-background-color: green;\n" +
+                        "     -fx-text-fill: white;\n" +
+                        "     -fx-text-alignment: center;\n" +
+                        "     -fx-wrap-text: true;\n" +
+                        "     -fx-font-size: 14;");
+        addButton11.setOnMouseClicked(event -> {
+            grid_agsp.getChildren().remove(addButton11);
+            addPlayer(1, 1);
+        });
+        grid_agsp.add(addButton11, 1, 1);
+
 
         start_button_agsp.setOnMouseClicked(event -> {
-
+            controller.startGame();
         });
     }
 
-    private void addPlayer(){
+    private void addPlayer(int column, int row){
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
-        vBox.setPadding(new Insets(0, 5, 0, 5));
+        vBox.setPadding(new Insets(1, 5, 2, 5));
         vBox.setStyle("-fx-border-width: 1; -fx-border-color: green;");
 
         HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
 
         JFXTextField textField = new JFXTextField();
         textField.setText("Бот " + playerNumber);
@@ -103,7 +146,13 @@ public class AiGameSettingPane extends VBox {
 
         difBox.getChildren().addAll(difLabel, difSlider);
         hBox.getChildren().addAll(textField, isAiButton);
-        if(playerNumber >= 2){
+
+        PlayerInfo playerInfo = new PlayerInfo();
+        playerInfo.login = textField;
+        playerInfo.isAi = isAiButton;
+        playerInfo.aiDif = difSlider;
+
+        if(row == 1){
             JFXButton deleteButton = new JFXButton("Удалить");
             deleteButton.setStyle(
                     "     -jfx-button-type: RAISED;\n" +
@@ -112,7 +161,16 @@ public class AiGameSettingPane extends VBox {
                             "     -fx-text-alignment: center;\n" +
                             "     -fx-wrap-text: true;\n" +
                             "     -fx-font-size: 12;");
-
+            deleteButton.setOnMouseClicked(event -> {
+                grid_agsp.getChildren().remove(vBox);
+                playerInfos.remove(playerInfo);
+                if(column == 0){
+                    grid_agsp.add(addButton01, 0, 1);
+                }
+                else{
+                    grid_agsp.add(addButton11, 1, 1);
+                }
+            });
             vBox.getChildren().addAll(hBox, difBox, deleteButton);
         }
         else{
@@ -126,41 +184,25 @@ public class AiGameSettingPane extends VBox {
                 difSlider.setDisable(true);
         });
 
-        grid_agsp.add(vBox, playerNumber % 2, playerNumber / 2);
-        ++playerNumber;
+        grid_agsp.add(vBox, column, row);
 
-        if(playerNumber == 2){
-            JFXButton addButton = new JFXButton("Добавить");
-            addButton.setPrefSize(90, 50);
-            addButton.setStyle(
-                    "     -jfx-button-type: RAISED;\n" +
-                            "     -fx-background-color: green;\n" +
-                            "     -fx-text-fill: white;\n" +
-                            "     -fx-text-alignment: center;\n" +
-                            "     -fx-wrap-text: true;\n" +
-                            "     -fx-font-size: 14;");
-            addButton.setOnMouseClicked(event -> {
-                grid_agsp.getChildren().remove(addButton);
-                addPlayer();
-            });
-            grid_agsp.add(addButton, 0, 1);
-        }
-        else if(playerNumber == 3){
-            JFXButton addButton = new JFXButton("Добавить");
-            addButton.setPrefSize(90, 50);
-            addButton.setStyle(
-                    "     -jfx-button-type: RAISED;\n" +
-                            "     -fx-background-color: green;\n" +
-                            "     -fx-text-fill: white;\n" +
-                            "     -fx-text-alignment: center;\n" +
-                            "     -fx-wrap-text: true;\n" +
-                            "     -fx-font-size: 14;");
-            addButton.setOnMouseClicked(event -> {
-                grid_agsp.getChildren().remove(addButton);
-                addPlayer();
-            });
-            grid_agsp.add(addButton, 1, 1);
-        }
+        playerInfos.add(playerInfo);
+    }
+
+    public int getQuarterCardCount(){
+        return (int)card_slider_agsp.getValue();
+    }
+    public int getPlayersNumber(){
+        return playerInfos.size();
+    }
+    public String getLogin(int playerNumber){
+        return playerInfos.get(playerNumber).login.getText();
+    }
+    public boolean isAi(int playerNumber){
+        return playerInfos.get(playerNumber).isAi.isSelected();
+    }
+    public int getAiDif(int playerNumber){
+        return (int)playerInfos.get(playerNumber).aiDif.getValue();
     }
 
     public void show(){
