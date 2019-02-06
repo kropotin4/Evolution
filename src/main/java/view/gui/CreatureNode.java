@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class CreatureNode extends AnchorPane {
+
     ///region fields
     private PlayerPane playerPane;
 
@@ -37,19 +38,21 @@ public class CreatureNode extends AnchorPane {
     int commLinksNumber = 0;
     int coopLinksNumber = 0;
 
-    private Image poisonedImage = new Image("/images/skull.png");
+    private Image poisonedImage = new Image("/images/lizardP.png", 110, 190, false, true);
     private Background poisonedBG;
+
     private Image dreamB = new Image("/images/dream_17b.png");
     private Image dreamW = new Image("/images/dream_17w.png");
 
-    private Image creatureImage = new Image("/images/creature.png", 110, 190, false, true);
+    private Image creatureImage = new Image("/images/lizard.png", 110, 190, false, true);
     private Background creatureBG;
 
 
     private HBox bottomBox = new HBox();
 
     private Button eatButton = new Button();
-    private String eatButtonStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: transparent;";
+    private String eatButtonStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: #FFFFFFE0; -fx-background-radius: 30;";
+
 
     private VBox leftBox = new VBox();
     private HBox firstBox = new HBox();
@@ -293,6 +296,8 @@ public class CreatureNode extends AnchorPane {
                 plusOne.setPrefSize(15, 15);
                 plusOne.setFont(new Font("Arial Bold", 11));
 
+                setTraitStyle(plusOne, "#FFFFFFF2");
+
                 label = new Label(trait.toString());
 
                 hBox.getChildren().addAll(plusOne, label);
@@ -305,6 +310,8 @@ public class CreatureNode extends AnchorPane {
                 plusTwo.setMaxSize(15, 15);
                 plusTwo.setPrefSize(15, 15);
                 plusTwo.setFont(new Font("Arial Bold", 11));
+
+                setTraitStyle(plusTwo, "#FFFFFFF2");
 
                 label = new Label(trait.toString());
 
@@ -378,9 +385,9 @@ public class CreatureNode extends AnchorPane {
         int hunger = playerPane.controller.getCreatureHunger(this);
         eatButton.setText(satiety + "/" + hunger);
         if(playerPane.controller.isHibernating(this))
-            eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,0,255,0.2); -fx-background-radius: 30;");
+            eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,0,255,0.6); -fx-background-radius: 30;");
         else if(satiety == hunger)
-            eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,255,127,0.2); -fx-background-radius: 30;");
+            eatButton.setStyle(eatButtonStyle + "-fx-background-color: rgba(0,255,127,0.6); -fx-background-radius: 30;");
         else
             eatButton.setStyle(eatButtonStyle);
     }
@@ -570,6 +577,9 @@ public class CreatureNode extends AnchorPane {
             case PARASITE:
                 setTraitStyle(node, "orchid");
                 break;
+            default:
+                setTraitStyle(node, "#FFFFFFF0");
+                break;
         }
     }
     private static void setTraitStyle(Node node, String color){
@@ -623,46 +633,41 @@ public class CreatureNode extends AnchorPane {
     }
 
     private void setCrocodileStyle(){
-        this.setStyle("");
         setBorder("green", 2.5);
         //this.setStyle(this.getStyle() + "-fx-background-color: rgba(0,255,127,0.3);");
+        traits_box_cn.setStyle("");
         setBackground(crocodileBG);
     }
     private void setBirdStyle(){
-        this.setStyle("");
         setBorder("green", 2.5);
         //this.setStyle(this.getStyle() + "-fx-background-color: rgba(0,255,127,0.3);");
+        traits_box_cn.setStyle("");
         setBackground(birdBG);
     }
     private void setPoisonedStyle(){
-        this.setStyle("");
         setBorder("violet", 2.5);
-
+        traits_box_cn.setStyle("");
         setBackground(poisonedBG);
     }
     private void setParasiteStyle(){
-        this.setStyle("");
         setBorder("violet", 2.5);
-        this.setStyle(this.getStyle() + "-fx-background-color: rgba(238,130,238,0.3);");
+        traits_box_cn.setStyle("-fx-background-color: rgba(238,130,238,0.3);");
     }
     private void setAttackStyle(){
-        this.setStyle("");
         setBorder("gold", 2.5);
-        this.setStyle(this.getStyle() + "-fx-background-color: rgba(255,215,0,0.3);");
+        traits_box_cn.setStyle("-fx-background-color: rgba(255,215,0,0.3);");
     }
     private void setTrueStyle(){
-        this.setStyle("");
         setBorder("green", 2.5);
-        this.setStyle(this.getStyle() + "-fx-background-color: rgba(0,255,127,0.3);");
+        traits_box_cn.setStyle("-fx-background-color: rgba(0,255,127,0.3);");
     }
     private void setFalseStyle(){
-        this.setStyle("");
         setBorder("red", 2.5);
-        this.setStyle(this.getStyle() + "-fx-background-color: rgba(255,99,71,0.3);");
+        traits_box_cn.setStyle("-fx-background-color: rgba(255,99,71,0.3);");
     }
     private void setDefaultStyle(){
-        this.setStyle("");
         setBorder("green", 1);
+        traits_box_cn.setStyle("");
         setBackground(creatureBG);
     }
 
