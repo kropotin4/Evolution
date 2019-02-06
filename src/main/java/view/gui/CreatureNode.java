@@ -1,7 +1,6 @@
 package view.gui;
 
 import com.jfoenix.controls.JFXButton;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -11,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
@@ -30,50 +28,55 @@ public class CreatureNode extends AnchorPane {
     private int creatureId;
     private int number;
 
-    @FXML private VBox traits_box_cn;
-
-    private JFXButton commButton = new JFXButton();
-    private JFXButton coopButton = new JFXButton();
-
     int commLinksNumber = 0;
     int coopLinksNumber = 0;
 
+    ///region images + BG
     private Image poisonedImage = new Image("/images/lizardP.png", 110, 190, false, true);
     private Background poisonedBG;
 
-    private Image dreamB = new Image("/images/dream_17b.png");
-    private Image dreamW = new Image("/images/dream_17w.png");
+    private Image dreamBImage = new Image("/images/dream_17b.png");
+    private Image dreamWImage = new Image("/images/dream_17w.png");
 
     private Image creatureImage = new Image("/images/lizard.png", 110, 190, false, true);
     private Background creatureBG;
 
-
-    private HBox bottomBox = new HBox();
-
-    private Button eatButton = new Button();
-    private String eatButtonStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: #FFFFFFE0; -fx-background-radius: 30;";
-
-
-    private VBox leftBox = new VBox();
-    private HBox firstBox = new HBox();
-    private HBox secondBox = new HBox();
     private Image crocodile = new Image("/images/crocodile_20.png");
     private Image bird = new Image("/images/bird_20.png");
     private Image crocodileBGImage = new Image("/images/crocodile_96.png");
     private Background crocodileBG;
     private Image birdBGImage = new Image("/images/bird_96.png");
     private Background birdBG;
-    private static final String symbStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-background-color: transparent;";
-    private static final String symbStyleFull = "-fx-border-width: 1; -fx-border-color: green; -fx-background-color: rgba(0,255,0,0.4);";
+    ///endregion
 
+    @FXML private VBox traits_box_cn;
+
+    private JFXButton commButton = new JFXButton();
+    private JFXButton coopButton = new JFXButton();
+
+    ///region bottomBox + children
+    private HBox bottomBox = new HBox();
+
+    private Button eatButton = new Button();
+
+    private VBox leftBox = new VBox();
+    private HBox firstBox = new HBox();
+    private HBox secondBox = new HBox();
 
     private VBox rightBox = new VBox();
     private HBox commBox = new HBox();
+    private HBox coopBox = new HBox();
+    ///endregion
+
+    ///region Styles
+    private String eatButtonStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-border-radius: 30; -fx-background-color: #FFFFFFE0; -fx-background-radius: 30;";
     private static final String commStyle = "-fx-border-width: 1; -fx-border-color: red; -fx-border-radius: 30; -fx-background-color: transparent;";
     private static final String commStyleFull = "-fx-border-width: 1; -fx-border-color: red; -fx-border-radius: 30; -fx-background-color: rgba(255,99,71,0.4); -fx-background-radius: 30;";
-    private HBox coopBox = new HBox();
     private static final String coopStyle = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: transparent;";
     private static final String coopStyleFull = "-fx-border-width: 1; -fx-border-color: blue; -fx-border-radius: 30; -fx-background-color: rgba(0,0,255,0.4); -fx-background-radius: 30;";
+    private static final String symbStyle = "-fx-border-width: 1; -fx-border-color: green; -fx-background-color: transparent;";
+    private static final String symbStyleFull = "-fx-border-width: 1; -fx-border-color: green; -fx-background-color: rgba(0,255,0,0.4);";
+    ///endregion
 
     private int styleType = 0; // 0 - default, 1 - green(true), 2 - red(false), 3 - attack, 4 - parasite, 5 - poisoned
     // 6 - crocodile, 7 - bird
@@ -326,17 +329,17 @@ public class CreatureNode extends AnchorPane {
                 && playerPane.controller.getHibernatingTime(this) == 0
                 && playerPane.getPlayerNumber() == playerPane.controller.getPlayerTurn()){
 
-                    ImageView dreamImage = new ImageView(dreamB);
+                    ImageView dreamImage = new ImageView(dreamBImage);
 
                     StackPane stackPane = new StackPane();
                     stackPane.getChildren().add(dreamImage);
                     stackPane.setStyle("-fx-border-width: 1; -fx-border-color: blue;");
 
                     stackPane.setOnMousePressed(e -> {
-                        dreamImage.setImage(dreamW);
+                        dreamImage.setImage(dreamWImage);
                     });
                     stackPane.setOnMouseReleased(e -> {
-                        dreamImage.setImage(dreamB);
+                        dreamImage.setImage(dreamBImage);
                     });
 
                     stackPane.setOnMouseClicked(e -> {
