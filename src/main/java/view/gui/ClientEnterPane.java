@@ -48,9 +48,6 @@ public class ClientEnterPane extends AnchorPane {
     Image grass = new Image("/images/grass_960_640.jpg");
     Image lizardTailImage = new Image("/images/lizard_tail.png");
     Image lizardImage = new Image("/images/lizard_cursor.png");
-    BackgroundSize backgroundSize;
-    BackgroundImage backgroundImage;
-    Background background;
 
     public ClientEnterPane(ControllerClient controller, Stage primaryStage){
         this.controller = controller;
@@ -73,6 +70,7 @@ public class ClientEnterPane extends AnchorPane {
 
     @FXML
     private void initialize(){
+
         ///region cursor
         Cursor lizardCursor = new ImageCursor(lizardImage, lizardImage.getWidth() / 2, lizardImage.getHeight() / 2);
         Cursor lizardTailCursor = new ImageCursor(lizardTailImage, lizardTailImage.getWidth() / 2, lizardTailImage.getHeight() / 2);
@@ -328,12 +326,12 @@ public class ClientEnterPane extends AnchorPane {
 
         back_button_cp.setOnAction(event -> controller.getStartPane().show());
 
-        backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
-        backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        background = new Background(backgroundImage);
-
-
+        ///region background
+        BackgroundSize backgroundSize = new BackgroundSize(grass.getWidth(), grass.getHeight(), false, false, true, true);
+        BackgroundImage backgroundImage = new BackgroundImage(grass, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
         setBackground(background);
+        ///endregion
     }
 
     // Смотрим на правельность заполнения полей

@@ -36,10 +36,9 @@ public class EndGamePane extends AnchorPane {
 
 
 
-    public EndGamePane(Stage primaryStage, ControllerGUI controller, EndGameInfo info, int player){
+    public EndGamePane(Stage primaryStage, int player){
         this.primaryStage = primaryStage;
         this.player = player;
-        this.info = info;
 
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("/fxml/EndGamePane.fxml")

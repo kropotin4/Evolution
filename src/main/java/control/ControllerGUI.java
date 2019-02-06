@@ -17,6 +17,8 @@ public class ControllerGUI {
     Controller controller;
     ControllerClient controllerClient;
 
+    AiGameSettingPane aiGameSettingPane;
+
     MainPane mainPane;
     EndGamePane endGamePane;
     public SoundPane soundPane;
@@ -217,12 +219,12 @@ public class ControllerGUI {
     }
     CommAndCoopLinks commAndCoopLinks = new CommAndCoopLinks();
 
-    public ControllerGUI(Stage primaryStage, Controller controller, int playerNumber){
-        this.controller = controller;
+    public ControllerGUI(Stage primaryStage, int playerNumber){
         this.playerNumber = playerNumber;
 
+        this.aiGameSettingPane = new AiGameSettingPane(this, primaryStage);
         this.mainPane = new MainPane(primaryStage, this);
-        this.endGamePane = new EndGamePane(primaryStage, this, new EndGameInfo(controller), 0);
+        this.endGamePane = new EndGamePane(primaryStage, 0);
         this.soundPane = new SoundPane();
         this.defensePane = new DefensePane(this);
 
@@ -239,7 +241,7 @@ public class ControllerGUI {
         this.playerNumber = playerNumber;
 
         this.mainPane = new MainPane(primaryStage, this);
-        this.endGamePane = new EndGamePane(primaryStage, this, new EndGameInfo(controller), playerNumber);
+        this.endGamePane = new EndGamePane(primaryStage, playerNumber);
         this.soundPane = new SoundPane();
         this.defensePane = new DefensePane(this);
 
@@ -249,12 +251,16 @@ public class ControllerGUI {
             blockActions = true;
     }
 
+    public void startGameSetting(){
+        aiGameSettingPane.show();
+    }
 
     public void startGame(){
         System.out.println("ControllerGUI: start game (player number = " + playerNumber + ")");
         mainPane.show();
         mainPane.update(playerNumber);
     }
+
 
     public void doNextMove(String message){
         if(type == GameType.ALONE)
