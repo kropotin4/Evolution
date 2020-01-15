@@ -2,6 +2,12 @@ package model;
 
 import java.io.Serializable;
 
+/******************************************
+ * Enumerate of phase.
+ *
+ * @author akropotin
+ *
+ ******************************************/
 public enum Phase implements Serializable {
     DEALING{
         @Override

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class DropCardDeck implements Serializable {
     private ArrayList<Card> deck = new ArrayList<>(12);
 
-    public DropCardDeck(){}
 
     public ArrayList<Card> getCardDeck(){
         return deck;

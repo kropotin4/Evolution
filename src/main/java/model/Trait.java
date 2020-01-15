@@ -2,12 +2,11 @@ package model;
 
 import java.io.Serializable;
 
-/********************************
- * Перечесление всех свойств.
+/******************************************
+ * Enumerate of traits.
  *
- * Новые свойства добавлять сюда.
- *********************************/
-
+ * @author akropotin
+ ******************************************/
 public enum Trait implements Serializable {
 
     PREDATOR{ //Ok
@@ -268,17 +267,27 @@ public enum Trait implements Serializable {
         }
     };
 
+    /**********************
+     * Get need for food.
+     * @return hunger
+     * @see Card
+     **********************/
     int getHunger(){return 0;}
 
+    /**********************
+     * Get description of trait.
+     * @return String
+     **********************/
     public String getDescription(){
         return "";
     }
+    /**********************
+     * Check pait trait.
+     * @return boolean
+     **********************/
     public static boolean isPairTrait(Trait trait){
-        if(trait == Trait.COMMUNICATION
+        return (trait == Trait.COMMUNICATION
                 || trait == Trait.COOPERATION
-                || trait == Trait.SYMBIOSIS)
-            return true;
-
-        return false;
+                || trait == Trait.SYMBIOSIS);
     }
 }

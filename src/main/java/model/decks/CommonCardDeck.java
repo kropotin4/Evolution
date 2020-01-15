@@ -7,9 +7,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
+/******************************************
+ * The deck from which players take cards.
+ *
+ * @author akropotin
+ *
+ * @see Card
+ ******************************************/
 public class CommonCardDeck implements Serializable {
     private ArrayList<Card> deck = new ArrayList<>(21);
 
+    /**********************
+     * CommonCardDeck class constructor.
+     * @param quarter number of common deck quarter in current deck.
+     * @see Card
+     **********************/
     public CommonCardDeck(int quarter){
         if(quarter <= 0) throw new RuntimeException("CommonCardDeck: quarter <= 0");
 
@@ -21,16 +33,31 @@ public class CommonCardDeck implements Serializable {
         System.out.println("CommonCardDeck create: " + deck.size());
     }
 
+    /**********************
+     * CommonCardDeck class constructor.
+     * @return first card in deck
+     * @see Card
+     **********************/
     public Card getCard(){
         Card ret = deck.get(deck.size() - 1);
         deck.remove(deck.size() - 1);
         return ret;
     }
 
+    /**********************
+     * Get number of card in deck.
+     * @return cards number
+     * @see Card
+     **********************/
     public int getCardCount(){
         return deck.size();
     }
 
+    /**********************
+     * Set of cards -- quarter of common deck.
+     * @return ArrayList<Card> with cards
+     * @see Card
+     **********************/
     private ArrayList<Card> oneQuarter(){
         ArrayList<Card> quarter = new ArrayList<>(21);
 
@@ -59,6 +86,12 @@ public class CommonCardDeck implements Serializable {
         return quarter;
     }
 
+    /**********************
+     * Function that shuffle input ArrayList of cards.
+     * @param cards ArrayList of cards that need shuffle.
+     * @return ArrayList<Card> with shuffle cards
+     * @see Card
+     **********************/
     private ArrayList<Card> shuffle(ArrayList<Card> cards){
         Random random = new Random();
         int size = cards.size();
