@@ -32,9 +32,8 @@ public class AiThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("ai run");
+        System.out.println("AI run");
 
-        // Заглушка
         if(table.getPlayerTurn() != playerNumber)
             throw new RuntimeException("AiThread: table.getPlayerTurn() != playerNumber");
 
@@ -96,8 +95,7 @@ public class AiThread extends Thread {
         table.doNextMove();
     }
 
-    //фаза роста
-
+    // Growth phase move calculation
     int calcGrowth() {
         if (table.getPlayers().get(playerNumber).getPlayerCardsNumber() == 0) {
             return 0;
@@ -165,8 +163,7 @@ public class AiThread extends Thread {
         return 0;
     }
 
-    //фаза питания
-
+    // Eating phase move calculation
     int calcEating(){
         ArrayList<Creature> predatorList = new ArrayList<>();
         Player player = table.getPlayers().get(playerNumber);

@@ -37,6 +37,7 @@ public class CardDeckTest {
         CommonCardDeck c = new CommonCardDeck(1);
         CommonCardDeck c2 = new CommonCardDeck(2);
         assertTrue("Test failed: getCardCount", c.getCardCount() * 2 == c2.getCardCount());
+
         int cur = c.getCardCount();
         int testnum = 5;
         for (int i = 0; i < testnum; ++i){
@@ -52,7 +53,6 @@ public class CardDeckTest {
         Card crd = c.getCard();
         p.addCard(crd);
         assertFalse("Test failed: addCard", p.getCardDeck().isEmpty());
-        //(p.getCardDeck().contains(crd));
     }
 
     @Test

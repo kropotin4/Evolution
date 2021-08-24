@@ -23,6 +23,17 @@ public class CreatureTest {
         System.out.print("finished.\n");
     }
 
+    private Card getCardWithTrait(Trait trait){
+        Card c = null;
+        while (t.getCommonDeck().getCardCount() != 0) {
+            c = t.getCommonDeck().getCard();
+            if (c.getTrait().equals(trait)) break;
+            c.turnCard();
+            if (c.getTrait().equals(trait)) break;
+        }
+        return c;
+    }
+
     @Test
     public void addTrait() {
         Creature creature = new Creature(p);
@@ -44,9 +55,7 @@ public class CreatureTest {
         Card c = null;
         while (t.getCommonDeck().getCardCount() != 0) {
             c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.COMMUNICATION)) break;
-            if (c.getTrait().equals(Trait.COOPERATION)) break;
-            if (c.getTrait().equals(Trait.SYMBIOSIS)) break;
+            if (Trait.isPairTrait(c.getTrait())) break;
         }
         assertTrue("Test failed: addTrait", Trait.isPairTrait(c.getTrait()));
     }
@@ -63,6 +72,7 @@ public class CreatureTest {
         Creature creature = new Creature(p);
         creature.addFood();
         assertTrue("Test failed: addFood in reduce test", creature.isSatisfied());
+
         creature.reduceFood();
         assertFalse("Test failed: reduceFood", creature.isSatisfied());
     }
@@ -70,12 +80,7 @@ public class CreatureTest {
     @Test
     public void isHungry() {
         Creature creature = new Creature(p);
-        Card c = null;
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.FAT_TISSUE)) break;
-        }
-        creature.addTrait(c);
+        creature.addTrait(getCardWithTrait(Trait.FAT_TISSUE));
         assertTrue("Test failed: isHungry1", creature.isHungry());
         creature.addFood();
         assertFalse("Test failed: isHungry2", creature.isHungry());
@@ -85,14 +90,11 @@ public class CreatureTest {
     public void getTotalHunger() {
         Creature creature = new Creature(p);
         assertEquals("Test failed: getTotalHunger", 1, creature.getTotalHunger());
-        Card c = null;
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.PREDATOR)) break;
-            if (c.getTrait().equals(Trait.HIGH_BODY)) break;
-        }
-        creature.addTrait(c);
-        assertEquals("Test failed: getTotalHunger", 2, creature.getTotalHunger());
+
+        creature.addTrait(getCardWithTrait(Trait.PREDATOR));
+        creature.addTrait(getCardWithTrait(Trait.HIGH_BODY));
+
+        assertEquals("Test failed: getTotalHunger", 3, creature.getTotalHunger());
     }
 
     @Test
@@ -117,101 +119,64 @@ public class CreatureTest {
         assertFalse("Test failed: isFed", creature.isFed());
         creature.addFood();
         assertTrue("Test failed: isFed", creature.isFed());
-        Card c = null;
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.FAT_TISSUE)) break;
-        }
-        creature.addTrait(c);
+        creature.addTrait(getCardWithTrait(Trait.FAT_TISSUE));
         assertTrue("Test failed: isFed", creature.isFed());
     }
 
     @Test
     public void isPoisoned() {
         Creature food = new Creature(p);
-        Card c = null;
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.POISONOUS)) break;
-            c.turnCard();
-            if (c.getTrait().equals(Trait.POISONOUS)) break;
-        }
-        food.addTrait(c);
-        Creature raubtier = new Creature(p);
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.PREDATOR)) break;
-        }
-        raubtier.addTrait(c);
-        raubtier.attack(food);
+        food.addTrait(getCardWithTrait(Trait.POISONOUS));
+
+        Creature predator = new Creature(p);
+        predator.addTrait(getCardWithTrait(Trait.PREDATOR));
+
+        predator.attack(food);
         assertFalse("Test failed: isPoisoned", food.isPoisoned());
-        assertTrue("Test failed: isPoisoned", raubtier.isPoisoned());
+        assertTrue("Test failed: isPoisoned", predator.isPoisoned());
     }
 
     @Test
     public void isAttackPossible() {
         Creature food = new Creature(p);
-        Creature raubtier = new Creature(p);
-        assertFalse("Test failed: isAttackPossible1", raubtier.isAttackPossible(food));
-        Card c = null;
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.PREDATOR)) break;
-        }
-        raubtier.addTrait(c);
-        assertTrue("Test failed: isAttackPossible2", raubtier.isAttackPossible(food));
+        Creature predator = new Creature(p);
+        assertFalse("Test failed: isAttackPossible1", predator.isAttackPossible(food));
 
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.HIGH_BODY)) break;
-            c.turnCard();
-            if (c.getTrait().equals(Trait.HIGH_BODY)) break;
-        }
-        food.addTrait(c);
-        assertFalse("Test failed: isAttackPossible3", raubtier.isAttackPossible(food));
-        raubtier.addTrait(c);
-        assertTrue("Test failed: isAttackPossible4", raubtier.isAttackPossible(food));
+        predator.addTrait(getCardWithTrait(Trait.PREDATOR));
+        assertTrue("Test failed: isAttackPossible2", predator.isAttackPossible(food));
+
+        food.addTrait(getCardWithTrait(Trait.HIGH_BODY));
+        assertFalse("Test failed: isAttackPossible3", predator.isAttackPossible(food));
+
+        predator.addTrait(getCardWithTrait(Trait.HIGH_BODY));
+        assertTrue("Test failed: isAttackPossible4", predator.isAttackPossible(food));
     }
 
     @Test
     public void isAbsoluteAttackPossible() {
         Creature food = new Creature(p);
-        Creature raubtier = new Creature(p);
-        assertFalse("Test failed: isAbsoluteAttackPossible", raubtier.isAbsoluteAttackPossible(food));
-        Card c = null;
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.PREDATOR)) break;
-        }
-        raubtier.addTrait(c);
-        assertTrue("Test failed: isAbsoluteAttackPossible2", raubtier.isAbsoluteAttackPossible(food));
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.TAIL_LOSS)) break;
-        }
-        food.addTrait(c);
-        assertFalse("Test failed: isAbsoluteAttackPossible3", raubtier.isAbsoluteAttackPossible(food));
+        Creature predator = new Creature(p);
+        assertFalse("Test failed: isAbsoluteAttackPossible", predator.isAbsoluteAttackPossible(food));
+
+        predator.addTrait(getCardWithTrait(Trait.PREDATOR));
+        assertTrue("Test failed: isAbsoluteAttackPossible2", predator.isAbsoluteAttackPossible(food));
+
+        food.addTrait(getCardWithTrait(Trait.TAIL_LOSS));
+        assertFalse("Test failed: isAbsoluteAttackPossible3", predator.isAbsoluteAttackPossible(food));
     }
 
     @Test
     public void stealFood() {
         Creature pirate = new Creature(p);
         Creature victim = new Creature(p);
-        Card c = null;
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.PIRACY)) break;
-        }
-        pirate.addTrait(c);
-        while (t.getCommonDeck().getCardCount() != 0) {
-            c = t.getCommonDeck().getCard();
-            if (c.getTrait().equals(Trait.HIGH_BODY)) break;
-            if (c.getTrait().equals(Trait.PARASITE)) break;
-            if (c.getTrait().equals(Trait.PREDATOR)) break;
-        }
-        victim.addTrait(c);
+
+        pirate.addTrait(getCardWithTrait(Trait.PIRACY));
+
+        victim.addTrait(getCardWithTrait(Trait.HIGH_BODY));
         victim.addFood();
+
         pirate.stealFood(victim);
+
         assertTrue("Test failed: stealFood", pirate.isSatisfied());
         assertEquals("Test failed: stealFood", 0, victim.getTotalSatiety());
     }

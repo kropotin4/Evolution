@@ -18,7 +18,6 @@ public enum Trait implements Serializable {
         @Override
         public String getDescription() {
             return "Позволяет атаковать других животных, если у них нет препятствующих этому защитных свойств.";
-
         }
 
         @Override
@@ -35,7 +34,6 @@ public enum Trait implements Serializable {
         @Override
         public String getDescription() {
             return "Данное животное может быть атаковано только БОЛЬШИМ хищникомю. Увеличивает потребность в пище на 1.";
-
         }
 
         @Override
@@ -48,7 +46,6 @@ public enum Trait implements Serializable {
         public String getDescription() {
             return "Когда это животное атаковано хищником, атака срывается с вероятностью 1/2. " +
                     "\nПри любом исходе, атаковавший хищник больше не сможет атаковать в этот ход.";
-
         }
 
         @Override
@@ -62,7 +59,6 @@ public enum Trait implements Serializable {
             return "Когда это животное атаковано хищником, владелец животного должен перенаправить атаку хищника на " +
                     "\nдругое своё животное, которое этот хищник способен атаковать. Если таких животных нет, " +
                     "\nМИМИКРИЯ не работает.";
-
         }
 
         @Override
@@ -87,7 +83,6 @@ public enum Trait implements Serializable {
         @Override
         public String getDescription() {
             return "Хищник, съевший это животное, погибает в конце хода.";
-
         }
 
         @Override
@@ -112,7 +107,6 @@ public enum Trait implements Serializable {
         public String getDescription() {
             return "Парное свойство. Когда одно животное получает пищу из кормовой базы, другое живоное получает " +
                     "\nдоступ к кормовой базе вне очереди.";
-
         }
 
         @Override
@@ -126,7 +120,6 @@ public enum Trait implements Serializable {
             return "Можно использовать в свою фазу питания. При использовании животное считается накормленным. " +
                     "\nЭто свойство нельзя использовать два хода подряд и в последний ход игры." +
                     "\nЭто свойство не защищает от атак.";
-
         }
 
         @Override

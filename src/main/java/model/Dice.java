@@ -12,8 +12,8 @@ import java.util.Random;
  ******************************************/
 public class Dice implements Serializable {
 
-    private int diceCount;
-    private int addition;
+    private final int diceCount;
+    private final int addition;
     private static final int faces = 6;
 
     /**********************

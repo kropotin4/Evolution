@@ -22,11 +22,13 @@ public class Card implements Serializable {
     private int id = idCounter;
 
     private boolean fat = false;    // show the presence of fat on card
-    private boolean used = false;   // show the use of trait on current phase (when card trait already add to creature)
+    private boolean used = false;   // show the use of trait on current phase
+                                    // (when card trait already add to creature)
 
     private Trait up;
     private Trait down;
-    private boolean isUp;   // indicate active trait when card have got two trait and card trait add to creature
+    private boolean isUp;   // indicate active trait when card have got two trait
+                            // and card trait add to creature
 
     /**********************
      * Card class constructor. One trait.

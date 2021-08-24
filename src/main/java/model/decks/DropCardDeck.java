@@ -5,6 +5,13 @@ import model.Card;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/******************************************
+ * The deck with dropped card.
+ *
+ * @author akropotin
+ *
+ * @see Card
+ ******************************************/
 public class DropCardDeck implements Serializable {
     private ArrayList<Card> deck = new ArrayList<>(12);
 

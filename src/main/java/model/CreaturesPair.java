@@ -36,6 +36,7 @@ public class CreaturesPair implements Serializable {
     public boolean haveCreature(Creature creature){
         return creature == firstCreature || creature == secondCreature;
     }
+
     /**********************
      * Function that checks for the presence of a creatures in the link.
      * @param creature1 first checking creation.

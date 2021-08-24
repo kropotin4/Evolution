@@ -13,20 +13,23 @@ public class Creature implements Serializable {
     private static int commonID = 0;
     private final int id;
 
-    private Player player;
+    private Player player;  // Owner of creature
 
-    private int totalHunger = 1; // Потребность в еде
-    private int totalSatiety = 0; // Накормленность
-    private int fatCapacity = 0; // Max жировой запас
-    private int fatQuantity = 0; // Текущий жировой запас
+    // if creature totalSatiety < totalHunger in the end of round -> dead
+    private int totalHunger = 1;    // The need for food
+    private int totalSatiety = 0;   // Current number of eating food
 
-    private boolean isHibernating = false; // В спячке ли
+    // Each fat trait on the creature add fatCapacity. Player can transfer food to fat for future rounds.
+    private int fatCapacity = 0;    // Max fat number
+    private int fatQuantity = 0;    // Current fat number
+
+    private boolean isHibernating = false;
     private int wasHibernating = 0;
-    private boolean isAttacked = false; // Атаковал ли
-    private boolean isPoisoned = false; // Отравлен ли
-    private boolean isPirated = false; // Взял ли кого-то на абардаж
+    private boolean isAttacked = false;     // Was attack somebody in current move
+    private boolean isPoisoned = false;     // if true -> die in the end of round
+    private boolean isPirated = false;      // Did he stil the food
     private boolean isActiveScavenger = false;
-    private boolean isMimicked = false; // Использовал ли мимикрию
+    private boolean isMimicked = false;
     private boolean isLossTail = false;
 
     private boolean isPredator = false;
@@ -46,6 +49,7 @@ public class Creature implements Serializable {
     private boolean isInfected = false;
     private boolean isSwimming = false;
 
+    // Class for pair trait -> need save link for other creature
     private class PairTraitElement implements Serializable{
         final Creature otherCreature;
         final Card card;
@@ -59,7 +63,8 @@ public class Creature implements Serializable {
     private ArrayList<PairTraitElement> communicationList = new ArrayList<>();
     private ArrayList<PairTraitElement> cooperationList = new ArrayList<>();
 
-    //crocodiles: this creature can not eat if any symbiont is hungry; this creature can not be eaten if any symbiont is alive
+    // crocodiles: this creature can not eat if any symbiont is hungry;
+    // this creature can not be eaten if any symbiont is alive
     private ArrayList<Creature> crocodileList = new ArrayList<>();
 
     //birds: can not eat if this creature is hungry; can not be eaten if this animal is alive
@@ -76,9 +81,10 @@ public class Creature implements Serializable {
         id = commonID++;
     }
 
-    /**Adds new trait if possible; do some checks; changes constants
+    /**********************
+     * Adds new trait if possible; do some checks; changes constants
      * @return false if trait has not added
-     */
+     **********************/
     public boolean addTrait(Card card){
         if (card.getTrait() == Trait.FAT_TISSUE){
             ++fatCapacity;
@@ -86,16 +92,17 @@ public class Creature implements Serializable {
             return true;
         }
 
-        /*according to rules you can not put two equal cards (except fat tissue) to the same creature*/
+        // According to rules you can not put two equal cards (except fat tissue) to the same creature
         for(Card c : cards) {
             if(c == card || c.getTrait() == card.getTrait())
                 return false;
         }
 
-        /*according to rules a predator can not be a scavenger so
-        if smb puts a predator card to scavenger or scavenger card to predator
-        the last card should be removed from the animal*/
-        if ((isScavenger && (card.getTrait() == Trait.PREDATOR)) || (isPredator && (card.getTrait() == Trait.SCAVENGER)))
+        // According to rules a predator can not be a scavenger so
+        // if smb puts a predator card to scavenger or scavenger card to predator
+        // the last card should be removed from the animal
+        if ((isScavenger && (card.getTrait() == Trait.PREDATOR))
+                || (isPredator && (card.getTrait() == Trait.SCAVENGER)))
             return false; //actually has not added any traits
 
         if(card.getTrait() == Trait.SCAVENGER){
@@ -128,8 +135,8 @@ public class Creature implements Serializable {
             case COMMUNICATION: return communicationList.size() > 0;
             case COOPERATION: return cooperationList.size() > 0;
             case SYMBIOSIS: return crocodileList.size() > 0 || birdList.size() > 0;
+            default: return false;
         }
-        return false;
     }
     public Card findCard(Trait trait){
         if(!findTrait(trait)) return null;
@@ -147,13 +154,13 @@ public class Creature implements Serializable {
         else if(Trait.isPairTrait(trait)){
             switch (trait){
                 case COOPERATION:
-                    if(cooperationList.size() >= 2) return false;
+                    if (cooperationList.size() >= 2) return false;
                     return cooperationList.size() != (player.getCreatures().size() - 1);
                 case COMMUNICATION:
-                    if(communicationList.size() >= 2) return false;
+                    if (communicationList.size() >= 2) return false;
                     return communicationList.size() != (player.getCreatures().size() - 1);
                 case SYMBIOSIS:
-                    if((birdList.size() + crocodileList.size()) >= 2) return false;
+                    if ((birdList.size() + crocodileList.size()) >= 2) return false;
                     return (birdList.size() + crocodileList.size()) != (player.getCreatures().size() - 1);
             }
         }
@@ -347,10 +354,10 @@ public class Creature implements Serializable {
             --totalSatiety;
     }
 
-    //Подаем номер карты с жировым запасом -> используем его
+    // Use fat
     public void useFatTissue(int cardNumber){
-        if(player.table.getPlayerTurn() != player.playerNumber) return;
-        if(cards.get(cardNumber).getTrait() != Trait.FAT_TISSUE || !cards.get(cardNumber).isFat() || isFed())
+        if (player.table.getPlayerTurn() != player.playerNumber) return;
+        if (cards.get(cardNumber).getTrait() != Trait.FAT_TISSUE || !cards.get(cardNumber).isFat() || isFed())
             return;
 
         cards.get(cardNumber).setFat(false);
@@ -483,19 +490,16 @@ public class Creature implements Serializable {
     }
 
     public boolean isAttackPossible(Creature victim){
-        if (!this.isPredator
-        || (victim.isCamouflaged && !this.isSharp)
-        || (victim.isBurrowing && victim.isFed())
-        || (!victim.crocodileList.isEmpty())
-        || (this.isSwimming != victim.isSwimming)
-        || (victim.isBig && !this.isBig)
-        || isAttacked)
-            return false;
-
-        return true;
+        return this.isPredator
+                && (!victim.isCamouflaged || this.isSharp)
+                && !(victim.isBurrowing && victim.isFed())
+                && (victim.crocodileList.isEmpty())
+                && (this.isSwimming == victim.isSwimming)
+                && (!victim.isBig || this.isBig)
+                && !isAttacked;
     }
-    // Проверка необходима, чтобы выявить те случаи, когда защищающийся ничего не может сделать
-    // ==>> Не нужно присылать ему сообщения
+    // The check is necessary to identify those cases when the defender can do nothing
+    // => No need to send other player messages
     public boolean isAbsoluteAttackPossible(Creature victim){
         if(!isAttackPossible(victim))
             return false;

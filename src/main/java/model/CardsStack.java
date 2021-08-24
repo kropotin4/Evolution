@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 /******************************************
  * This class used for stack the same cards in PlayerCardDeck.
+ * Its reduce size of player deck window.
  *
  * @author akropotin
  *
@@ -25,6 +26,7 @@ public class CardsStack implements Serializable {
         cards.add(card);
     }
 
+
     /**********************
      * Add card to stack.
      * @param card card with the same type that stack cards.
@@ -33,6 +35,7 @@ public class CardsStack implements Serializable {
     public void add(Card card){
         cards.add(card);
     }
+
     /**********************
      * Reduce card number.
      * @return true -- if reduce was success
@@ -46,6 +49,7 @@ public class CardsStack implements Serializable {
         return false;
     }
 
+
     /**********************
      * Get card.
      * @return card of stack
@@ -54,6 +58,7 @@ public class CardsStack implements Serializable {
     public Card getCard(){
         return cards.get(0);
     }
+
     /**********************
      * Get cards number.
      * @return number of cards
